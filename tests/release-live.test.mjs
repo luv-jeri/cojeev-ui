@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,releaseMetadata,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
 
 const commit='a'.repeat(40),token='t'.repeat(40);
-const expectedIdentities={website:{kind:'baseline',commit,versionId:'website-version'},api:{kind:'baseline',commit,versionId:'api-version'}};
+const expectedIdentities={website:{kind:'baseline',commit,versionId:'website-version'},api:{kind:'baseline',commit,versionId:'api-version'},baseline:{hashes:new Map([['site/r/button.json',createHash('sha256').update('{"name":"button"}').digest('hex')]])}};
 const site='https://beta.000h.cojeev.com',api='https://feedback-beta.cojeev.com';
 const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex, nofollow'};
 // A live release is a service expected to deliver, so this stands for one that declares
@@ -12,12 +13,14 @@ const delivery={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850
 
 /** One simulated edge. `release` is what this edge currently serves. */
 function edge({release=commit,analyticsEnabled=false,unreachable=false,contract=false,stalled=false,health=delivery}={}) {
-  return async url=>{
+  return async(url,options={})=>{
     if(unreachable) throw new Error('connect ECONNREFUSED 127.0.0.1:443');
     if(url===`${site}/health`||url===`${api}/health`) return Response.json({status:'ok',environment:'beta',release},{headers});
     if(url===`${api}/v1/admin/health`) return Response.json(stalled?{...health,queue:[{state:'pending',count:4,oldestAgeMs:3600000}]}:health,{headers});
     if(url===`${site}/release.json`) return Response.json({environment:'beta',release,analyticsEnabled},{headers:contract?{}:headers});
-    if(url===`${site}/r/button.json`) return Response.json({name:'button'},{headers});
+    if(url===`${site}/r/button.json`) return options.method==='HEAD'?new Response(null,{headers}):Response.json({name:'button'},{headers:contract?{}:headers});
+    if(url===`${site}/`||url===`${site}/docs/button/`) return new Response('legacy page',{headers:{...headers,'content-type':'text/html'}});
+    if(url===`${site}/r/__cojeev_missing__.json`||url===`${site}/__cojeev_missing__.txt`) return new Response('missing',{status:404,headers});
     if(url===`${site}/__cojeev_missing_release_probe__/`) return new Response('not found',{status:404,headers});
     throw new Error(`unexpected live request: ${url}`);
   };
@@ -27,18 +30,18 @@ function propagating(after,stale='b'.repeat(40)) {
   let attempts=0;
   // The site health probe is the first request of every attempt, so counting it
   // counts attempts rather than individual reads.
-  return async url=>{
+  return async(url,options={})=>{
     if(url===`${site}/health`) attempts++;
-    return edge({release:attempts>after?commit:stale})(url);
+    return edge({release:attempts>after?commit:stale})(url,options);
   };
 }
 
 /** Every endpoint answers `status` until `after` attempts have happened. */
 function unavailable(after,status=503) {
   let attempts=0;
-  return async url=>{
+  return async(url,options={})=>{
     if(url===`${site}/health`) attempts++;
-    if(attempts>after) return edge()(url);
+    if(attempts>after) return edge()(url,options);
     return new Response('unavailable',{status,headers});
   };
 }
@@ -65,14 +68,14 @@ test('a fully propagated release passes on the first read with no waiting',async
   assert.deepEqual(waited,[]);
 });
 
-test('release metadata and the live check prove the deployed analytics intent',async()=>{
+test('release metadata computes analytics intent and mismatches stay transient',async()=>{
   assert.deepEqual(releaseMetadata('beta',commit,{
     NEXT_PUBLIC_ANALYTICS_ENABLED:'true',
     NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN:'phc_public_test_token',
   }),{environment:'beta',release:commit,analyticsEnabled:true});
   assert.equal(releaseMetadata('beta',commit,{NEXT_PUBLIC_ANALYTICS_ENABLED:'true'}).analyticsEnabled,false);
-  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,expectedAnalyticsEnabled:true,fetcher:edge({analyticsEnabled:true})})).problems,[]);
-  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,expectedAnalyticsEnabled:true,fetcher:edge()})).problems,['analytics-config-mismatch']);
+  // Canonical variant analytics intent is exercised in live-identity.test.mjs.
+  // Baseline acceptance uses its pinned root artifact, without release-file probes.
   // A same-SHA redeploy can briefly serve the previous artifact, so the
   // mismatch gets the bounded propagation budget before it fails the release.
   assert.ok(TRANSIENT_LIVE_PROBLEMS.has('analytics-config-mismatch'));
@@ -91,9 +94,9 @@ test('propagation lag is retried within the bounded window and passes once the e
     assert.ok(!line.includes(token)&&!line.includes(commit),line);
   }
   // The stale edge's routes were never read: its headers and 404 behaviour belong
-  // to the previous release. They are read exactly once, on the ready attempt.
-  assert.equal(requested.filter(url=>url===`${site}/release.json`).length,1);
-  assert.equal(requested.filter(url=>url===`${site}/r/button.json`).length,1);
+  // to the previous release. GET and HEAD are checked only on the ready attempt.
+  assert.equal(requested.filter(url=>url===`${site}/docs/button/`).length,1);
+  assert.equal(requested.filter(url=>url===`${site}/r/button.json`).length,2);
 });
 
 test('an unreachable site is treated as propagation and retried, not reported as a defect',async()=>{
@@ -154,7 +157,7 @@ test('a permanent failure is reported on the first read and is never retried',as
     {options:{fetcher:edge()},expected:/invalid-delivery-health/},
     // A stalled delivery queue and a broken header contract are real defects.
     {options:{token,fetcher:edge({stalled:true})},expected:/delivery-stalled/},
-    {options:{token,fetcher:edge({contract:true})},expected:/site-contract/},
+    {options:{token,fetcher:edge({contract:true})},expected:/registry-response/},
   ];
   for(const {options,expected} of cases) {
     const waited=[];
@@ -180,9 +183,9 @@ test('a permanent code alongside a propagation code stops immediately',async()=>
 
 test('the transient set stays narrow and every site probe code is accounted for',async()=>{
   assert.deepEqual([...TRANSIENT_LIVE_PROBLEMS].sort(),['analytics-config-mismatch','http-health','release-mismatch','site-release-mismatch','site-unreachable','stale-identity']);
-  assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('site-contract'));
+  assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('registry-response:/r/button.json'));
   assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:edge()})).problems,[]);
-  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:edge({contract:true})})).problems,['site-contract']);
+  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:edge({contract:true})})).problems,['registry-response:/r/button.json']);
 });
 
 test('the site recovers after a 503 or a 404 health outage and then passes on the real routes',async()=>{
@@ -193,18 +196,18 @@ test('the site recovers after a 503 or a 404 health outage and then passes on th
       fetcher:async(url,options)=>{requested.push(url);return recovering(url,options);}});
     assert.deepEqual(problems,[],`status ${status}`);
     assert.deepEqual(waited,LIVE_RETRY_WAITS.slice(0,2),`status ${status}`);
-    // The routes were read once, after readiness — never against the failing edge.
-    assert.equal(requested.filter(url=>url===`${site}/r/button.json`).length,1,`status ${status}`);
+    // Registry GET and HEAD were read after readiness, never against the failing edge.
+    assert.equal(requested.filter(url=>url===`${site}/r/button.json`).length,2,`status ${status}`);
   }
 });
 
 test('after readiness the route contract is authoritative again and fails permanently',async()=>{
   // A broken header and a wrong status are both real defects once public health
   // confirms this release: they stop on the first ready read, with no waiting.
-  const broken=async url=>url===`${site}/r/button.json`
+  const broken=async(url,options)=>url===`${site}/r/button.json`
     ? new Response('{}',{status:500,headers})
-    : edge()(url);
-  for(const [fetcher,expected] of [[edge({contract:true}),/site-contract/],[broken,/site-contract/]]) {
+    : edge()(url,options);
+  for(const [fetcher,expected] of [[edge({contract:true}),/registry-response/],[broken,/registry-response/]]) {
     const waited=[];
     await assert.rejects(checkLiveRelease('beta',expectedIdentities,{token,fetcher,sleep:async ms=>waited.push(ms),log:()=>{}}),error=>{
       assert.match(error.message,/^Live checks failed after 1 attempt: /);
@@ -216,7 +219,7 @@ test('after readiness the route contract is authoritative again and fails perman
   }
   // The same wrong status is reported by one read of liveProblems too, so the
   // guard never turns a real status defect into a skipped check.
-  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:broken})).problems,['site-contract']);
+  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:broken})).problems,['registry-head','registry-response:/r/button.json']);
 });
 
 test('a permanent delivery or configuration failure survives a transient public outage',async()=>{

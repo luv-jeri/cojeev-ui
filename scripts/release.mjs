@@ -12,6 +12,7 @@ import {assessHealth} from './operations-health.mjs';
 import {readBaselineRecord,WEBSITE_PHASES,API_PHASES} from './release-phases.mjs';
 import {readBaseline,packageEnvironment,readVariant} from './release-variants.mjs';
 import {livePairCli} from './release-pair.mjs';
+import {contractProblems} from './live-contracts.mjs';
 export {readVariant};
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
@@ -241,7 +242,7 @@ const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   return fetcher(url,{...options,signal:AbortSignal.any(signals)});
 };
 /** Sanitized fixed codes and independent observations for one live read. */
-export async function liveProblems(environment,{website,api,token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch}) {
+export async function liveProblems(environment,{website,api,token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch,baseline,robotsBefore}) {
   const observed=await readIdentities(environment,{fetcher});
   const identities=identityProblems(environment,{website,api},observed);
   let problems=[...identities];
@@ -260,18 +261,7 @@ export async function liveProblems(environment,{website,api,token=process.env.HE
   const result=()=>({problems:[...new Set(problems)].sort(),observed});
   if(identities.length) return result();
   if(website.kind==='variant'&&expectedAnalyticsEnabled!==undefined&&observed.website.uiRelease.analyticsEnabled!==expectedAnalyticsEnabled) problems.push('analytics-config-mismatch');
-  const commit=website.kind==='variant'?website.manifest.commit:website.commit;
-  for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
-    let response;
-    try {response=await fetcher(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
-    catch {problems.push('site-unreachable');continue;}
-    if(response.status!==status||response.headers.get('x-content-type-options')!=='nosniff'||environment==='beta'&&!response.headers.get('x-robots-tag')?.includes('noindex')) {problems.push('site-contract');continue;}
-    if(route!=='/release.json') continue;
-    let value;
-    try {value=await response.json();} catch {problems.push('site-contract');continue;}
-    if(value.release!==commit||value.environment!==environment) problems.push('site-release-mismatch');
-    else if(website.kind==='baseline'&&expectedAnalyticsEnabled!==undefined&&value.analyticsEnabled!==expectedAnalyticsEnabled) problems.push('analytics-config-mismatch');
-  }
+  problems.push(...await contractProblems(environment,{website,api},{fetcher,baseline,robotsBefore}));
   return result();
 }
 /** Bounded propagation retries: at most five reads inside one wall-clock budget. */
@@ -328,7 +318,10 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
       if(arguments_.length!==2||arguments_.filter(value=>value.startsWith('--website=')).length!==1||arguments_.filter(value=>value.startsWith('--api=')).length!==1) throw new Error('Use live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
       const identities={};
       for(const side of ['website','api']) identities[side]=await expectedFrom(environment,side,arguments_.find(value=>value.startsWith(`--${side}=`)).slice(side.length+3));
-      await checkLiveRelease(environment,identities,{expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
+      const baseline=identities.website.kind==='baseline'?await readBaseline(environment):await readBaselineRecord(environment);
+      const robotsBefore=environment==='production'&&baseline.apexProbes['/robots.txt'].robots!=='absent'
+        ?await fs.readFile('docs/reports/2026-10-01-move-baseline/apex-robots.before.txt','utf8'):'';
+      await checkLiveRelease(environment,identities,{baseline,robotsBefore,expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
       console.log(`live ok website=${expectedId(identities.website)} api=${expectedId(identities.api)}`);
     }
     else throw new Error('Use build-variants SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
