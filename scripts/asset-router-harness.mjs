@@ -1,29 +1,61 @@
 import {build} from 'esbuild';
 import {Miniflare, convertV4MiniflareOptions, CoreHeaders} from 'miniflare';
+import {unstable_getMiniflareWorkerOptions, unstable_readConfig} from 'wrangler';
+import {cp, mkdtemp, rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
 import {fileURLToPath} from 'node:url';
-import {resolve} from 'node:path';
+import {join, resolve} from 'node:path';
 
 const fixtureEntry = fileURLToPath(new URL('../workers/registry-host/test/fixtures/harness-entry.mjs', import.meta.url));
 const sourceEntry = fileURLToPath(new URL('../workers/registry-host/src/index.mjs', import.meta.url));
+const root = fileURLToPath(new URL('../', import.meta.url));
+
+export async function materializeVariant(fixtureDirectory, {entry = 'workers/registry-host/src/index.mjs'} = {}) {
+  const directory = await mkdtemp(join(tmpdir(), 'cojeev-browser-variant-'));
+  try {
+    await cp(fixtureDirectory, directory, {recursive: true});
+    await build({entryPoints: [resolve(root, entry)], outfile: join(directory, 'website/index.js'),
+      bundle: true, format: 'esm', platform: 'browser', target: 'es2022', logLevel: 'silent'});
+    return directory;
+  } catch (error) {await rm(directory, {recursive: true, force: true}); throw error;}
+}
+
 export async function startAssetRouter({worker, homepage}) {
-  // Packaged mode and browser variants belong to the size-rule follow-up A11b.
-  if (worker.kind !== 'source') throw new Error('A11 supports source mode only; packaged mode requires A11b');
+  let selectedEntry, registryOptions;
+  if (worker.kind === 'packaged') {
+    if (Object.keys(worker).some(key => !['kind', 'directory'].includes(key))) throw new Error('Packaged mode accepts only directory');
+    selectedEntry = resolve(worker.directory, 'website/index.js');
+    const config = unstable_readConfig({config: resolve(worker.directory, 'website/wrangler.jsonc')});
+    registryOptions = unstable_getMiniflareWorkerOptions(config).workerOptions;
+    // The selected module is already bundled into the harness wrapper; V5's
+    // converter rejects Wrangler's source-loading rules, which are unused here.
+    delete registryOptions.modulesRules;
+    // Packaged vars are authoritative, even if local dev-vars files are present.
+    registryOptions.bindings = config.vars;
+    registryOptions.assets.directory = resolve(worker.directory, 'site');
+  } else if (worker.kind === 'source') {
+    selectedEntry = sourceEntry;
+    registryOptions = {compatibilityDate: '2026-09-10',
+      bindings: {ENVIRONMENT: worker.environment, MIGRATION_STAGE: worker.migrationStage},
+      assets: {directory: resolve(worker.site), binding: 'ASSETS', run_worker_first: worker.workerFirst,
+        not_found_handling: '404-page', html_handling: 'auto-trailing-slash', routerConfig: {has_user_worker: true}}};
+  } else throw new Error(`Unknown asset-router mode: ${worker.kind}`);
   const compiled = await build({entryPoints: [fixtureEntry], bundle: true, write: false, format: 'esm', platform: 'browser', target: 'es2022',
-    plugins: [{name: 'selected-worker', setup(build) {build.onResolve({filter: /^harness-selected-worker$/}, () => ({path: sourceEntry}));}}],
+    plugins: [{name: 'selected-worker', setup(build) {build.onResolve({filter: /^harness-selected-worker$/}, () => ({path: selectedEntry}));}}],
   });
   const runs = [];
   const options = convertV4MiniflareOptions({workers: [
-    {name: 'registry', modules: true, script: compiled.outputFiles[0].text, compatibilityDate: '2026-09-10',
-      bindings: {ENVIRONMENT: worker.environment, MIGRATION_STAGE: worker.migrationStage},
-      assets: {directory: resolve(worker.site), binding: 'ASSETS', run_worker_first: worker.workerFirst,
-        not_found_handling: '404-page', html_handling: 'auto-trailing-slash', routerConfig: {has_user_worker: true}},
+    {...registryOptions, name: 'registry', modules: true, script: compiled.outputFiles[0].text,
       serviceBindings: {COJEEV_HOMEPAGE: 'homepage', HARNESS_LOG: request => {runs.push(new URL(request.url).pathname); return new Response(null);}},
     },
     {name: 'homepage', modules: true, script: 'export default {fetch(request, env) {return env.ASSETS.fetch(request)}}', compatibilityDate: '2026-09-10',
       assets: {directory: resolve(homepage), binding: 'ASSETS', not_found_handling: '404-page', html_handling: 'auto-trailing-slash', routerConfig: {has_user_worker: true}}},
   ]});
-  // V4 conversion drops top-level asset handling fields. Use native V5 names for these only.
-  for (const optionsWorker of options.workers) Object.assign(optionsWorker.config.assets, {notFoundHandling: '404-page', htmlHandling: 'auto-trailing-slash'});
+  // V4 conversion drops source/homepage top-level handling fields. Wrangler's
+  // packaged assetConfig converts intact and must retain its own handling values.
+  for (const [i, optionsWorker] of options.workers.entries()) {
+    if (i === 1 || worker.kind === 'source') Object.assign(optionsWorker.config.assets, {notFoundHandling: '404-page', htmlHandling: 'auto-trailing-slash'});
+  }
   const mf = new Miniflare(options);
   try {
     await mf.ready;

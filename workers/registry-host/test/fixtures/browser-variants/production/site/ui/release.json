@@ -1,0 +1,8 @@
+{
+  "environment": "production",
+  "release": "1111111111111111111111111111111111111111",
+  "deploymentId": "website-redirect-111111111111-11111111",
+  "phase": "redirect",
+  "migrationStage": "redirect",
+  "registryGraph": "canonical"
+}
