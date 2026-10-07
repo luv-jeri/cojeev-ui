@@ -6,7 +6,6 @@ import { AsyncContent, Skeleton, SkeletonGroup } from "@/registry/cojeev/ui/skel
 import { RadioGroup, RadioGroupItem, RadioGroupBody } from "@/registry/cojeev/ui/radio-group";
 import { Input } from "@/registry/cojeev/ui/input";
 import { Field, FieldControl, FieldLabel, FieldDescription } from "@/registry/cojeev/ui/field";
-import { Stepper, StepperList, StepperItem, StepperIndicator, StepperTitle, StepperPrevious, StepperNext, StepperStatus } from "@/registry/cojeev/ui/stepper";
 import { Bubble, BubbleRow, BubbleContent, BubbleReaction, BubbleTyping } from "@/registry/cojeev/ui/bubble";
 import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 import type { ExampleProps } from "./types";
@@ -28,14 +27,6 @@ export function LoadingContentExample({ variant = "default" }: ExampleProps) {
     </AsyncContent>
     <p className="v-quiet text-sm">A controlled preview of loading and ready states.</p>
   </div>;
-}
-
-export function HorizontalStepperExample() {
-  const labels = ["A first thought", "Make it your own", "Ready to begin"];
-  return <Stepper count={labels.length} labels={labels} className="grid gap-5 w-full min-w-0">
-    <StepperList orientation="horizontal">{labels.map((label, index) => <StepperItem key={label} step={index + 1}><StepperIndicator step={index + 1} /><StepperTitle>{label}</StepperTitle></StepperItem>)}</StepperList>
-    <div className="flex gap-3 items-center flex-wrap"><StepperPrevious /><StepperNext /><StepperStatus /></div>
-  </Stepper>;
 }
 
 export function BubbleFeedbackExample() {

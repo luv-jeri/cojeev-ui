@@ -25,7 +25,6 @@ const recoveryComponents = [
   "pagination",
   "reading-trail",
   "sidebar",
-  "stepper",
   "tabs",
   "toggle",
   "alert",

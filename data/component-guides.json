@@ -1067,7 +1067,6 @@
     ],
     "related": [
       "spinner",
-      "stepper",
       "chart"
     ]
   },
@@ -1091,8 +1090,7 @@
     ],
     "related": [
       "radio-group",
-      "field",
-      "stepper"
+      "field"
     ]
   },
   "radio-group": {
@@ -1298,27 +1296,6 @@
       "progress",
       "button",
       "skeleton"
-    ]
-  },
-  "stepper": {
-    "description": "Move a real draft through connected stages, a descriptive checkpoint ledger or a focused current-step workspace.",
-    "category": "Navigation",
-    "usage": [
-      "Set count and optional labels, then use one-based values for StepperItem parts.",
-      "Use onValueChange to switch your content and gate progression with your own validation before advancing.",
-      "StepperList orientation=\"horizontal\" lays out connected milestones with native Previous/Next controls. The default remains vertical. Completed milestones use a native validation icon.",
-      "Set presentation=rail, ledger or compact to opt into the authored compositions. Stage values, labels and content remain owned by your application; changing presentation must not recreate the draft.",
-      "StepperTrigger is a shared Button for returning to the current or an earlier checkpoint. Future stages are disabled unless allowFuture is explicit; supply your own validation before enabling progression.",
-      "Previous and Next combine caller disabled state with their boundaries. Cancel onClick with preventDefault to refuse a move; non-finite changes are ignored and finite values are clamped to whole one-based stages.",
-      "The example preserves mounted fields while hiding inactive panels, focuses the new heading after deliberate navigation and saves only a local draft. No network submission is implied."
-    ],
-    "accessibility": [
-      "The current item exposes aria-current=\"step\"; use meaningful titles and include StepperStatus when a spoken progress update is useful."
-    ],
-    "related": [
-      "questionnaire",
-      "progress",
-      "button"
     ]
   },
   "switch": {
@@ -2298,14 +2275,13 @@
       "Set presentation to journey, sequence or review; omit it to keep the original vertical composition. Sequence uses the shared organic horizontal scrollbar and native keyboard/pointer scrolling. Every presentation keeps descriptions and explicit status text.",
       "The example retains progress and selected detail across layout changes. Selecting a title opens local detail; only the separate completion action advances the sample. Current-marker contour motion stays off the native44px title target.",
       "Provide onMilestoneSelect only when a milestone has a real action. Noninteractive milestones remain ordinary content.",
-      "MilestonePath composes the existing Stepper parts. The caller owns explicit states; it does not invent a separate selected-row model."
+      "MilestonePath keeps its list and marker parts private. The caller owns explicit states; it does not invent a separate selected-row model."
     ],
     "accessibility": [
       "Progress state is named in text as well as color. Buttons retain native keyboard and disabled behavior.",
       "The ordered sequence remains meaningful with motion disabled or without an interactive action."
     ],
     "related": [
-      "stepper",
       "activity-feed",
       "badge"
     ]
@@ -2468,8 +2444,7 @@
     ],
     "related": [
       "writing-caret",
-      "presence",
-      "stepper"
+      "presence"
     ]
   },
   "glass-sculpture": {

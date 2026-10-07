@@ -150,7 +150,6 @@ export const exampleManifest = {
   skeleton: { file: "loading", name: "SkeletonExample" },
   "slider": { file: "motion-progress", name: "SliderExample" },
   spinner: { file: "loading", name: "SpinnerExample" },
-  stepper: { file: "progression", name: "StepperExample" },
   switch: { file: "choice-foundations", name: "SwitchExample" },
   table: { file: "tables", name: "TableExample" },
   tabs: { file: "navigation", name: "TabsExample" },

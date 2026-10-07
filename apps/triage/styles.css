@@ -62,7 +62,6 @@
 @import "../../registry/cojeev/styles/skeleton.css" layer(cojeev-states);
 @import "../../registry/cojeev/styles/slider.css" layer(cojeev-states);
 @import "../../registry/cojeev/styles/spinner.css" layer(cojeev-states);
-@import "../../registry/cojeev/styles/stepper.css" layer(cojeev-states);
 @import "../../registry/cojeev/styles/switch.css" layer(cojeev-states);
 @import "../../registry/cojeev/styles/table.css" layer(cojeev-states);
 @import "../../registry/cojeev/styles/tabs.css" layer(cojeev-states);
