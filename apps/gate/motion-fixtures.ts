@@ -4,7 +4,7 @@ export type MotionScenario={id:string;family:'group'|'morph'|'roles'|'adjuster'|
 export const motionScenarios:MotionScenario[]=[
  ...motionCharacters.map(variant=>({id:'travel-'+variant,family:'group' as const,shape:'pill',variant})),
  ...['stretch','jelly','rubber','pebble'].map(variant=>({id:'vertical-'+variant,family:'group' as const,shape:'pill',variant,vertical:true})),
- ...['bar','radio','menu','fields','stepper','carousel','nested','checkboxes','no-active','hidden'].map(shape=>({id:'group-'+shape,family:'group' as const,shape,variant:'drop'})),
+ ...['bar','radio','menu','fields','carousel','nested','checkboxes','no-active','hidden'].map(shape=>({id:'group-'+shape,family:'group' as const,shape,variant:'drop'})),
  {id:'speed-strength',family:'group',shape:'pill',variant:'stretch',speed:1.75,intensity:1.6,hoverStrength:1.8},
  {id:'hover-off',family:'group',shape:'pill',variant:'glide',hover:false},
  {id:'pinned-character',family:'group',shape:'pill',variant:'glide',pin:'jelly'},
@@ -24,14 +24,13 @@ export const motionScenarios:MotionScenario[]=[
  {id:'media-change',family:'behavior',variant:'jelly'},
 ]
 export function groupMarkup(shape='pill',nested=false):string{
- const classes=shape==='bar'?'v-tabs -underline':shape==='radio'?'v-iradios':shape==='menu'?'v-menu':shape==='stepper'?'v-stepper-flow':shape==='carousel'?'v-carousel__dots':'v-tabs'
- const fields=shape==='fields',checkboxes=shape==='checkboxes',itemClass=shape==='menu'?'v-menu__item':shape==='stepper'?'v-step':shape==='carousel'?'':'v-tab'
+ const classes=shape==='bar'?'v-tabs -underline':shape==='radio'?'v-iradios':shape==='menu'?'v-menu':shape==='carousel'?'v-carousel__dots':'v-tabs'
+ const fields=shape==='fields',checkboxes=shape==='checkboxes',itemClass=shape==='menu'?'v-menu__item':shape==='carousel'?'':'v-tab'
  let items=''
  for(let index=0;index<3;index++){
   const selected=index===0&&shape!=='no-active',id=(nested?'nested-item-':'item-')+index,common=`id="${id}" data-item="${index}" data-slot="motion-item" style="--item-w:${84+index*12}px"`
   if(fields)items+=`<input ${common} class="motion-item v-input" aria-label="Field ${index+1}" placeholder="Field ${index+1}">`
   else if(shape==='radio'||checkboxes)items+=`<label ${common} class="motion-item ${shape==='radio'?'v-iradio':''}"><input type="${checkboxes?'checkbox':'radio'}" name="choice${nested}" ${selected?'checked':''}>Choice ${index+1}</label>`
-  else if(shape==='stepper')items+=`<button ${common} class="motion-item ${itemClass}" ${selected?'aria-current="step"':''}><span class="v-step__n">${index+1}</span><span>Step ${index+1}</span></button>`
   else items+=`<button ${common} class="motion-item ${itemClass}" ${shape==='menu'?'role="menuitem" tabindex="0"':''} aria-selected="${selected}">${index+1===1?'One':index+1===2?'Two':'Three'}</button>`
  }
  const inner=shape==='nested'?groupMarkup('pill',true):''
@@ -55,7 +54,6 @@ html,body{margin:0;min-height:100%;background:var(--v-canvas);font-family:var(--
 :where(.motion-item[aria-selected="true"]){background:var(--glide-bg);color:var(--glide-fg)}
 .motion-item.v-btn{background:var(--primary);color:var(--primary-foreground)}
 .motion-item input[type=radio],.motion-item input[type=checkbox]{width:13px;height:13px;appearance:auto;margin:0}:where(.motion-item.v-input){background:var(--v-beige);outline:0;border:0;box-shadow:none}
-.motion-item .v-step__n{display:grid;place-items:center;width:32px;height:32px;flex:none;border-radius:50%;background:var(--v-beige)}
 :where(.motion-group.v-carousel__dots .motion-item){width:12px;height:12px;border-radius:50%;background:var(--v-beige)}
 .motion-surface{position:relative;width:100%;padding:20px;background:var(--v-beige);border-radius:20px;box-shadow:none}
 .motion-body{position:relative;isolation:isolate;width:150px;height:110px;flex:none;padding:0;border-radius:18px;border:0;background:transparent;overflow:visible;color:var(--v-ink)}

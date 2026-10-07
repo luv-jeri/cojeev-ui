@@ -4,17 +4,12 @@ import * as React from "react";
 import { motion } from "motion/react";
 import { cn } from "../lib/utils";
 import { useChoreography } from "../motion/choreography";
+import { useFlowGroup } from "../motion/use-flow";
+import { useMorph } from "../motion/use-morph";
 import { AnimatedIcon } from "./animated-icon";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import { Empty, EmptyDescription, EmptyTitle } from "./empty";
-import {
-  Stepper,
-  StepperIndicator,
-  StepperItem,
-  StepperList,
-  StepperTitle,
-} from "./stepper";
 import { BodySecondary, Meta, Title } from "./typography";
 import { ScrollArea, ScrollBar } from "./scroll-area";
 
@@ -44,6 +39,109 @@ export type MilestonePathProps = Omit<
   /** Omit for the original vertical composition. */
   presentation?: "journey" | "sequence" | "review";
 };
+
+const MilestoneContext = React.createContext(1);
+
+function MilestoneParts({
+  value,
+  children,
+}: {
+  value: number;
+  children: React.ReactNode;
+}) {
+  const { quiet } = useChoreography();
+  return (
+    <MilestoneContext.Provider value={value}>
+      <div
+        data-slot="milestone-path-provider"
+        data-motion={quiet ? "off" : undefined}
+      >
+        {children}
+      </div>
+    </MilestoneContext.Provider>
+  );
+}
+
+function MilestoneList({
+  ref,
+  className,
+  ...props
+}: React.ComponentProps<"ol">) {
+  const flowRef = useFlowGroup<HTMLOListElement>(ref);
+  return (
+    <ol
+      ref={flowRef}
+      data-slot="milestone-path-list"
+      data-part="root"
+      data-orientation="vertical"
+      className={cn(
+        "grid gap-0 m-0 p-0 list-none [counter-reset:none]",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function MilestoneItem({
+  step,
+  className,
+  ...props
+}: React.ComponentProps<"li"> & { step: number }) {
+  const value = React.useContext(MilestoneContext);
+  return (
+    <li
+      data-slot="milestone-path-item"
+      data-part="item"
+      className={cn(
+        "v-step relative grid grid-cols-[38px_minmax(0,1fr)] items-center gap-[var(--s-4)] py-[var(--s-2)] min-h-[54px] list-none",
+        step < value && "-done",
+        step === value && "-on",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function MilestoneIndicator({
+  ref,
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
+  const morphRef = useMorph<HTMLSpanElement>("buttons", ref);
+  return (
+    <span
+      ref={morphRef}
+      data-stable-hit=""
+      data-r="14"
+      data-slot="milestone-path-indicator"
+      data-part="indicator"
+      className={cn(
+        "v-step__n relative z-[1] col-start-1 grid place-items-center size-[38px] [border-radius:50%] text-[length:var(--fs-control)] font-semibold tabular-nums bg-[var(--v-canvas)] text-[color:var(--v-text-2)] [box-shadow:inset_0_0_0_1.5px_var(--v-edge)]",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function MilestoneTitle({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
+  return (
+    <span
+      data-slot="milestone-path-title"
+      data-part="label"
+      className={cn(
+        "v-step__t col-start-2 text-[length:var(--fs-body)] leading-[1.35] text-[color:var(--v-text-2)]",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 const stateLabels: Record<MilestoneState, string> = {
   complete: "Completed",
@@ -78,14 +176,14 @@ export function MilestonePath({
         ? upcomingIndex + 1
         : items.length + 1;
   const list = (
-    <StepperList
+    <MilestoneList
       className="v-milestone-path__list"
       role="list"
       data-no-glide=""
       data-flow="off"
     >
       {items.map((item, index) => (
-        <StepperItem
+        <MilestoneItem
           key={item.id}
           step={index + 1}
           data-milestone-id={item.id}
@@ -126,8 +224,7 @@ export function MilestonePath({
               />
             </svg>
           )}
-          <StepperIndicator
-            step={index + 1}
+          <MilestoneIndicator
             className="v-milestone-path__marker"
             aria-hidden="true"
             data-morph={
@@ -139,10 +236,10 @@ export function MilestonePath({
             ) : (
               <span>{index + 1}</span>
             )}
-          </StepperIndicator>
+          </MilestoneIndicator>
           <div className="v-milestone-path__content">
             <div className="v-milestone-path__heading">
-              <StepperTitle className="v-milestone-path__title">
+              <MilestoneTitle className="v-milestone-path__title">
                 {onMilestoneSelect ? (
                   <Button
                     variant="ghost"
@@ -159,7 +256,7 @@ export function MilestonePath({
                 ) : (
                   item.title
                 )}
-              </StepperTitle>
+              </MilestoneTitle>
               <Badge
                 size="sm"
                 variant={
@@ -183,9 +280,9 @@ export function MilestonePath({
               <Meta className="v-milestone-path__meta">{item.meta}</Meta>
             )}
           </div>
-        </StepperItem>
+        </MilestoneItem>
       ))}
-    </StepperList>
+    </MilestoneList>
   );
   return (
     <section
@@ -215,7 +312,7 @@ export function MilestonePath({
           </Empty>
         ))
       ) : (
-        <Stepper value={position} count={items.length + 1}>
+        <MilestoneParts value={position}>
           {presentation === "sequence" ? (
             <>
               <ScrollArea
@@ -241,7 +338,7 @@ export function MilestonePath({
           ) : (
             list
           )}
-        </Stepper>
+        </MilestoneParts>
       )}
     </section>
   );

@@ -89,7 +89,7 @@ const order = [
   "empty","field","hover-card","icon","input-group","input-otp","input","item","kbd","label","marker","menubar",
   "message-scroller","message","native-select","navigation-menu","pagination","popover","preview","progress",
   "questionnaire","radio-group","resizable","scroll-area","select","separator","sheet","sidebar","skeleton",
-  "slider","spinner","stepper","switch","table","tabs","textarea","toast","toggle-group","toggle","tooltip",
+  "slider","spinner","switch","table","tabs","textarea","toast","toggle-group","toggle","tooltip",
   "tree","typography","animated-number","word-relay","reading-trail","living-link","pigment-field",
   "contour-field","milestone-path","activity-feed","text-reveal","text-ribbon","glyph-sculpture",
   "sculpture-orbit","shape-scene","multi-select","ambient-background","marquee","agent-state","agent-chat",

@@ -15,7 +15,6 @@ import * as native_select from "@/registry/cojeev/ui/native-select";
 import * as pagination from "@/registry/cojeev/ui/pagination";
 import * as questionnaire from "@/registry/cojeev/ui/questionnaire";
 import * as sidebar from "@/registry/cojeev/ui/sidebar";
-import * as stepper from "@/registry/cojeev/ui/stepper";
 import * as table from "@/registry/cojeev/ui/table";
 import * as textarea from "@/registry/cojeev/ui/textarea";
 
@@ -30,7 +29,6 @@ const simple:Record<string,React.ElementType>={
   ".v-scroller":message_scroller.MessageScroller,".v-scroller__jump":message_scroller.MessageScrollerJump,
   ".v-native":native_select.NativeSelect,
   ".v-quest":questionnaire.Questionnaire,".v-weekdays":questionnaire.QuestionnaireWeekdays,".v-weekdays > label":questionnaire.QuestionnaireWeekday,".v-quest__q":questionnaire.QuestionnaireQuestion,".v-quest__opt-body":questionnaire.QuestionnaireOptionBody,
-  ".v-stepper-flow":stepper.StepperList,".v-step__t":stepper.StepperTitle,"[data-step-back]":stepper.StepperPrevious,"[data-step-next]":stepper.StepperNext,"[data-step-say]":stepper.StepperStatus,
   ".v-table":table.Table,
   ".v-textarea":textarea.Textarea,".v-composer":textarea.TextareaComposer,".v-composer__bar":textarea.TextareaComposerBar,".v-composer__count":textarea.TextareaCount,
 };
@@ -89,15 +87,6 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
     wrappedFields.add(node);
     ctx.mark(node);
     return <field.FieldGroup key={index} asChild>{ctx.convert(node,index)}</field.FieldGroup>;
-  }
-  if(node.querySelector(":scope > .v-stepper-flow")){
-    const list=node.querySelector(":scope > .v-stepper-flow")!;
-    const steps=Array.from(list.querySelectorAll(":scope > .v-step"));
-    return render(stepper.Stepper,{count:steps.length,defaultValue:Math.max(1,steps.findIndex(step=>step.matches(".-on,[aria-current=step]"))+1),labels:steps.map(step=>step.querySelector(".v-step__t")?.textContent??"")});
-  }
-  if(matches(".v-step,.v-step__n")){
-    const step=matches(".v-step")?node:node.closest(".v-step")!;
-    return render(matches(".v-step")?stepper.StepperItem:stepper.StepperIndicator,{step:siblingIndex(step,".v-step")+1});
   }
   if(matches(".v-sidebar"))return render(sidebar.Sidebar,{defaultOpen:!matches(".-mini,.-collapsed"),layout:"viewport"});
   if(node.closest(".v-sidebar"))for(const[selector,Component]of Object.entries(sideParts))if(matches(selector))return render(Component,selector===".v-nav__item"?{isActive:node.getAttribute("aria-current")==="page"}:{});
