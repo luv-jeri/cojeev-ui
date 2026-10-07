@@ -5,12 +5,13 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
+import {isDeepStrictEqual} from 'node:util';
 import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './release-config.mjs';
 import {deploymentDiagnostic,recordDeploymentEvent} from './deployment-diagnostics.mjs';
+import {WEBSITE_PHASES,API_PHASES} from './release-phases.mjs';
+import {FIXED_WORKER_FIRST,workerFirstProblems} from './worker-first.mjs';
 
 const maxBytes=25*1024*1024;
-// Framework chunks and RSC payloads are served by Cloudflare's free asset layer, with headers from site/_headers.
-export const STATIC_FILES_SKIP_WORKER=['/*','!/_next/*','!/*.txt'];
 const ALLOWED_SECRETS=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
 // Two protected bundles compose into the one validated set. REPORTING_SECRETS_JSON
 // stays the base and is never rewritten or read back, so an already-provisioned
@@ -79,9 +80,17 @@ export async function cloudflare(endpoint) {
   if(!data.success) throw new Error('Cloudflare preflight refused');
   return data.result;
 }
-export function validateDeploymentConfig(environment,config,kind) {
+export function validateDeploymentConfig(environment,config,kind,{source=false}={}) {
   const target=environmentConfig(environment),api=kind==='api';
-  const allowed=api?[target.site,target.api,...(environment==='production'?['https://luv-jeri.github.io']:[])]:[];
+  const vars=config.vars??{},phase=vars.PHASE,phases=api?API_PHASES:WEBSITE_PHASES;
+  const phaseRow=Object.hasOwn(phases,phase)?phases[phase]:undefined;
+  const deploymentId=typeof vars.DEPLOYMENT_ID==='string'&&vars.DEPLOYMENT_ID.match(api?/^api-(prepared|linked)-[a-f0-9]{12}-[a-f0-9]{8}$/:/^website-(mounted|regenerated|redirect)-[a-f0-9]{12}-[a-f0-9]{8}$/);
+  let originsValid=false;
+  if(api&&typeof vars.ALLOWED_ORIGINS==='string') {
+    const origins=vars.ALLOWED_ORIGINS.split(',');
+    try {originsValid=origins.every(origin=>origin===new URL(origin).origin)&&isDeepStrictEqual(new Set(origins),new Set(target.allowedOrigins));} catch { /* Malformed origins fail with the field name below. */ }
+  }
+  const workerFirst=config.assets?.run_worker_first;
   // This guardrail exists to catch an environment mixup minutes before a deploy,
   // so it names the field that failed instead of one undifferentiated refusal.
   const checks=[
@@ -91,19 +100,25 @@ export function validateDeploymentConfig(environment,config,kind) {
     ['vars.ENVIRONMENT',config.vars?.ENVIRONMENT===environment],
     ['workers_dev',config.workers_dev===false],
     ['preview_urls',config.preview_urls===false],
-    ['routes',config.routes?.length===1&&config.routes[0].pattern===new URL(api?target.api:target.site).hostname&&config.routes[0].custom_domain===true],
+    ['routes',api?config.routes?.length===1&&config.routes[0].pattern===new URL(target.api).hostname&&config.routes[0].custom_domain===true:isDeepStrictEqual(config.routes,target.routes)],
+    ['services',api?isDeepStrictEqual(config.services,[{binding:'REGISTRY_SITE',service:target.registrySiteService}]):target.homepageService?isDeepStrictEqual(config.services,[{binding:'COJEEV_HOMEPAGE',service:target.homepageService}]):config.services===undefined||isDeepStrictEqual(config.services,[])],
+    ['vars.PHASE',source?phase==='unconfigured':Boolean(phaseRow)],
+    ['vars.DEPLOYMENT_ID',source?vars.DEPLOYMENT_ID==='unconfigured':Boolean(deploymentId)&&deploymentId[1]===phase],
     ...(api?[
       ['d1_databases',config.d1_databases?.length===1&&config.d1_databases[0].database_id===target.databaseId],
       ['r2_buckets',config.r2_buckets?.length===1&&config.r2_buckets[0].bucket_name===target.media],
       ['vars.LOCAL_MODE',config.vars?.LOCAL_MODE==='false'],
-      ['vars.SITE_URL',config.vars?.SITE_URL===target.site],
-      ['vars.ALLOWED_ORIGINS',JSON.stringify(config.vars?.ALLOWED_ORIGINS?.split(',').sort())===JSON.stringify(allowed.sort())],
+      ['vars.LEGACY_SITE_URL',vars.LEGACY_SITE_URL===target.legacySite],
+      ['vars.SITE_URL',vars.SITE_URL===(source||phase==='linked'?target.canonicalSite:target.legacySite)],
+      ['vars.ALLOWED_ORIGINS',originsValid],
     ]:[
+      ['vars.MIGRATION_STAGE',vars.MIGRATION_STAGE===(source?'unconfigured':phaseRow?.MIGRATION_STAGE)],
+      ['vars.REGISTRY_GRAPH',vars.REGISTRY_GRAPH===(source?'unconfigured':phaseRow?.REGISTRY_GRAPH)],
       ['website d1_databases',!config.d1_databases?.length],
       ['website r2_buckets',!config.r2_buckets?.length],
       ['assets.directory',config.assets?.directory==='../site'],
-      // Static files skip the Worker so they stay free; `true` is what releases before that change carry.
-      ['assets.run_worker_first',config.assets?.run_worker_first===true||JSON.stringify(config.assets?.run_worker_first)===JSON.stringify(STATIC_FILES_SKIP_WORKER)],
+      // Pre-migration all-Worker and blanket text bypass settings cannot be replayed.
+      ['assets.run_worker_first',Array.isArray(workerFirst)&&workerFirst.every(rule=>typeof rule==='string')&&(source?isDeepStrictEqual(workerFirst,FIXED_WORKER_FIRST):workerFirstProblems(workerFirst).length===0)],
       ['assets.not_found_handling',config.assets?.not_found_handling==='404-page'],
     ]),
   ];
@@ -130,7 +145,7 @@ export function validateRestore(environment,receipt,target=RESTORE_DATABASE,date
 }
 export async function backup(environment,configPath,{run=wrangler,cf=cloudflare,date=new Date()}={}) {
   const target=environmentConfig(environment);
-  const config=JSON.parse(await fs.readFile(configPath,'utf8'));validateDeploymentConfig(environment,config,'api');
+  const config=JSON.parse(await fs.readFile(configPath,'utf8'));validateDeploymentConfig(environment,config,'api',{source:true});
   await recoveryPolicy(cf);
   const temp=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-private-backup-'));
   await fs.chmod(temp,0o700);
@@ -155,7 +170,7 @@ export async function backup(environment,configPath,{run=wrangler,cf=cloudflare,
 export async function prepareDatabaseRecovery(environment,configPath,{run=wrangler}={}) {
   const target=environmentConfig(environment);
   const config=JSON.parse(await fs.readFile(configPath,'utf8'));
-  validateDeploymentConfig(environment,config,'api');
+  validateDeploymentConfig(environment,config,'api',{source:true});
   const result=JSON.parse(run(['d1','time-travel','info',target.database,'--config',configPath,'--json']));
   if(typeof result.bookmark!=='string'||!/^[a-f0-9-]{16,128}$/i.test(result.bookmark)) throw new Error('D1 recovery bookmark unavailable');
   // A bookmark is recovery metadata, not report contents or an access token.
