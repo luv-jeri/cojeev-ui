@@ -42,7 +42,7 @@ How task PRs merged (ruling in the ledger):
 1. `gh pr merge N --squash --match-head-commit <full sha>`.
 2. Cancel the PR's `Verify and release` run. The full suite runs at the integration-to-main PR (B2).
 
-## State at 2026-10-07 20:55 IST (latest update; Part A and the final review are done)
+## State at 2026-10-07 21:59 IST (latest update; Part A and the final review are done; B1 waits on production)
 
 - **Owner rule (2026-10-07):** "compete all the task then do the review at last please". One Astra review over the whole integration diff, then one fix wave. Done.
 - **Every Part A code task is merged** into `feat/move-to-cojeev-ui`. A25 runs only after B10.
@@ -53,16 +53,22 @@ How task PRs merged (ruling in the ledger):
   - **R-FW1-1:** the browser gate also exempts aborted same-origin `/ui/` HEAD fetches, which are Next's output-export route discovery. A HEAD request is never a demanded resource.
   - R-A19-1/2/3 and R-A22-1/2 are unchanged. R-A19-3 is narrowed by finding 8.
 - **Flake fixed in A20:** `workers/reporting/test/integration.test.mjs`. The webhook timestamp cases now use ±310 s, because ±301 s with `Math.floor` could land inside the 300 s window.
-- **B1 read-only run (2026-10-07):** STOPPED at step 1. Drafts are in the session scratchpad and need a re-run.
-  - **Health:** production `/health` = 16a3d05 and beta = 1b50e87 (main head). The main runs for #117 and #118 are waiting for production approval.
-  - **Passed:** steps 5 and 8–14. Robots decision (b). Reporting `other` = 0. Apex storage empty.
-  - **403 on the Workers-Scripts-Read token:** steps 6 (routes, dynamic redirects, DNS) and 7 (Turnstile). They need more read scopes on that token (owner go).
-- **Cloudflare read token:** `~/.config/cojeev-ui/cloudflare-read-token` (Account > Workers Scripts > Read). Use it only as `$(cat …)` inside a command; never echo it.
-- **Open owner question (asked, unanswered):** the order for B1 and the freeze. Proposed:
-  1. The owner approves the pending production deploy of #117 and #118.
+- **B1 read-only drafts (2026-10-07):** saved in the gitignored `.superpowers/sdd/2026-10-01-move-to-cojeev-ui/b1-draft/` of this worktree. Redo every step at the real B1 run against the approved C0.
+  - **Passed:** steps 5–14. Robots decision (b). Reporting `other` = 0. Apex storage empty.
+  - **Steps 6–7 (21:5x, after the token edit):** `cojeev.com/*` → `cojeev-coming-soon`; nothing matches `cojeev.com/ui` (both stop checks OK). One dynamic redirect: `www` and `http` → `https://cojeev.com`. Turnstile: the production widget allows `000h.cojeev.com` and `luv-jeri.github.io`; the beta widget allows `beta.000h.cojeev.com`.
+- **Cloudflare read token:** `~/.config/cojeev-ui/cloudflare-read-token`. Owner-edited 2026-10-07: Workers Scripts, Workers Routes, Single Redirect, DNS and Turnstile, all Read. Use it only as `$(cat …)` inside a command; never echo it. Zone `12e8b50b78c2c6af9e28406fede10d4e`, account `25369d7051a3d996a1bca81f462a1fbc`.
+- **Owner answered "yes" (2026-10-07 21:41)** to the order:
+  1. The owner approves a production deploy of `main`.
   2. B1 re-runs with C0 = that commit.
   3. `main` freezes from B1 step 2 until the B2 merge.
-- **Next:** B1 (after the answer), then the B1 record PR (fully green), then B2–B10, each with owner go.
+- **Why C0 moved:** `main` 2de8ed59 (#140, which includes #117 and #118) failed its release run 37641570358, in the browser check "milestone-path: Travel settles back to static paint". #140 had merged with its PR CI cancelled. Session sanjaykumar-82 owns the fix: #143 (560f8e5e), with release run 37650459426 in progress at 21:59. The first `main` commit whose release passes and that the owner approves for production becomes C0.
+- **Next:**
+  1. Watch `main` for a release run waiting on production approval: `gh api repos/luv-jeri/cojeev-ui/actions/runs/<id>/pending_deployments`.
+  2. Tell the owner to approve it.
+  3. Run B1 for real (step 2 = the freeze; step 4 = the prerelease upload, which needs owner go and replaces the existing `migration-baseline` asset).
+  4. Open the B1 record PR, which must be fully green.
+  5. B2–B10, each with owner go.
+- **Resume:** the `cojeev-build` skill was removed 2026-10-07. Start a fresh session with "resume from `docs/progress/move-to-cojeev-ui-checkpoint.md`".
 - **Production:** unchanged at 16a3d05; cojeev.com/ui still returns 404.
 
 ## Standing rules
