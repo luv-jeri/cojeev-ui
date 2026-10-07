@@ -72,6 +72,81 @@ async function checkRow(row) {
     } else await assert.rejects(createManifest(root,environment,commit,id),error,fixture);
   });
 }
+// Exercise the public scanner, creation, and digest-pinned verification independently.
+async function checkContent(file, content, environment, pass, context) {
+  const error = value => {assert.ok(value.message.includes(file),value.message); assert.match(value.message,context); return true;};
+  const validate = () => validateContent(file,content,environment,{origin:'build',registryGraph:'canonical'});
+  if(pass) assert.doesNotThrow(validate); else assert.throws(validate,error);
+  await artifact(async root => {
+    await put(root,file,content);
+    if(pass) {
+      const manifest = await createManifest(root,environment,commit,identity());
+      await verifyManifest(root,manifest,{environment,commit,digest:manifestDigest(manifest),schema:2});
+    } else {
+      await assert.rejects(createManifest(root,environment,commit,identity()),error);
+      await put(root,file,file.endsWith('.json') ? '{}' : '');
+      const manifest = await createManifest(root,environment,commit,identity());
+      await put(root,file,content);
+      manifest.files[file].sha256=sha256(content);
+      await assert.rejects(verifyManifest(root,manifest,{environment,commit,digest:manifestDigest(manifest),schema:2}),error);
+    }
+  });
+}
+test('canonical_registry_dependencies_require_the_registry_prefix',async t => {
+  for(const environment of ['production','beta']) {
+    const origin=environment==='production' ? 'https://cojeev.com' : 'https://beta.000h.cojeev.com';
+    for(const [suffix,pass] of [['/ui/docs/button/',false],['/ui/r/x.json',true],['/ui/r/../docs/button/',false]])
+      await t.test(`${environment} ${suffix}`,()=>checkContent(dependency,JSON.stringify({registryDependencies:[origin+suffix]}),environment,pass,/registry dependency/));
+  }
+});
+test('decoded_javascript_urls_keep_host_checks_and_anchor_boundaries',async t => {
+  for(const [name,content,pass] of [
+    ['unicode slashes',String.raw`fetch("https:\u002f\u002fcojeev.com/")`,false],
+    ['hex slashes',String.raw`fetch('https:\x2f\x2fcojeev.com/')`,false],
+    ['unicode host',String.raw`fetch("https://\u0063ojeev.com/")`,false],
+    ['template literal',String.raw`fetch(\`https:\u{2f}\u{2f}cojeev.com/\`)`.replaceAll('\\`','`'),false],
+    ['escaped API',String.raw`const api="https:\u002f\u002ffeedback.cojeev.com"`,false],
+    ['escaped anchor',String.raw`(0,n.jsx)("a",{href:"https:\u002f\u002fcojeev.com/"})`,true],
+    ['escaped anchor trailing slash',String.raw`(0,n.jsx)("a",{href:"https://cojeev.com\u002f"})`,true],
+    ['escaped non-anchor',String.raw`(0,n.jsx)("link",{href:"https:\u002f\u002fcojeev.com/"})`,false],
+    ['escaped nested href',String.raw`(0,n.jsx)("a",{data:{href:"https:\u002f\u002fcojeev.com/"}})`,false],
+    ['anchor plus escaped fetch',String.raw`(0,n.jsx)("a",{href:"https://cojeev.com/"});fetch("https:\u002f\u002fcojeev.com/")`,false],
+    ['escaped beta URL',String.raw`fetch("https:\u002f\u002fbeta.000h.cojeev.com/ui/")`,true],
+  ]) await t.test(name,()=>checkContent(js,content,'beta',pass,/environment|fetch|metadata|anchor/));
+  await t.test('inline script',()=>checkContent(html,String.raw`<script>fetch("https:\u002f\u002fcojeev.com/")</script>`,'beta',false,/fetch/));
+  await t.test('registry source',()=>checkContent(dependency,JSON.stringify({files:[{content:String.raw`fetch("https:\u002f\u002fcojeev.com/")`}]}),'beta',false,/fetch/));
+  await t.test('escaped RSC anchor trailing slash',()=>checkContent(rsc,String.raw`["$","a",null,{"href":"https://cojeev.com\u002f"}]`,'beta',true,/anchor/));
+});
+test('mounted_paths_reject_normalized_dot_segment_escapes',async t => {
+  for(const environment of ['production','beta']) {
+    const origin=environment==='production' ? 'https://cojeev.com' : 'https://beta.000h.cojeev.com';
+    for(const [name,file,content,pass] of [
+      ['relative escape',html,'<img src="/ui/../brand/x.png">',false],
+      ['encoded escape',html,'<img src="/ui/%2e%2e/brand/x.png">',false],
+      ['absolute escape',html,`<img src="${origin}/ui/../brand/x.png">`,false],
+      ['srcset escape',html,'<img srcset="/ui/a.png 1x, /ui/../brand/b.png 2x">',false],
+      ['CSS escape','site/ui/_next/static/css/x.css','a{background:url(/ui/../brand/x.png)}',false],
+      ['contained dot segment',html,`<img src="${origin}/ui/docs/../brand/x.png">`,true],
+      ['relative mount root',html,'<a href="/ui/docs/..">',true],
+    ]) await t.test(`${environment} ${name}`,()=>checkContent(file,content,environment,pass,/base path|Legacy page/));
+  }
+});
+test('artifact_path_policy_matches_creation_and_verification_for_extra_files',async t => {
+  for(const file of ['site/reports/data.txt','site/ui/.hidden','site/ui/leak.map','unexpected/data.txt'])
+    await t.test(file,()=>artifact(async root => {
+      const manifest=await createManifest(root,'production',commit,identity());
+      await put(root,file,'private');
+      const error=value=>{assert.ok(value.message.includes(file),value.message); assert.match(value.message,/Private\/forbidden|Unexpected artifact path/); return true;};
+      await assert.rejects(createManifest(root,'production',commit,identity()),error);
+      await assert.rejects(verifyManifest(root,manifest,{environment:'production',commit,digest:manifestDigest(manifest),schema:2}),error);
+    }));
+  await t.test('public assets and permitted SQL migration',()=>artifact(async root => {
+    await put(root,'site/ui/brand/icon.png','public');
+    await put(root,'api/migrations/0001_init.sql','CREATE TABLE example(id INTEGER);');
+    const manifest=await createManifest(root,'production',commit,identity());
+    await verifyManifest(root,manifest,{environment:'production',commit,digest:manifestDigest(manifest),schema:2});
+  }));
+});
 test('manifest_rejects_cross_environment_hosts_and_wrong_base_paths',async t => {
   for(const row of rows.filter(row => row[1] === 'production' || ['beta-api.js','beta-legacy-image.html'].includes(row[0])))
     await t.test(row[0],() => checkRow(row));

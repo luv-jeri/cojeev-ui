@@ -85,6 +85,10 @@ export function validateContent(file, content, environment, context) {
 const BETA_HOMEPAGE_ANCHOR = 'https://cojeev.com/';
 // Static files at these Worker-owned routes could bypass the Worker's 404.
 const reservedPath = file => /^site\/(?:ui\/)?(?:media|backups|private|v1)(?:\/|$)/.test(file);
+function validateArtifactPath(file) {
+  if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
+  if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
+}
 
 // Parse the element, not a nearby property name. Only direct props of the
 // specified RSC tuple or parenthesized JSX-runtime call can grant an allowance.
@@ -122,7 +126,9 @@ function validateContextualContent(file, content, environment, {origin,registryG
   const forbidden=[new URL(opposite.legacySite).hostname,new URL(opposite.origin).hostname,new URL(opposite.api).hostname,'luv-jeri.github.io'];
   const scoped=origin==='build' && file.startsWith('site/ui/');
   const fail=(reason,context)=>{throw new Error(`${reason} in ${file} (${context})`);};
-  const canonical=value=>value.startsWith(`${target.canonicalSite}/`);
+  const canonical=value=>URL.canParse(value) && new URL(value).href.startsWith(`${target.canonicalSite}/`);
+  const canonicalRegistry=value=>value.startsWith(`${target.canonicalSite}/r/`) && URL.canParse(value) &&
+    new URL(value).href.startsWith(`${target.canonicalSite}/r/`);
   const legacyRegistry=value=>value.startsWith(`${target.legacySite}/r/`) && /^https:\/\/[^/]+\/r\/[^/?#]+\.json$/.test(value);
   const check=(value,context,anchor=false,dependency=false,executable=false)=>{
     if(!/^https?:\/\//i.test(value)) return;
@@ -137,7 +143,7 @@ function validateContextualContent(file, content, environment, {origin,registryG
     }
     if(anchor && value===BETA_HOMEPAGE_ANCHOR && !dependency) return;
     if(forbidden.includes(url.hostname)) fail('Cross-environment URL',context);
-    if(dependency && registryGraph==='canonical' && !canonical(value)) fail('Non-canonical registry dependency',context);
+    if(dependency && registryGraph==='canonical' && !canonicalRegistry(value)) fail('Non-canonical registry dependency',context);
     if(origin==='build' && url.hostname===new URL(target.legacySite).hostname &&
       // Beta's legacy and canonical origins share a host: canonical /ui URLs remain valid.
       !(environment==='beta' && canonical(value)) &&
@@ -148,17 +154,43 @@ function validateContextualContent(file, content, environment, {origin,registryG
       fail('Wrong canonical base path',context);
   };
   const base=(value,context)=>{
-    if(scoped && value.startsWith('/') && value!=='/ui' && !value.startsWith('/ui/')) fail('Wrong base path',context);
+    if(scoped && value.startsWith('/')) {
+      const pathname=new URL(value,target.origin).pathname;
+      if(value.startsWith('//') || pathname!=='/ui' && !pathname.startsWith('/ui/')) fail('Wrong base path',context);
+    }
     check(value,context,false,false,true);
   };
-  const scan=(text,context,ranges=[])=>{
+  const scan=(text,context,ranges=[],forceExecutable=false,decodedRanges=[])=>{
     for(const match of text.matchAll(/https?:\/\/[^\s"'<>`\\)\]}]+/gi)) {
+      if(decodedRanges.some(([start,end])=>match.index>=start && match.index+match[0].length<=end)) continue;
       const allowed=ranges.some(([start,end])=>match.index>=start && match.index+match[0].length<=end);
       const prefix=text.slice(Math.max(0,match.index-80),match.index);
-      const executable=/(?:fetch|import|WebSocket|EventSource|url)\s*\(\s*["']?$/.test(prefix);
+      const executable=forceExecutable || /(?:fetch|import|WebSocket|EventSource|url)\s*\(\s*["']?$/.test(prefix);
       const kind=executable ? 'fetch dependency' : /(?:link|meta|application\/ld\+json)/.test(prefix) ? 'metadata' : context;
       check(match[0],kind,allowed,false,executable);
     }
+  };
+  const scanJavaScript=(text,context,allowAnchors=false)=>{
+    const source=ts.createSourceFile(file,text,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
+    const ranges=allowAnchors ? anchorRanges(file,text) : [];
+    const decodedRanges=[];
+    const visit=node=>{
+      if(ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+        decodedRanges.push([node.getStart(source),node.end]);
+        const allowed=ranges.some(([start,end])=>node.getStart(source)>=start && node.end<=end);
+        const parent=node.parent;
+        const executable=(ts.isCallExpression(parent) || ts.isNewExpression(parent)) &&
+          parent.arguments?.[0]===node && /^(?:fetch|import|WebSocket|EventSource)$/.test(parent.expression.getText(source));
+        // TypeScript exposes the evaluated literal value without executing code.
+        // The allowance still belongs to this exact direct anchor prop range.
+        scan(node.text,context,allowed ? [[0,node.text.length]] : [],executable);
+      }
+      ts.forEachChild(node,visit);
+    };
+    visit(source);
+    // Scan remaining prose/comments, but never re-check a partial raw URL from
+    // a literal whose complete decoded value was already validated.
+    scan(text,context,[],false,decodedRanges);
   };
   const css=text=>{
     for(const match of text.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]*))\s*\)/gi))
@@ -167,7 +199,7 @@ function validateContextualContent(file, content, environment, {origin,registryG
   const text=content.replaceAll('\\/','/');
   if(file.endsWith('.html')) {
     const $=load(text,{sourceCodeLocationInfo:true});
-    const ranges=[];
+    const ranges=[],scriptRanges=[];
     $('*').each((_,element)=>{
       for(const [name,value] of Object.entries(element.attribs)) {
         const context=element.name==='a' ? 'anchor variant' : ['meta','link','script'].includes(element.name) ? 'metadata' : `HTML ${name}`;
@@ -186,16 +218,22 @@ function validateContextualContent(file, content, environment, {origin,registryG
       }
     });
     $('style').each((_,element)=>css($(element).text()));
-    scan(text,'anchor variant or metadata',ranges);
+    $('script').each((_,element)=>{
+      scanJavaScript($(element).text(),'metadata');
+      const location=element.sourceCodeLocation;
+      if(location?.startTag && location?.endTag) scriptRanges.push([location.startTag.endOffset,location.endTag.startOffset]);
+    });
+    scan(text,'anchor variant or metadata',ranges,false,scriptRanges);
   } else if(file.endsWith('.json')) {
     const walk=(value,context='JSON URL',dependency=false,source=false)=>{
       if(typeof value==='string') {
         if(dependency) {
           check(value,'registry dependency',false,true,true);
-          if(registryGraph==='canonical' && !canonical(value)) fail('Non-canonical registry dependency','registry dependency');
+          if(registryGraph==='canonical' && !canonicalRegistry(value)) fail('Non-canonical registry dependency','registry dependency');
         } else {
           if(!source && /^https?:\/\//i.test(value)) check(value,context,false,false,true);
-          scan(value.replaceAll('\\/','/'),context);
+          if(source) scanJavaScript(value,context);
+          else scan(value.replaceAll('\\/','/'),context);
         }
       } else if(Array.isArray(value)) value.forEach(child=>walk(child,context,dependency,source));
       else if(value && typeof value==='object') for(const [key,child] of Object.entries(value))
@@ -204,7 +242,8 @@ function validateContextualContent(file, content, environment, {origin,registryG
     walk(JSON.parse(content));
   } else {
     if(file.endsWith('.css')) css(text);
-    scan(text,file.endsWith('.xml') ? 'sitemap' : 'anchor variant or metadata',anchorRanges(file,text));
+    if(/\.(js|txt)$/.test(file)) scanJavaScript(content,'anchor variant or metadata',true);
+    else scan(text,file.endsWith('.xml') ? 'sitemap' : 'anchor variant or metadata');
   }
   return target;
 }
@@ -233,7 +272,10 @@ async function inventory(root, directory='') {
     if(reservedPath(file)) throw new Error(`Reserved website path: ${file}`);
     if(entry.isSymbolicLink()) throw new Error('Artifact symlink forbidden');
     if(entry.isDirectory()) files.push(...await inventory(root,file));
-    else if(entry.isFile() && file!=='manifest.json') files.push(file);
+    else if(entry.isFile() && file!=='manifest.json') {
+      validateArtifactPath(file);
+      files.push(file);
+    }
     else if(!entry.isFile()) throw new Error('Unsupported artifact entry');
   }
   return files.sort();
@@ -244,8 +286,6 @@ export async function createManifest(root, environment, commit, identity) {
   const fields=identity ? manifestIdentity(identity) : undefined;
   const files={};
   for(const file of await inventory(root)) {
-    if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
-    if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
     const bytes=await fs.readFile(path.join(root,file));
     const sha256=hash(bytes);
     const hashes=identity?.baseline?.hashes;
@@ -286,8 +326,6 @@ export async function verifyManifest(root, manifest, expected) {
   const files=await inventory(root);
   if(!manifest.files || files.length!==Object.keys(manifest.files).length) throw new Error('Artifact integrity mismatch');
   for(const file of files) {
-    if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
-    if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
     const entry=manifest.files[file],bytes=await fs.readFile(path.join(root,file));
     if(!entry || entry.sha256!==hash(bytes) || !['build','baseline'].includes(entry.origin) || Object.keys(entry).sort().join(',')!=='origin,sha256') throw new Error(`Artifact integrity or origin mismatch: ${file}`);
     if(/\.(html|js|css|json|xml|txt)$/.test(file)) validateContent(file,bytes.toString('utf8'),expected.environment,{origin:entry.origin,registryGraph:fields.registryGraph});
