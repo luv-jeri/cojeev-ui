@@ -1,0 +1,423 @@
+name: Targeted promotion
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment
+        type: choice
+        options: [beta, production]
+        required: true
+      side:
+        description: Only this side is promoted
+        type: choice
+        options: [api, website]
+        required: true
+      target_phase:
+        description: 'Candidate phase: prepared or linked for API; mounted, regenerated or redirect for website'
+        type: string
+        required: true
+      rollback:
+        description: Apply a targeted code rollback; never restore data
+        type: boolean
+        required: false
+        default: false
+      schema_ack:
+        description: Confirm API rollback compatibility with 0002_safe_delivery.sql
+        type: boolean
+        required: false
+        default: false
+      run_id:
+        description: Successful trusted main Verify and release run for the candidate
+        type: string
+        required: true
+      commit:
+        description: Candidate full 40-character source SHA
+        type: string
+        required: true
+      digest:
+        description: Candidate variant manifest SHA-256
+        type: string
+        required: true
+      peer_run_id:
+        description: Live other-side source run ID, or baseline
+        type: string
+        required: true
+      peer_commit:
+        description: Live other-side source SHA
+        type: string
+        required: true
+      peer_phase:
+        description: Live other-side phase, or baseline
+        type: string
+        required: true
+      peer_digest:
+        description: Live other-side manifest SHA-256
+        type: string
+        required: true
+      current_run_id:
+        description: Live same-side source run ID, or baseline
+        type: string
+        required: true
+      current_commit:
+        description: Live same-side source SHA
+        type: string
+        required: true
+      current_phase:
+        description: Live same-side phase, or baseline
+        type: string
+        required: true
+      current_digest:
+        description: Live same-side manifest SHA-256
+        type: string
+        required: true
+      attest:
+        description: Owner attestation required for browser-report and discovery gates
+        type: string
+        required: false
+        default: ''
+  workflow_call:
+    inputs:
+      environment:
+        description: Deployment environment
+        type: string
+        required: true
+      side:
+        description: Only this side is promoted
+        type: string
+        required: true
+      target_phase:
+        description: 'Candidate phase: prepared or linked for API; mounted, regenerated or redirect for website'
+        type: string
+        required: true
+      rollback:
+        description: Apply a targeted code rollback; never restore data
+        type: boolean
+        required: false
+        default: false
+      schema_ack:
+        description: Confirm API rollback compatibility with 0002_safe_delivery.sql
+        type: boolean
+        required: false
+        default: false
+      run_id:
+        description: Successful trusted main Verify and release run for the candidate
+        type: string
+        required: true
+      commit:
+        description: Candidate full 40-character source SHA
+        type: string
+        required: true
+      digest:
+        description: Candidate variant manifest SHA-256
+        type: string
+        required: true
+      peer_run_id:
+        description: Live other-side source run ID, or baseline
+        type: string
+        required: true
+      peer_commit:
+        description: Live other-side source SHA
+        type: string
+        required: true
+      peer_phase:
+        description: Live other-side phase, or baseline
+        type: string
+        required: true
+      peer_digest:
+        description: Live other-side manifest SHA-256
+        type: string
+        required: true
+      current_run_id:
+        description: Live same-side source run ID, or baseline
+        type: string
+        required: true
+      current_commit:
+        description: Live same-side source SHA
+        type: string
+        required: true
+      current_phase:
+        description: Live same-side phase, or baseline
+        type: string
+        required: true
+      current_digest:
+        description: Live same-side manifest SHA-256
+        type: string
+        required: true
+      attest:
+        description: Owner attestation required for browser-report and discovery gates
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+jobs:
+  promote:
+    if: github.ref == 'refs/heads/main' && (inputs.side != 'api' || !inputs.rollback || inputs.schema_ack)
+    environment: ${{ inputs.environment }}
+    concurrency:
+      group: deploy-${{ inputs.environment }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      TARGET: ${{ inputs.environment }}
+      SIDE: ${{ inputs.side }}
+      TARGET_PHASE: ${{ inputs.target_phase }}
+      ROLLBACK: ${{ inputs.rollback }}
+      RUN_ID: ${{ inputs.run_id }}
+      COMMIT: ${{ inputs.commit }}
+      DIGEST: ${{ inputs.digest }}
+      PEER_RUN_ID: ${{ inputs.peer_run_id }}
+      PEER_COMMIT: ${{ inputs.peer_commit }}
+      PEER_PHASE: ${{ inputs.peer_phase }}
+      PEER_DIGEST: ${{ inputs.peer_digest }}
+      CURRENT_RUN_ID: ${{ inputs.current_run_id }}
+      CURRENT_COMMIT: ${{ inputs.current_commit }}
+      CURRENT_PHASE: ${{ inputs.current_phase }}
+      CURRENT_DIGEST: ${{ inputs.current_digest }}
+      PROMOTION_EVIDENCE: ${{ runner.temp }}/promotion-evidence.jsonl
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
+      - run: npm ci --ignore-scripts
+      - name: Prepare pinned external runtime and fresh run-local evidence
+        id: runtime
+        run: |
+          mkdir -p "$RUNNER_TEMP/cojeev-wrangler"
+          cp .github/wrangler-runtime/package*.json "$RUNNER_TEMP/cojeev-wrangler/"
+          npm ci --ignore-scripts --prefix "$RUNNER_TEMP/cojeev-wrangler"
+          echo "WRANGLER_BIN=$RUNNER_TEMP/cojeev-wrangler/node_modules/wrangler/bin/wrangler.js" >> "$GITHUB_ENV"
+          : > "$PROMOTION_EVIDENCE"
+      - name: Validate candidate, peer and current source run provenance
+        id: provenance
+        run: |
+          case "$TARGET" in beta|production) ;; *) exit 1 ;; esac
+          case "$SIDE:$TARGET_PHASE" in api:prepared|api:linked|website:mounted|website:regenerated|website:redirect) ;; *) exit 1 ;; esac
+          if [[ "$SIDE" == api ]]; then OTHER=website; else OTHER=api; fi
+          case "$OTHER:$PEER_PHASE" in website:baseline|website:mounted|website:regenerated|website:redirect|api:baseline|api:prepared|api:linked) ;; *) exit 1 ;; esac
+          case "$SIDE:$CURRENT_PHASE" in website:baseline|website:mounted|website:regenerated|website:redirect|api:baseline|api:prepared|api:linked) ;; *) exit 1 ;; esac
+          node scripts/release-rollback-run.mjs "$RUN_ID" "$COMMIT"
+          if [[ "$PEER_RUN_ID" != baseline ]]; then
+            node scripts/release-rollback-run.mjs "$PEER_RUN_ID" "$PEER_COMMIT"
+          fi
+          if [[ "$CURRENT_RUN_ID" != baseline ]]; then
+            node scripts/release-rollback-run.mjs "$CURRENT_RUN_ID" "$CURRENT_COMMIT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Download candidate release
+        id: candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-${{ inputs.commit }}
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: artifacts/candidate
+      - name: Download live peer release
+        id: peer
+        if: inputs.peer_run_id != 'baseline'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-${{ inputs.peer_commit }}
+          run-id: ${{ inputs.peer_run_id }}
+          github-token: ${{ github.token }}
+          path: artifacts/peer
+      - name: Download live same-side release
+        id: current
+        if: inputs.current_run_id != 'baseline'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-${{ inputs.current_commit }}
+          run-id: ${{ inputs.current_run_id }}
+          github-token: ${{ github.token }}
+          path: artifacts/current
+      - name: Download pinned B1 baseline when either live side uses it
+        id: baseline
+        if: inputs.peer_run_id == 'baseline' || inputs.current_run_id == 'baseline'
+        run: |
+          BASELINE_COMMIT=$(node --input-type=module -e 'import {readBaselineRecord} from "./scripts/release-phases.mjs"; console.log((await readBaselineRecord(process.env.TARGET, "scripts/release-baseline.json")).commit)')
+          mkdir -p artifacts/baseline
+          gh release download migration-baseline -p "release-$BASELINE_COMMIT.tar.gz" --dir artifacts/baseline
+          tar -xzf "artifacts/baseline/release-$BASELINE_COMMIT.tar.gz" -C artifacts/baseline
+          BASELINE_ENV=$(printf '%s' "$TARGET" | tr '[:lower:]' '[:upper:]')
+          echo "BASELINE_${BASELINE_ENV}_DIRECTORY=artifacts/baseline/$TARGET" >> "$GITHUB_ENV"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Verify variants and resolve the expected live and promoted pairs
+        id: verify
+        run: |
+          node scripts/release.mjs verify "$TARGET" "$COMMIT" "artifacts/candidate/$TARGET/$SIDE-$TARGET_PHASE" "$DIGEST"
+          if [[ "$SIDE" == api ]]; then OTHER=website; else OTHER=api; fi
+          if [[ "$PEER_RUN_ID" != baseline ]]; then
+            node scripts/release.mjs verify "$TARGET" "$PEER_COMMIT" "artifacts/peer/$TARGET/$OTHER-$PEER_PHASE" "$PEER_DIGEST"
+          fi
+          if [[ "$CURRENT_RUN_ID" != baseline ]]; then
+            node scripts/release.mjs verify "$TARGET" "$CURRENT_COMMIT" "artifacts/current/$TARGET/$SIDE-$CURRENT_PHASE" "$CURRENT_DIGEST"
+          fi
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs/promises';
+          import {readBaseline, readVariant} from './scripts/release-variants.mjs';
+          const e = process.env, other = e.SIDE === 'api' ? 'website' : 'api';
+          async function identity(group, side) {
+            const directory = `artifacts/${group}/${e.TARGET}/${side}-${e[group.toUpperCase() + '_PHASE']}`;
+            if (e[group.toUpperCase() + '_RUN_ID'] === 'baseline') {
+              const baseline = await readBaseline(e.TARGET);
+              if (e[group.toUpperCase() + '_PHASE'] !== 'baseline' || e[group.toUpperCase() + '_COMMIT'] !== baseline.commit || e[group.toUpperCase() + '_DIGEST'] !== baseline.digest)
+                throw new Error('Baseline input identity mismatch');
+              return {id: `baseline:${baseline[side + 'VersionId']}`, reference: 'baseline', directory: 'baseline'};
+            }
+            const digest = e[group.toUpperCase() + '_DIGEST'];
+            const value = await readVariant(directory, e.TARGET, e[group.toUpperCase() + '_COMMIT'], digest);
+            if (value.side !== side || value.phase !== e[group.toUpperCase() + '_PHASE']) throw new Error('Live variant identity mismatch');
+            return {id: value.deploymentId, reference: `${directory}:${digest}`, directory};
+          }
+          const candidateDirectory = `artifacts/candidate/${e.TARGET}/${e.SIDE}-${e.TARGET_PHASE}`;
+          const candidate = await readVariant(candidateDirectory, e.TARGET, e.COMMIT, e.DIGEST);
+          if (candidate.side !== e.SIDE || candidate.phase !== e.TARGET_PHASE) throw new Error('Candidate variant identity mismatch');
+          const peer = await identity('peer', other), current = await identity('current', e.SIDE);
+          const live = {[other]: peer, [e.SIDE]: current};
+          const next = {...live, [e.SIDE]: {id: candidate.deploymentId, reference: `${candidateDirectory}:${e.DIGEST}`}};
+          const fields = {peer_id: peer.id, current_id: current.id, peer_directory: peer.directory,
+            live_website: live.website.reference, live_api: live.api.reference,
+            next_website: next.website.reference, next_api: next.api.reference,
+            expected_website_id: next.website.id, expected_api_id: next.api.id};
+          await fs.appendFile(e.GITHUB_OUTPUT, Object.entries(fields).map(([key, value]) => `${key}=${value}\n`).join(''));
+          NODE
+      - name: Plan the targeted transition and require the supplied live identities
+        id: plan
+        run: |
+          FLAGS=()
+          if [[ "$ROLLBACK" == true ]]; then FLAGS+=(--rollback); fi
+          node scripts/release.mjs live-pair "$TARGET" "$SIDE" "$TARGET_PHASE" "${FLAGS[@]}"
+          WEBSITE_ID=$(sed -n 's/^website_id=//p' "$GITHUB_OUTPUT")
+          API_ID=$(sed -n 's/^api_id=//p' "$GITHUB_OUTPUT")
+          if [[ "$SIDE" == api ]]; then
+            [[ "$WEBSITE_ID" == "$PEER_ID" && "$API_ID" == "$CURRENT_ID" ]]
+          else
+            [[ "$API_ID" == "$PEER_ID" && "$WEBSITE_ID" == "$CURRENT_ID" ]]
+          fi
+        env:
+          PEER_ID: ${{ steps.verify.outputs.peer_id }}
+          CURRENT_ID: ${{ steps.verify.outputs.current_id }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Require live gate and record its success
+        id: live
+        if: contains(format(',{0},', steps.plan.outputs.gates), ',live,')
+        run: |
+          node scripts/release.mjs live "$TARGET" --website="$LIVE_WEBSITE" --api="$LIVE_API"
+          node scripts/release-phases.mjs record-gate "$PROMOTION_EVIDENCE" "$TARGET" live "$WEBSITE_ID" "$API_ID"
+        env:
+          WEBSITE_ID: ${{ steps.plan.outputs.website_id }}
+          API_ID: ${{ steps.plan.outputs.api_id }}
+          LIVE_WEBSITE: ${{ steps.verify.outputs.live_website }}
+          LIVE_API: ${{ steps.verify.outputs.live_api }}
+          HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
+      - name: Require component-head gate and record its success
+        id: component-head
+        if: contains(format(',{0},', steps.plan.outputs.gates), ',component-head,')
+        run: |
+          node scripts/deployed-component-gate.mjs "$TARGET"
+          node scripts/release-phases.mjs record-gate "$PROMOTION_EVIDENCE" "$TARGET" component-head "$WEBSITE_ID" "$API_ID"
+        env:
+          WEBSITE_ID: ${{ steps.plan.outputs.website_id }}
+          API_ID: ${{ steps.plan.outputs.api_id }}
+          ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
+          COMPONENT_GATE_REPORT_ID: ${{ vars.COMPONENT_GATE_REPORT_ID }}
+          COMPONENT_GATE_CONTACT: ${{ vars.COMPONENT_GATE_CONTACT }}
+      - name: Require ui-browser gate and record its success
+        id: ui-browser
+        if: contains(format(',{0},', steps.plan.outputs.gates), ',ui-browser,')
+        run: |
+          npx playwright install --with-deps chromium
+          node tests/navigation-ui.browser.mjs
+          node scripts/release-phases.mjs record-gate "$PROMOTION_EVIDENCE" "$TARGET" ui-browser "$WEBSITE_ID" "$API_ID"
+        env:
+          WEBSITE_ID: ${{ steps.plan.outputs.website_id }}
+          API_ID: ${{ steps.plan.outputs.api_id }}
+          UI_BROWSER_URL: ${{ inputs.environment == 'production' && 'https://cojeev.com/ui/' || 'https://beta.000h.cojeev.com/ui/' }}
+      - name: Require browser-report gate and record its success
+        id: browser-report
+        if: contains(format(',{0},', steps.plan.outputs.gates), ',browser-report,')
+        run: |
+          node scripts/release-phases.mjs record-gate "$PROMOTION_EVIDENCE" "$TARGET" browser-report "$WEBSITE_ID" "$API_ID" --attest="$ATTEST"
+        env:
+          WEBSITE_ID: ${{ steps.plan.outputs.website_id }}
+          API_ID: ${{ steps.plan.outputs.api_id }}
+          ATTEST: ${{ inputs.attest }}
+      - name: Require dual-install gate and record its success
+        id: dual-install
+        if: contains(format(',{0},', steps.plan.outputs.gates), ',dual-install,')
+        run: |
+          node scripts/live-install.mjs "$TARGET"
+          node scripts/release-phases.mjs record-gate "$PROMOTION_EVIDENCE" "$TARGET" dual-install "$WEBSITE_ID" "$API_ID"
+        env:
+          WEBSITE_ID: ${{ steps.plan.outputs.website_id }}
+          API_ID: ${{ steps.plan.outputs.api_id }}
+      - name: Require discovery gate and record its success
+        id: discovery
+        if: contains(format(',{0},', steps.plan.outputs.gates), ',discovery,')
+        run: |
+          node scripts/check-discovery.mjs robots docs/reports/2026-10-01-move-baseline/apex-robots.before.txt
+          node scripts/check-discovery.mjs shadcn-template 'https://cojeev.com/ui/r/{name}.json' button,cojeev,bento-builder
+          [[ -n "${ATTEST//[[:space:]]/}" ]] || { echo "Discovery requires a non-empty attestation" >&2; exit 1; }
+          node scripts/release-phases.mjs record-gate "$PROMOTION_EVIDENCE" "$TARGET" discovery "$WEBSITE_ID" "$API_ID" --attest="$ATTEST"
+        env:
+          WEBSITE_ID: ${{ steps.plan.outputs.website_id }}
+          API_ID: ${{ steps.plan.outputs.api_id }}
+          ATTEST: ${{ inputs.attest }}
+      - name: Promote only the selected verified side
+        id: promote
+        run: |
+          FLAGS=()
+          if [[ "$ROLLBACK" == true ]]; then FLAGS+=(--rollback); fi
+          node scripts/release.mjs "promote-$SIDE" "$TARGET" "$COMMIT" "artifacts/candidate/$TARGET/$SIDE-$TARGET_PHASE" "$DIGEST" "$PEER_ID" "${FLAGS[@]}"
+        env:
+          PEER_ID: ${{ steps.verify.outputs.peer_id }}
+          PEER_DIRECTORY: ${{ steps.verify.outputs.peer_directory }}
+          PEER_DIGEST: ${{ inputs.peer_digest }}
+          ROLLBACK_SCHEMA_ACK: ${{ inputs.side == 'api' && inputs.rollback && '0002_safe_delivery.sql' || '' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
+          REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+          REPORTING_ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
+      - name: Verify the new live pair after promotion or rollback
+        id: post-live
+        run: node scripts/release.mjs live "$TARGET" --website="$NEXT_WEBSITE" --api="$NEXT_API"
+        env:
+          NEXT_WEBSITE: ${{ steps.verify.outputs.next_website }}
+          NEXT_API: ${{ steps.verify.outputs.next_api }}
+          HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
+      - name: Verify deployed component reporting for the new Linked or Redirect pair
+        id: post-component
+        if: steps.plan.outputs.result_pair == 'Linked' || steps.plan.outputs.result_pair == 'Redirect'
+        run: node scripts/deployed-component-gate.mjs "$TARGET"
+        env:
+          ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
+          COMPONENT_GATE_REPORT_ID: ${{ vars.COMPONENT_GATE_REPORT_ID }}
+          COMPONENT_GATE_CONTACT: ${{ vars.COMPONENT_GATE_CONTACT }}
+      - name: Independent failure notification
+        id: failure
+        if: failure()
+        run: node scripts/operations-health.mjs "$TARGET"
+        env:
+          EXPECTED_WEBSITE_ID: ${{ steps.verify.outputs.expected_website_id }}
+          EXPECTED_API_ID: ${{ steps.verify.outputs.expected_api_id }}
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_ALERT: 'true'
+          OPERATIONS_FAILURE: deployment-failed
