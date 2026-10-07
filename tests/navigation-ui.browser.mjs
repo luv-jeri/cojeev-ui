@@ -68,6 +68,53 @@ test("header_brand_and_cojeev_attribution_are_distinct_links", async t => {
   }
 });
 
+test("collapsed_desktop_header_keeps_attribution_separate_inside_rail", async t => {
+  const { page } = await openPage(t, "/docs/button/");
+  const rail = page.locator(".docs-sidebar");
+  const header = rail.locator(".docs-rail-heading");
+  await header.getByRole("button", { name: "Collapse navigation", exact: true }).click();
+  await header.getByRole("button", { name: "Expand navigation", exact: true }).waitFor();
+  assert.equal(await rail.getAttribute("data-state"), "collapsed");
+  const brand = header.locator("a.docs-brand");
+  const attribution = header.getByRole("link", { name: "by Cojeev", exact: true });
+  const expand = header.getByRole("button", { name: "Expand navigation", exact: true });
+  assert.equal(await brand.getAttribute("href"), "/ui/docs/");
+  assert.equal(await attribution.count(), 1);
+  assert.equal(await attribution.isVisible(), true);
+  assert.equal(await attribution.getAttribute("href"), "https://cojeev.com/");
+  assert.equal(await attribution.getAttribute("target"), null);
+  assert.equal(await attribution.evaluate(node => {
+    const brand = node.parentElement.querySelector("a.docs-brand");
+    const expand = node.closest(".docs-rail-heading").querySelector("button");
+    return brand?.parentElement === node.parentElement && !brand.contains(node) && !expand.contains(node);
+  }), true, "attribution is a sibling anchor separate from the expand button");
+  assert.equal(await header.locator("a a, button a").count(), 0);
+  assert.equal(await expand.isVisible(), true);
+  assert.equal(await rail.evaluate(node => getComputedStyle(node.closest(".docs-shell")).gridTemplateColumns.split(" ")[0]),
+    "160px", "collapsed rail occupies a 160px grid column");
+  const railBox = await rail.boundingBox();
+  assert.ok(railBox && railBox.width <= 160, "sidebar fits inside the 160px rail column");
+  for (const link of [brand, attribution, expand]) {
+    const box = await link.boundingBox();
+    assert.ok(box && box.x >= railBox.x && box.x + box.width <= railBox.x + railBox.width,
+      "header link or expand button fits inside the collapsed rail");
+  }
+});
+
+test("docs_header_attribution_gap_tracks_spacing_token_at_same_default_size", async t => {
+  for (const width of [1280, 390]) {
+    await t.test(`${width}px`, async t => {
+      const { page } = await openPage(t, "/docs/button/", width);
+      const header = page.locator(width === 390 ? ".docs-mobile" : ".docs-rail-heading");
+      const attribution = header.getByRole("link", { name: "by Cojeev", exact: true });
+      assert.equal(await attribution.evaluate(node => getComputedStyle(node.parentElement).rowGap), "2px");
+      // A spacing override must reach the group; a hard-coded 2px gap ignores it.
+      await attribution.evaluate(node => node.parentElement.style.setProperty("--s-1", "8px"));
+      assert.equal(await attribution.evaluate(node => getComputedStyle(node.parentElement).rowGap), "4px");
+    });
+  }
+});
+
 test("funnel_link_is_keyboard_accessible_in_compact_and_full_shells", async t => {
   for (const path of ["/", "/about/", "/docs/button/", "/track/"]) {
     await t.test(path, async t => {

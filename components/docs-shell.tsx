@@ -159,7 +159,7 @@ export function DocsShell({
       {!mobile && <NavigationSurface />}
       {!mobile && (
         <div className="docs-rail-heading">
-          <div style={{ display: "grid", gap: 2 }}>
+          <div style={{ display: "grid", gap: "calc(var(--s-1) / 2)" }}>
             <Link href="/docs/" className="docs-brand" aria-label="000h">
               <span className="docs-brand-seal">
                 <BrandMark className="docs-brand-mark" />
@@ -283,7 +283,7 @@ export function DocsShell({
         Skip to content
       </a>
       <header className="docs-mobile">
-        <div style={{ display: "grid", gap: 2 }}>
+        <div style={{ display: "grid", gap: "calc(var(--s-1) / 2)" }}>
           <Link href="/" className="docs-brand">
             <BrandMark className="docs-brand-mark" />
             000h
