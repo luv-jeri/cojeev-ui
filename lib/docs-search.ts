@@ -5,7 +5,7 @@ import { documentationCatalog, componentGuide } from "./catalog";
 const ALIASES: Record<string, string> = {
   table: "data-table DataTable",
   "bento-grid": "aspect-ratio AspectRatio",
-  "activity-feed": "timeline history event-log audit-trail",
+  "activity-feed": "timeline history event-log audit-trail ledger bursts thread undo",
   "milestone-path": "timeline workflow run-trace execution-trace nested-steps milestones progress user-flow event-sequence",
 };
 

@@ -218,46 +218,136 @@ const activityEntries: ActivityEntry[] = [
   },
   {
     id: "review",
-    title: "Reviewed the first version",
-    description:
-      "The flow reads clearly. Let’s give the final step a little more room.",
-    actor: { name: "Arun Rao" },
+    title: "Gave the final step more room",
+    description: "The flow reads clearly now, right to the last screen.",
+    actor: { name: "Mira Shah" },
     group: "8 September",
-    timestamp: "09:18",
-    dateTime: "2026-09-08T09:18:00+05:30",
+    timestamp: "10:31",
+    dateTime: "2026-09-08T10:31:00+05:30",
   },
   {
     id: "draft",
     title: "Saved the opening draft",
     description: "A small beginning, ready for a fresh pair of eyes.",
-    actor: { name: "Mira Shah" },
+    actor: { name: "Arun Rao" },
     group: "7 September",
     timestamp: "16:30",
     dateTime: "2026-09-07T16:30:00+05:30",
     badge: { label: "Draft", variant: "olive-soft" },
   },
   {
+    // No actor: the product's own update, marked with the brand star.
     id: "brief",
     title: "Collected the starting notes",
     description: "Audience, tone, and the three things this page needs to do.",
     group: "7 September",
-    timestamp: "11:05",
-    dateTime: "2026-09-07T11:05:00+05:30",
+    timestamp: "16:12",
+    dateTime: "2026-09-07T16:12:00+05:30",
   },
 ];
+const looks = [
+  { value: "thread", label: "Thread" },
+  { value: "ledger", label: "Ledger" },
+  { value: "bursts", label: "Bursts" },
+] as const;
+type Look = (typeof looks)[number]["value"];
+const lookOf = (variant?: string): Look =>
+  variant === "ledger" || variant === "bursts" ? variant : "thread";
 
-export function ActivityFeedExample() {
+export function ActivityFeedExample({ variant }: ExampleProps) {
+  const [look, setLook] = React.useState(() => lookOf(variant));
+  const [shownVariant, setShownVariant] = React.useState(variant);
+  if (shownVariant !== variant) {
+    setShownVariant(variant);
+    setLook(lookOf(variant));
+  }
   const [entries, setEntries] = React.useState(activityEntries);
   const [added, setAdded] = React.useState(false);
+  // Undo belongs to the caller: the entry carries the button, the example keeps the way back.
+  const [undone, setUndone] = React.useState<{
+    entry: ActivityEntry;
+    index: number;
+  } | null>(null);
+  const redo = React.useRef<HTMLButtonElement>(null);
+  const undo = React.useRef<HTMLButtonElement>(null);
+  const focusAfter = React.useRef<"redo" | "undo" | null>(null);
+  React.useLayoutEffect(() => {
+    if (focusAfter.current === "redo") redo.current?.focus();
+    if (focusAfter.current === "undo") undo.current?.focus();
+    focusAfter.current = null;
+  }, [undone]);
+  const shown = entries.map((entry) =>
+    entry.id === "brief"
+      ? {
+          ...entry,
+          content: (
+            <Button
+              ref={undo}
+              variant="outline"
+              size="sm"
+              style={{ justifySelf: "start" }}
+              onClick={() => {
+                const index = entries.findIndex((e) => e.id === entry.id);
+                focusAfter.current = "redo";
+                setUndone({ entry, index });
+                setEntries((value) => value.filter((e) => e.id !== entry.id));
+              }}
+            >
+              Undo
+            </Button>
+          ),
+        }
+      : entry,
+  );
   return (
     <div className="v-activity-example">
+      <ToggleGroup
+        type="single"
+        value={look}
+        aria-label="Look"
+        onValueChange={(value) => {
+          if (value) setLook(value as Look);
+        }}
+      >
+        {looks.map((option) => (
+          <ToggleGroupItem key={option.value} value={option.value}>
+            {option.label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
       <ActivityFeed
         title="A little closer"
         description="Example activity from a shared project."
-        entries={entries}
+        entries={shown}
+        variant={look}
         initialVisible={2}
         pageSize={2}
       />
+      {undone && (
+        <div
+          role="status"
+          style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}
+        >
+          <Meta>Undone · {undone.entry.title}</Meta>
+          <Button
+            ref={redo}
+            variant="outline"
+            size="sm"
+            style={{ minHeight: 44 }}
+            onClick={() => {
+              focusAfter.current = "undo";
+              setEntries((value) => {
+                const next = [...value];
+                next.splice(Math.min(undone.index, next.length), 0, undone.entry);
+                return next;
+              });
+              setUndone(null);
+            }}
+          >
+            Redo
+          </Button>
+        </div>
+      )}
       <div
         style={{
           display: "flex",

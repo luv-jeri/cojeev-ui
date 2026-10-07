@@ -13,7 +13,12 @@
       "Select a tile, edit its label, then Save label. Drag onto another tile to exchange content positions, or use Swap with and Swap tiles. Escape cancels an unfinished drag. Undo and Redo restore dimensions, labels, seed and treatment.",
       "Drag a seam handle to snap to cells, use its arrow keys, or open Resize shared seams for explicit buttons. Connected neighbors resize together, and every tile keeps at least one cell. Outside edges remain fixed. Interlock edges animate only when shared motion settings and visibility permit."
     ],
-    "related": ["bento-builder", "aspect-ratio", "resizable", "card"]
+    "related": [
+      "bento-builder",
+      "aspect-ratio",
+      "resizable",
+      "card"
+    ]
   },
   "bento-builder": {
     "description": "An editable Bento canvas with complete partitions, content swapping, snapped neighbor resizing, history and usable layout export.",
@@ -28,7 +33,11 @@
       "Seam handles snap to integer cells and support arrows; Resize shared seams also offers explicit buttons. The entire connected boundary moves together, preserving neighbors and complete coverage. Rejected edits announce why they cannot proceed.",
       "The editor workspace scrolls horizontally on small screens; the ordinary renderer stacks cards. Copy feedback is announced without replacing the button label. Reduced motion, Motion Off and Flow Off stop decorative path animation."
     ],
-    "related": ["bento-grid", "resizable", "aspect-ratio"]
+    "related": [
+      "bento-grid",
+      "resizable",
+      "aspect-ratio"
+    ]
   },
   "dock": {
     "description": "A compact workspace launcher with a magnifying glass bar, raised shelf and labelled vertical rail.",
@@ -44,7 +53,11 @@
       "Use arrows to move between enabled items, Home/End to reach the ends, and Enter/Space to activate. Horizontal navigation follows text direction.",
       "Reduced motion and shared motion settings remove magnification without removing labels, selection or touch interaction. Keep surrounding content clear of the icon lift area."
     ],
-    "related": ["action-dock", "motion-drawer", "icon"]
+    "related": [
+      "action-dock",
+      "motion-drawer",
+      "icon"
+    ]
   },
   "dots-background": {
     "description": "An evenly spaced field of fine points for quiet, familiar structure.",
@@ -182,8 +195,13 @@
       "Choose dots, grid, contours, weave, pebbles, sunwash, folds, sprouts or none. Set spacing in pixels (8–80), opacity from 0–1, and color to any CSS color or design token.",
       "Keep strength low behind text. The Try it Background picker lets readers change or hide the live canvas decoration without resetting their example. Code and terminal surfaces keep their own treatment."
     ],
-    "accessibility": ["The pattern is decorative and hidden from assistive technology, ignores pointer input, and is disabled in forced-colors mode. It never conveys required information."],
-    "related": ["preview", "code-block"]
+    "accessibility": [
+      "The pattern is decorative and hidden from assistive technology, ignores pointer input, and is disabled in forced-colors mode. It never conveys required information."
+    ],
+    "related": [
+      "preview",
+      "code-block"
+    ]
   },
   "accordion": {
     "description": "Organizes related sections into expandable panels so readers can open the details they need.",
@@ -2291,18 +2309,22 @@
     ]
   },
   "activity-feed": {
-    "description": "An ordered, date-grouped history with a quiet connecting margin, readable actors and timestamps, and updates that keep your place.",
+    "description": "An ordered, date-grouped history in three looks (a living thread, a quiet ledger or gathered bursts), with readable actors and timestamps, and updates that keep your place.",
     "category": "Data display",
     "usage": [
       "Pass entries in the order they should appear, with stable IDs and optional actor, timestamp, badge and details.",
       "Provide group labels for visible consecutive date sections and dateTime for machine-readable timestamps. Labels and chronology remain caller-owned; the feed never interprets text such as Today.",
+      "Set variant to thread, ledger or bursts; omit it for thread. Thread gives every entry its own row on a connecting thread; a new entry's mark blooms on as the thread reaches it. Ledger gathers consecutive entries by the same actor within one group under a single avatar and pins the group label while you scroll. Bursts gathers one actor's consecutive updates made within 30 minutes of each other (by dateTime) into a card; two or more become a native disclosure titled N updates. An entry without a parseable dateTime stands alone. Actors are matched by trimmed name.",
+      "An entry without an actor is the product's own and carries the four-point brand star.",
       "New entries inserted before the existing first entry extend a limited view so already-visible updates and their mounted state remain. Appended older history still waits for Show more. Stable IDs are required.",
       "Omit initialVisible to show all supplied entries. Set initialVisible and pageSize to reveal supplied history in pages.",
+      "Undo stays with the caller: put the action in the entry's content and remove the entry when it is used; the feed closes the gap smoothly. The example keeps an Undone line with Redo outside the feed.",
       "The feed displays your data; it does not fetch, manufacture events or reorder timestamps."
     ],
     "accessibility": [
-      "A semantic ordered list preserves chronology. Show more announces the new count and moves focus to the first newly shown entry.",
-      "Images are decorative alongside named actors. New content respects the shared reduced-motion contract."
+      "A semantic ordered list preserves chronology in every look. Show more announces the new count and moves focus to the first newly shown entry, opening a closed burst if that entry sits inside one. Arrivals never take focus.",
+      "Each entry keeps its actor name in its own text even where a run or card shows the name once. Bursts use native Details, so the summary keeps keyboard and expanded-state behaviour.",
+      "Images, marks, the thread and the arrival wash are decorative and hidden from assistive technology. Text never moves after it arrives. Reduced motion and Motion off change everything instantly, and only the newest fresh entry breathes, pausing out of view and in a hidden tab."
     ],
     "related": [
       "presence",

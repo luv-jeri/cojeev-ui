@@ -1374,7 +1374,9 @@
   "activity-feed": {
     "name": "Activity feed",
     "variants": [
-      "default"
+      "thread",
+      "ledger",
+      "bursts"
     ],
     "sizes": [
       "default"
