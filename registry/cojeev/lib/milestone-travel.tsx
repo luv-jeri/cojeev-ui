@@ -15,6 +15,9 @@ type Fill = "pink" | "olive" | "danger";
 type Glyph = "none" | "core" | "check" | "bang";
 type Pts = number[][];
 
+const f2 = (n: number) => n.toFixed(2),
+  f3 = (n: number) => n.toFixed(3);
+
 /* ---------- marks: 64 polar samples from the top, so any two morph point-to-point ---------- */
 const R = 17;
 const polar = (f: (t: number) => number): Pts =>
@@ -23,15 +26,65 @@ const polar = (f: (t: number) => number): Pts =>
       r = f(t);
     return [r * Math.cos(t), r * Math.sin(t)];
   });
+/** The same 64 angles cast at a closed outline that is star-shaped about the centre. */
+const cast = (ring: Pts): Pts =>
+  polar((t) => {
+    const ux = Math.cos(t),
+      uy = Math.sin(t);
+    let r = 0;
+    ring.forEach(([ax, ay], i) => {
+      const [bx, by] = ring[(i + 1) % ring.length],
+        ex = bx - ax,
+        ey = by - ay,
+        det = ex * uy - ux * ey;
+      if (Math.abs(det) < 1e-9) return;
+      const d = (ex * ay - ax * ey) / det,
+        s = (ux * ay - uy * ax) / det;
+      if (d > 0 && s >= -1e-9 && s <= 1 + 1e-9) r = Math.max(r, d);
+    });
+    return r;
+  });
+/** The outline where overlapping soft circles [x, y, r] merge, like the goo between bodies. */
+const merge = (balls: number[][]): Pts =>
+  polar((t) => {
+    const ux = Math.cos(t),
+      uy = Math.sin(t);
+    for (let r = 30; r > 0; r -= 0.02) {
+      let f = 0;
+      for (const [x, y, s] of balls)
+        f += (s * s) / ((r * ux - x) ** 2 + (r * uy - y) ** 2);
+      if (f >= 1) return r;
+    }
+    return R;
+  });
 const SHAPES = {
   // spinner.tsx pebble, scaled from its 41-unit body to 17 px
   pebble: polar((t) => R + Math.cos(3 * t + 0.6) + 0.6 * Math.sin(5 * t)),
+  // division's done cell: round, a little uneven
   done: polar(
     (t) => R + 0.6 + 0.7 * Math.cos(2 * t + 1.1) + 0.45 * Math.sin(3 * t + 0.3),
   ),
   // spinner.tsx STAR4, scaled the same way
   star: polar((t) => ((21 + 23 * Math.abs(Math.cos(2 * t)) ** 1.9) * R) / 41),
   needs: polar((t) => R - 0.6 + 3.2 * Math.cos(3 * t + 1.5 * Math.PI)),
+  // droplet: a settled drop, point up, its weight in the belly
+  drop: cast(
+    Array.from({ length: 480 }, (_, i) => {
+      const s = (i / 480) * Math.PI * 2;
+      return [19.5 * Math.sin(s) * Math.sin(s / 2), -17.6 * Math.cos(s)];
+    }),
+  ),
+  // droplet: the working drop hangs from the spine on a thin neck
+  hang: merge([
+    [0, 4.5, 11.8],
+    [0, -9, 4.2],
+    [0, -15.5, 1.8],
+  ]),
+  // division: the working cell, already pinched at the waist
+  split: merge([
+    [0, -8.5, 9.2],
+    [0, 8.5, 9.2],
+  ]),
 };
 type Shape = keyof typeof SHAPES;
 /** Rest paint. The travel layer settles on exactly these outlines before it hands back. */
@@ -43,6 +96,58 @@ export const MARK_POINTS: Readonly<Record<Shape, readonly (readonly number[])[]>
   SHAPES;
 export const CHECK_PATH = "M-6.4 .2L-2 4.6L6.6-4.6";
 export const BANG_PATH = "M0-6.6V1";
+/** Each character's working body and done mark. */
+export const MARK_LOOKS: Readonly<
+  Record<MilestoneTravel, { work: Shape; done: Shape }>
+> = {
+  seed: { work: "pebble", done: "star" },
+  droplet: { work: "hang", done: "drop" },
+  division: { work: "split", done: "done" },
+};
+/** Where the check or nucleus sits: a drop carries it low, in its belly. */
+export const MARK_GLYPH_Y: Readonly<Record<Shape, number>> = {
+  pebble: 0,
+  done: 0,
+  star: 0,
+  needs: 0,
+  drop: 4,
+  hang: 5,
+  split: 0,
+};
+const glyphY = (pts: Pts) =>
+  MARK_GLYPH_Y[
+    (Object.keys(SHAPES) as Shape[]).find((k) => SHAPES[k] === pts) ?? "pebble"
+  ];
+export type MarkDeco = { kind: "membrane" | "depth"; d: string };
+/**
+ * The inner line that gives a character its material: a cell's membrane follows its outline;
+ * a drop's depth is a crescent low in the belly. Seed and the "needs" mark carry none.
+ */
+export function markDeco(
+  travel: MilestoneTravel,
+  pts: readonly (readonly number[])[],
+  cy: number,
+): MarkDeco | null {
+  if (travel === "division")
+    return {
+      kind: "membrane",
+      d: outline(
+        pts.map(([x, y]) => [x * 0.74, y * 0.74]),
+        true,
+      ),
+    };
+  if (travel === "droplet")
+    return {
+      kind: "depth",
+      d:
+        "M" +
+        pts
+          .slice(18, 29)
+          .map(([x, y]) => `${f2(x * 0.78)} ${f2(cy + (y - cy) * 0.78)}`)
+          .join("L"),
+    };
+  return null;
+}
 
 /* ---------- durations ---------- */
 type Timing = { kind: string; startedAt?: number; elapsedMs?: number };
@@ -166,8 +271,6 @@ if (typeof window !== "undefined")
 const NS = "http://www.w3.org/2000/svg";
 const EXPRESSIVE: [number, number] = [260, 0.682]; // motionTokens.spring.expressive as k and damping ratio
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const f2 = (n: number) => n.toFixed(2),
-  f3 = (n: number) => n.toFixed(3);
 const lerpPts = (A: Pts, B: Pts, m: number) =>
   A.map((p, i) => [p[0] + (B[i][0] - p[0]) * m, p[1] + (B[i][1] - p[1]) * m]);
 type Blob = {
@@ -175,6 +278,9 @@ type Blob = {
   shape: SVGPathElement;
   gl: SVGGElement;
   core: SVGCircleElement;
+  check: SVGPathElement;
+  dg: SVGGElement;
+  deco: SVGPathElement;
   show: boolean;
   at: number;
   seg: number;
@@ -190,6 +296,9 @@ type Blob = {
   co: Spring;
   A: Pts;
   B: Pts;
+  /** Glyph height on A and on B; it rides the morph with the outline. */
+  ga: number;
+  gb: number;
   fill: Fill;
   glyph: Glyph;
   later?: { fill: Fill; glyph: Glyph };
@@ -207,6 +316,8 @@ type Sync = {
   travel: MilestoneTravel;
   axis: "x" | "y";
   allowed: boolean;
+  /** The top-level list previews a newly chosen character by replaying its last handoff. */
+  lead?: boolean;
 };
 
 function el<K extends keyof SVGElementTagNameMap>(
@@ -268,7 +379,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   const owned = new Map<number, HTMLElement | SVGElement>(),
     ownedSegs = new Map<number, Element>();
 
-  // layers, back to front: spine, rings, halo, gooey bodies, upright glyphs
+  // layers, back to front: spine, rings, halo, gooey bodies, material lines, upright glyphs
   const defs = el("defs", svg);
   const filter = el("filter", defs, {
     id: gooId,
@@ -286,6 +397,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     gNeck = el("g", gBlobs),
     gBody = el("g", gBlobs),
     gMarks = el("g", gBlobs),
+    gDeco = el("g", svg),
     gGlyphs = el("g", svg);
   const neckEls = Array.from({ length: 9 }, () =>
     el("circle", gNeck, { class: "v-milestone-path__shape" }),
@@ -297,9 +409,11 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   function makeBlob(layer: SVGGElement): Blob {
     const g = el("g", layer),
       shape = el("path", g, { class: "v-milestone-path__shape" }),
+      dg = el("g", gDeco),
+      deco = el("path", dg, { class: "v-milestone-path__deco" }),
       gl = el("g", gGlyphs, { class: "v-milestone-path__glyph" });
     const core = el("circle", gl, { class: "v-milestone-path__core", r: 3.2 });
-    el("path", gl, {
+    const check = el("path", gl, {
       class: "v-milestone-path__check",
       d: CHECK_PATH,
       pathLength: 1,
@@ -308,10 +422,10 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     el("path", bang, { d: BANG_PATH });
     el("circle", bang, { cy: 5.6, r: 1.6 });
     return {
-      g, shape, gl, core, show: false, at: 0, seg: -1, l0: 0, l1: 1, st: 0,
+      g, shape, gl, core, check, dg, deco, show: false, at: 0, seg: -1, l0: 0, l1: 1, st: 0,
       p: S(...EXPRESSIVE), oy: S(300, 0.5), s: S(260, 0.6, 1), q: S(300, 0.35),
       rot: S(300, 0.4), m: S(240, 0.6, 1), co: S(220, 0.6),
-      A: SHAPES.pebble, B: SHAPES.pebble, fill: "pink", glyph: "core",
+      A: SHAPES.pebble, B: SHAPES.pebble, ga: 0, gb: 0, fill: "pink", glyph: "core",
     };
   }
   const body = makeBlob(gBody);
@@ -368,7 +482,10 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   }
   function build(n: number) {
     for (const g of [gSpine, gRings, gMarks]) g.replaceChildren();
-    for (const mk of marks) mk.gl.remove();
+    for (const mk of marks) {
+      mk.gl.remove();
+      mk.dg.remove();
+    }
     segs = Array.from({ length: Math.max(0, n - 1) }, () => ({
       track: el("path", gSpine, { class: "v-milestone-path__track" }),
       ink: el("path", gSpine, { class: "v-milestone-path__progress" }),
@@ -428,28 +545,50 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     return [x + ax * b.oy.x, y + ay * b.oy.x];
   }
   const currentPts = (b: Blob) => lerpPts(b.A, b.B, clamp(b.m.x, -0.25, 1.25));
+  const gyOf = (b: Blob) => b.ga + (b.gb - b.ga) * clamp(b.m.x, -0.25, 1.25);
+  function shapeAs(b: Blob, pts: Pts) {
+    b.A = b.B = pts;
+    b.ga = b.gb = glyphY(pts);
+    set(b.m, 1);
+  }
 
   /* paint */
   function drawBlob(b: Blob) {
     attr(b.g, "display", b.show ? null : "none");
     attr(b.gl, "display", b.show ? null : "none");
+    attr(b.dg, "display", b.show ? null : "none");
     if (!b.show) return;
     const [x, y] = pos(b),
       s = Math.max(0, b.s.x),
       wide = (s * (1 + b.q.x)) / (1 + b.st * 0.75),
       tall = s * (1 - b.q.x) * (1 + b.st);
     const [sx, sy] = axis === "y" ? [wide, tall] : [tall, wide];
-    attr(
-      b.g,
-      "transform",
-      `translate(${f2(x)} ${f2(y)}) scale(${f3(sx)} ${f3(sy)}) rotate(${f2(b.rot.x)})`,
-    );
-    attr(b.shape, "d", outline(currentPts(b), true));
+    const pose = `translate(${f2(x)} ${f2(y)}) scale(${f3(sx)} ${f3(sy)}) rotate(${f2(b.rot.x)})`;
+    const pts = currentPts(b),
+      gy = gyOf(b);
+    attr(b.g, "transform", pose);
+    attr(b.shape, "d", outline(pts, true));
     attr(b.shape, "data-fill", b.fill);
+    // The material line keeps the body's pose; it shows on a settled working body or done mark.
+    const deco = b.fill === "danger" ? null : markDeco(travel, pts, gy);
+    attr(b.dg, "transform", pose);
+    attr(b.deco, "d", deco?.d ?? null);
+    attr(b.deco, "data-deco", deco?.kind ?? null);
+    attr(b.deco, "data-fill", b.fill);
+    attr(
+      b.deco,
+      "data-on",
+      deco &&
+        (b.glyph === "core" || b.glyph === "check") &&
+        (b !== body || b.seg < 0 || !!ep?.landed)
+        ? ""
+        : null,
+    );
     attr(b.gl, "transform", `translate(${f2(x)} ${f2(y)}) scale(${f3(s)})`);
     const a = (b.rot.x * Math.PI) / 180; // only the nucleus turns with the body; check and "!" stay upright
-    attr(b.core, "cx", f2(Math.sin(a) * b.co.x));
-    attr(b.core, "cy", f2(-Math.cos(a) * b.co.x));
+    attr(b.core, "cx", f2(Math.sin(a) * (b.co.x - gy)));
+    attr(b.core, "cy", f2(-Math.cos(a) * (b.co.x - gy)));
+    attr(b.check, "transform", gy ? `translate(0 ${f2(gy)})` : null);
     attr(b.gl, "data-glyph", b.glyph);
   }
   function draw() {
@@ -595,7 +734,8 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     tune(b.rot, 300, 0.4);
     set(b.co, 0);
   }
-  const doneShape = () => (travel === "seed" ? SHAPES.star : SHAPES.done);
+  const doneShape = () => SHAPES[MARK_LOOKS[travel].done];
+  const workShape = () => SHAPES[MARK_LOOKS[travel].work];
   const doneGlyph = (): Glyph => (travel === "seed" ? "none" : "check");
   /** Take over the static paint of items from..to (inclusive) and start a new beat. */
   function begin(from: number, to: number) {
@@ -608,7 +748,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
       set(body.rot, turnOf(at));
       body.show = true;
       body.at = at;
-      body.A = body.B = mood ? SHAPES.needs : SHAPES.pebble;
+      shapeAs(body, mood ? SHAPES.needs : workShape());
       body.fill = mood ? "danger" : "pink";
       body.glyph = mood ? "bang" : "core";
       tune(halo.s, 220, 0.5);
@@ -631,6 +771,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     for (const k of ["oy", "s", "q", "rot"] as const)
       Object.assign(mk[k], { ...b[k] });
     mk.A = mk.B = currentPts(b);
+    mk.ga = mk.gb = gyOf(b);
     set(mk.m, 1);
     mk.fill = b.fill;
     mk.glyph = b.glyph;
@@ -638,13 +779,15 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     mk.later = undefined;
   }
   function morphTo(b: Blob, shape: Pts, k: number, z: number) {
+    b.ga = gyOf(b);
+    b.gb = glyphY(shape);
     b.A = currentPts(b);
     b.B = shape;
     set(b.m, 0);
     tune(b.m, k, z).to = 1;
   }
   function harden(mk: Blob) {
-    morphTo(mk, SHAPES.done, 240, 0.6);
+    morphTo(mk, doneShape(), 240, 0.6);
     mk.fill = "olive";
     tune(mk.s, 260, 0.45).to = 1;
     mk.glyph = "check";
@@ -680,7 +823,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     resetBlob(mk);
     mk.show = true;
     mk.at = i;
-    mk.A = mk.B = doneShape();
+    shapeAs(mk, doneShape());
     mk.fill = "olive";
     mk.glyph = doneGlyph();
     set(mk.rot, 0);
@@ -807,8 +950,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     if (g !== gen) return;
     // the bud grows out from behind the star's lower point
     b.show = true;
-    b.A = b.B = SHAPES.pebble;
-    set(b.m, 1);
+    shapeAs(b, SHAPES.pebble);
     b.fill = "pink";
     b.glyph = "core";
     set(b.rot, 0);
@@ -907,12 +1049,40 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     if (to >= 0) at = to;
     if (body.fill === "danger") {
       // finished straight from needing an action: the traveller is working again
-      morphTo(body, SHAPES.pebble, 240, 0.55);
+      morphTo(body, workShape(), 240, 0.55);
       body.fill = "pink";
       body.glyph = "core";
       halo.danger = false;
     }
     mood = false;
+    void { seed, droplet, division }[travel](from, g);
+  }
+  /**
+   * A newly chosen character introduces itself: the last done mark wakes back into the
+   * working body, then hands off to the current step again. Only text-free paint moves.
+   */
+  async function replay() {
+    const to = at;
+    if (to < 1 || states[to] !== "current" || states[to - 1] !== "complete") return;
+    const from = to - 1,
+      b = body;
+    at = from;
+    mood = false;
+    const g = begin(from, to);
+    ep = { to, landed: false, passed: new Set() };
+    at = to;
+    shapeAs(b, doneShape());
+    b.fill = "olive";
+    b.glyph = doneGlyph();
+    set(halo.s, 0.6);
+    await sleep(60); // one painted frame of the done look, so the change below transitions
+    if (g !== gen) return;
+    morphTo(b, workShape(), 240, 0.6);
+    b.fill = "pink";
+    b.glyph = "core";
+    haloBloom();
+    await until(() => rest(b.m) && rest(halo.s), 700);
+    if (g !== gen) return;
     void { seed, droplet, division }[travel](from, g);
   }
   function recoil() {
@@ -940,7 +1110,9 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     const g = begin(at, at),
       b = body;
     mood = false;
-    morphTo(b, SHAPES.pebble, 240, 0.55);
+    morphTo(b, workShape(), 240, 0.55);
+    // a drop or a cell comes back upright; the seed keeps the turn it shuddered to
+    if (travel !== "seed") tune(b.rot, 220, 0.6).to = Math.round(b.rot.x / 360) * 360;
     b.fill = "pink";
     b.glyph = "core";
     b.q.v += 2.4;
@@ -994,12 +1166,14 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   return {
     sync(next: Sync) {
       const variant = next.travel !== travel;
-      const fresh =
-        variant ||
-        next.axis !== axis ||
-        next.ids.length !== ids.length ||
-        next.ids.some((id, i) => id !== ids[i]);
+      const same =
+        next.axis === axis &&
+        next.ids.length === ids.length &&
+        next.ids.every((id, i) => id === ids[i]);
+      const fresh = variant || !same;
       const instant = fresh || !next.allowed || document.hidden;
+      const preview =
+        variant && same && ids.length > 0 && !!next.lead && next.allowed && !document.hidden;
       const before = new Map(ids.map((id, i) => [id, states[i]]));
       const prevIds = ids;
       if (instant && painting) {
@@ -1027,6 +1201,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
         (c, i) => c && !owned.has(i) && (i < lo || i > hi) && setTurn(i, 0),
       );
       act(plan);
+      if (preview) void replay();
       draw();
       wake();
     },
@@ -1080,5 +1255,5 @@ export function useMilestoneTravel(
   // Declared after the scene effect, so on mount the scene exists before its first sync.
   React.useLayoutEffect(() => {
     sync();
-  }, [key, next.travel, next.axis, next.allowed]);
+  }, [key, next.travel, next.axis, next.allowed, next.lead]);
 }
