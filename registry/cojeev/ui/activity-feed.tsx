@@ -82,7 +82,7 @@ function runs<T>(items: readonly T[], same: (newer: T, item: T) => boolean) {
   return out;
 }
 type Keys = ReadonlyMap<string, string>;
-/** A group keeps the key of any entry it held before, so prepends and reveals never remount it. */
+/** A day keeps the key of any entry it held before, so prepends and reveals never remount its label. */
 function keyGroups(
   groups: readonly (readonly ActivityEntry[])[],
   previous: Keys,
@@ -103,8 +103,14 @@ function keyGroups(
 }
 const sameKeys = (a: Keys, b: Keys) =>
   a.size === b.size && [...a].every(([id, key]) => b.get(id) === key);
-type Cluster = { key: string; entries: ActivityEntry[] };
-type Day = { key: string; label?: string; clusters: Cluster[] };
+/** Where a row sits in its run or card; only the first row carries the head. */
+type Place = {
+  first: boolean;
+  last: boolean;
+  dayEnd: boolean;
+  /** Entries in the run or card. */
+  size: number;
+};
 
 function count(value: number | undefined, fallback: number) {
   return value !== undefined && Number.isFinite(value)
@@ -187,16 +193,125 @@ function EntryContent({ entry }: { entry: ActivityEntry }) {
   );
 }
 
+/** A day's heading: its own list item, so a row arriving under it never moves it. */
+function GroupLabel({ label }: { label: string }) {
+  const [ref, leaving] = useActivityPresence<HTMLLIElement>();
+  return (
+    <li
+      ref={ref}
+      data-leaving={leaving || undefined}
+      inert={leaving || undefined}
+      aria-hidden={leaving || undefined}
+      className="v-activity-feed__group"
+    >
+      <div className="v-activity-feed__group-text">{label}</div>
+    </li>
+  );
+}
+
+/*
+ * Every row is a direct child of the one list in every look, keyed by its entry: a run or
+ * card forming, growing or splitting only changes attributes, never a row's parent.
+ */
 function Row({
   entry,
   layout,
-  label,
+  place,
 }: {
   entry: ActivityEntry;
   layout: ActivityLayout;
-  label?: string;
+  place: Place;
 }) {
   const [ref, leaving] = useActivityPresence<HTMLLIElement>();
+  const scene = React.useContext(ActivitySceneContext);
+  const { first, last, dayEnd, size } = place;
+  const name = entry.actor?.name.trim();
+  const burst = layout === "bursts" && size > 1;
+  const toggle = (event: React.MouseEvent<HTMLElement>) => {
+    const details = event.currentTarget.parentElement;
+    if (details instanceof HTMLDetailsElement && scene.current?.toggle(details))
+      event.preventDefault();
+  };
+  let body: React.ReactNode;
+  if (layout === "thread")
+    body = (
+      <div className="v-activity-feed__inner">
+        <div className="v-activity-feed__portrait" aria-hidden="true">
+          <Mark actor={entry.actor} />
+        </div>
+        <EntryContent entry={entry} />
+      </div>
+    );
+  else if (layout === "ledger")
+    body = (
+      <div className="v-activity-feed__inner">
+        <div className="v-activity-feed__portrait" aria-hidden="true">
+          {first && <Mark actor={entry.actor} />}
+        </div>
+        <div className="v-activity-feed__body-cell">
+          {/* Each row keeps the actor in its own accessible text. */}
+          {first && name && (
+            <p className="v-activity-feed__run-name" aria-hidden="true">
+              {name}
+            </p>
+          )}
+          <div className="v-activity-feed__line">
+            <span className="v-activity-feed__wash" aria-hidden="true" />
+            <EntryContent entry={entry} />
+          </div>
+        </div>
+      </div>
+    );
+  else
+    body = (
+      <div className="v-activity-feed__card">
+        {first && !burst && (
+          <div className="v-activity-feed__card-head" aria-hidden="true">
+            <Mark actor={entry.actor} />
+            {name && (
+              <span className="v-activity-feed__card-who">
+                <span className="v-activity-feed__card-name">{name}</span>
+              </span>
+            )}
+          </div>
+        )}
+        {/* Each row's own disclosure: find in page and links can open a closed burst. */}
+        <details
+          open
+          className="v-activity-feed__fold"
+          onToggle={(event) => scene.current?.reveal(event.currentTarget)}
+        >
+          {first && burst ? (
+            <summary className="v-activity-feed__card-head" onClick={toggle}>
+              <span aria-hidden="true">
+                <Mark actor={entry.actor} />
+              </span>
+              <span className="v-activity-feed__card-who">
+                {name && (
+                  <span className="v-activity-feed__card-name">{name}</span>
+                )}
+                <span className="v-activity-feed__card-count">
+                  {size} updates
+                </span>
+              </span>
+              <svg
+                className="v-activity-feed__chevron"
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M4 6l4 4 4-4" />
+              </svg>
+            </summary>
+          ) : (
+            <summary hidden />
+          )}
+          <div className="v-activity-feed__inner">
+            <EntryContent entry={entry} />
+          </div>
+        </details>
+      </div>
+    );
   return (
     <li
       ref={ref}
@@ -205,153 +320,13 @@ function Row({
       data-leaving={leaving || undefined}
       inert={leaving || undefined}
       aria-hidden={leaving || undefined}
+      data-first={(layout !== "thread" && first) || undefined}
+      data-last={(layout !== "thread" && last) || undefined}
+      data-burst={burst || undefined}
+      data-day-end={dayEnd || undefined}
       className="v-activity-feed__entry"
     >
-      {label && <div className="v-activity-feed__group">{label}</div>}
-      {/* Spacing lives inside, so the row itself can close to nothing. */}
-      <div className="v-activity-feed__inner">
-        {layout === "thread" && (
-          <div className="v-activity-feed__portrait" aria-hidden="true">
-            <Mark actor={entry.actor} />
-          </div>
-        )}
-        {layout === "ledger" && (
-          <span className="v-activity-feed__wash" aria-hidden="true" />
-        )}
-        <EntryContent entry={entry} />
-      </div>
-    </li>
-  );
-}
-
-function Rows({
-  entries,
-  layout,
-  id,
-}: {
-  entries: readonly ActivityEntry[];
-  layout: ActivityLayout;
-  id?: string;
-}) {
-  return (
-    <ol id={id} className="v-activity-feed__rows" role="list">
-      <MotionPresence>
-        {entries.map((entry) => (
-          <Row key={entry.id} entry={entry} layout={layout} />
-        ))}
-      </MotionPresence>
-    </ol>
-  );
-}
-
-function ClusterBox({
-  cluster,
-  layout,
-}: {
-  cluster: Cluster;
-  layout: ActivityLayout;
-}) {
-  const [ref, leaving] = useActivityPresence<HTMLLIElement>();
-  const scene = React.useContext(ActivitySceneContext);
-  const rowsId = React.useId();
-  const actor = cluster.entries[0].actor;
-  const name = actor?.name.trim();
-  const burst = layout === "bursts" && cluster.entries.length > 1;
-  const toggle = (event: React.MouseEvent<HTMLElement>) => {
-    const details = event.currentTarget.parentElement;
-    if (details instanceof HTMLDetailsElement && scene.current?.toggle(details))
-      event.preventDefault();
-  };
-  return (
-    <li
-      ref={ref}
-      data-leaving={leaving || undefined}
-      inert={leaving || undefined}
-      aria-hidden={leaving || undefined}
-      data-burst={burst || undefined}
-      className="v-activity-feed__cluster"
-    >
-      {layout === "ledger" ? (
-        <div className="v-activity-feed__cluster-inner">
-          <div className="v-activity-feed__portrait" aria-hidden="true">
-            <Mark actor={actor} />
-          </div>
-          <div className="v-activity-feed__cluster-body">
-            {/* Each row keeps the actor in its own accessible text. */}
-            {name && (
-              <p className="v-activity-feed__cluster-name" aria-hidden="true">
-                {name}
-              </p>
-            )}
-            <Rows entries={cluster.entries} layout={layout} />
-          </div>
-        </div>
-      ) : (
-        <>
-          {burst ? (
-            <details open className="v-activity-feed__burst">
-              <summary
-                className="v-activity-feed__card-head"
-                aria-controls={rowsId}
-                onClick={toggle}
-              >
-                <span aria-hidden="true">
-                  <Mark actor={actor} />
-                </span>
-                <span className="v-activity-feed__card-who">
-                  {name && (
-                    <span className="v-activity-feed__card-name">{name}</span>
-                  )}
-                  <span className="v-activity-feed__card-count">
-                    {cluster.entries.length} updates
-                  </span>
-                </span>
-                <svg
-                  className="v-activity-feed__chevron"
-                  viewBox="0 0 16 16"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <path d="M4 6l4 4 4-4" />
-                </svg>
-              </summary>
-            </details>
-          ) : (
-            <div className="v-activity-feed__card-head" aria-hidden="true">
-              <Mark actor={actor} />
-              {name && (
-                <span className="v-activity-feed__card-who">
-                  <span className="v-activity-feed__card-name">{name}</span>
-                </span>
-              )}
-            </div>
-          )}
-          {/* Rows stay outside the disclosure so a card becoming a burst keeps them mounted. */}
-          <Rows id={rowsId} entries={cluster.entries} layout={layout} />
-        </>
-      )}
-    </li>
-  );
-}
-
-function DayBox({ day, layout }: { day: Day; layout: ActivityLayout }) {
-  const [ref, leaving] = useActivityPresence<HTMLLIElement>();
-  return (
-    <li
-      ref={ref}
-      data-leaving={leaving || undefined}
-      inert={leaving || undefined}
-      aria-hidden={leaving || undefined}
-      className="v-activity-feed__day"
-    >
-      {day.label && <div className="v-activity-feed__group">{day.label}</div>}
-      <ol className="v-activity-feed__clusters" role="list">
-        <MotionPresence>
-          {day.clusters.map((cluster) => (
-            <ClusterBox key={cluster.key} cluster={cluster} layout={layout} />
-          ))}
-        </MotionPresence>
-      </ol>
+      {body}
     </li>
   );
 }
@@ -414,56 +389,38 @@ export function ActivityFeed({
   const remaining = entries.length - visible.length;
   const nextPage = Math.min(remaining, count(pageSize, 3));
 
-  // Days and runs keep their identity across prepends and reveals.
-  const [keys, setKeys] = React.useState<{ days: Keys; clusters: Keys }>(
-    () => ({ days: new Map(), clusters: new Map() }),
+  // Days keep their identity across prepends and reveals, so their labels stay mounted.
+  const [dayKeys, setDayKeys] = React.useState<Keys>(() => new Map());
+  const dayRuns = runs(visible, (a, b) => a.group === b.group);
+  const dayKeyList = keyGroups(dayRuns, dayKeys, "d:");
+  const nextDayKeys = new Map(
+    dayRuns.flatMap((day, i) => day.map((e) => [e.id, dayKeyList[i]] as const)),
   );
-  let days: Day[] = [];
-  if (layout !== "thread") {
-    const dayRuns = runs(visible, (a, b) => a.group === b.group);
-    const dayKeys = keyGroups(dayRuns, keys.days, "d:");
-    const clusterRuns = dayRuns.map((day) =>
-      runs(day, (a, b) => joins(layout, a, b)),
-    );
-    const clusterKeys = keyGroups(clusterRuns.flat(), keys.clusters, "c:");
-    let c = 0;
-    days = dayRuns.map((day, i) => ({
-      key: dayKeys[i],
-      label: day[0].group,
-      clusters: clusterRuns[i].map((entries) => ({
-        key: clusterKeys[c++],
-        entries,
-      })),
-    }));
-    const next = {
-      days: new Map(
-        days.flatMap((d) =>
-          d.clusters.flatMap((cl) => cl.entries.map((e) => [e.id, d.key] as const)),
+  if (!sameKeys(nextDayKeys, dayKeys)) setDayKeys(nextDayKeys);
+  const items: React.ReactNode[] = [];
+  dayRuns.forEach((day, i) => {
+    const label = day[0].group;
+    if (label)
+      items.push(
+        <GroupLabel key={`\u0001label:${dayKeyList[i]}`} label={label} />,
+      );
+    for (const group of runs(day, (a, b) => joins(layout, a, b)))
+      group.forEach((entry, j) =>
+        items.push(
+          <Row
+            key={entry.id}
+            entry={entry}
+            layout={layout}
+            place={{
+              first: j === 0,
+              last: j === group.length - 1,
+              dayEnd: entry === day[day.length - 1],
+              size: group.length,
+            }}
+          />,
         ),
-      ),
-      clusters: new Map(
-        days.flatMap((d) =>
-          d.clusters.flatMap((cl) => cl.entries.map((e) => [e.id, cl.key] as const)),
-        ),
-      ),
-    };
-    if (!sameKeys(next.days, keys.days) || !sameKeys(next.clusters, keys.clusters))
-      setKeys(next);
-  }
-
-  React.useLayoutEffect(() => {
-    if (focusIndex.current === null) return;
-    const target = list.current?.querySelectorAll<HTMLElement>(
-      "[data-activity-entry]:not([data-leaving])",
-    )[focusIndex.current];
-    // A revealed entry inside a closed burst opens it, so focus lands on something visible.
-    const burst = target
-      ?.closest(".v-activity-feed__cluster")
-      ?.querySelector<HTMLDetailsElement>(":scope > details");
-    if (burst && !burst.open) burst.open = true;
-    target?.focus();
-    focusIndex.current = null;
-  }, [visible.length]);
+      );
+  });
 
   const { quiet: globalQuiet } = useChoreography();
   const { quiet, enabled, inView } = useGuidanceMotion(section);
@@ -481,6 +438,17 @@ export function ActivityFeed({
       return taken;
     },
   });
+
+  React.useLayoutEffect(() => {
+    if (focusIndex.current === null) return;
+    const target = list.current?.querySelectorAll<HTMLElement>(
+      "[data-activity-entry]:not([data-leaving])",
+    )[focusIndex.current];
+    // A revealed entry inside a closed burst opens its card, so focus lands on something visible.
+    if (target && layout === "bursts") scene.current?.openCard(target);
+    target?.focus();
+    focusIndex.current = null;
+  }, [visible.length, layout, scene]);
 
   const reveal = () => {
     focusIndex.current = visible.length;
@@ -537,23 +505,7 @@ export function ActivityFeed({
               role="list"
             >
               <MotionPresence>
-                {layout === "thread"
-                  ? visible.map((entry, index) => (
-                      <Row
-                        key={entry.id}
-                        entry={entry}
-                        layout={layout}
-                        label={
-                          entry.group &&
-                          entry.group !== visible[index - 1]?.group
-                            ? entry.group
-                            : undefined
-                        }
-                      />
-                    ))
-                  : days.map((day) => (
-                      <DayBox key={day.key} day={day} layout={layout} />
-                    ))}
+                {items}
               </MotionPresence>
             </ol>
             {layout === "thread" && (

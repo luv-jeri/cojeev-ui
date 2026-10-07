@@ -24,23 +24,20 @@
 .v-activity-feed__body {
   position: relative;
 }
-.v-activity-feed__list,
-.v-activity-feed__clusters,
-.v-activity-feed__rows {
+.v-activity-feed__list {
   display: grid;
   list-style: none;
   margin: 0;
   padding: 0;
   min-width: 0;
 }
-/* Rows, runs and days carry no padding of their own, so each can close to nothing. */
+/* Rows and labels carry no padding of their own, so each can close to nothing. */
 .v-activity-feed__entry,
-.v-activity-feed__cluster,
-.v-activity-feed__day {
+.v-activity-feed__group {
   position: relative;
   min-width: 0;
 }
-.v-activity-feed :is(.v-activity-feed__entry, .v-activity-feed__cluster, .v-activity-feed__day)::marker {
+.v-activity-feed :is(.v-activity-feed__entry, .v-activity-feed__group)::marker {
   content: none;
 }
 .v-activity-feed__entry {
@@ -85,12 +82,21 @@
   font-weight: var(--fw-semibold);
   letter-spacing: var(--ls-caps, 0.08em);
   text-transform: uppercase;
-  position: relative;
   z-index: 1;
-  padding: var(--s-4) 0 var(--s-1);
 }
-.v-activity-feed__list > :first-child > .v-activity-feed__group {
-  padding-block-start: 0;
+/* A day's gap belongs to the day above it, so a new day's label never moves the one below. */
+.v-activity-feed__group-text {
+  padding: 0 0 var(--s-1);
+}
+.v-activity-feed:is([data-variant="thread"], [data-variant="bursts"])
+  .v-activity-feed__entry[data-day-end]::after {
+  content: "";
+  display: block;
+  block-size: var(--s-4);
+}
+.v-activity-feed:is([data-variant="thread"], [data-variant="bursts"])
+  .v-activity-feed__list {
+  margin-block-end: calc(-1 * var(--s-4));
 }
 .v-activity-feed__header
   .v-activity-feed__heading
@@ -176,7 +182,10 @@
   color: var(--v-text-2);
   min-width: 0;
 }
-/* The one breathing thing in the ledger and bursts: the newest entry while it is fresh. */
+/*
+ * The one breathing thing in the ledger and bursts: the newest entry while it is fresh.
+ * Its space is always kept, so the dot coming and going never rewraps a line.
+ */
 .v-activity-feed__live {
   display: none;
   inline-size: 6px;
@@ -186,9 +195,22 @@
   flex: none;
 }
 .v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
-  [data-breath]
   .v-activity-feed__live {
   display: inline-block;
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity var(--t-element) var(--exit),
+    transform var(--t-element) var(--exit);
+}
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  [data-breath]
+  .v-activity-feed__live {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--t-element) var(--enter),
+    transform var(--t-element) var(--enter);
   animation: v-activity-dot var(--breath) ease-in-out infinite;
 }
 @keyframes v-activity-dot {
@@ -221,7 +243,7 @@
   width: auto;
 }
 /* ---------- thread: one row per entry on a living thread ---------- */
-.v-activity-feed[data-variant="thread"] .v-activity-feed__group {
+.v-activity-feed[data-variant="thread"] .v-activity-feed__group-text {
   padding-inline-start: calc(36px + var(--s-4));
 }
 .v-activity-feed[data-variant="thread"] .v-activity-feed__inner {
@@ -319,37 +341,51 @@
   position: sticky;
   top: 0;
   z-index: 4;
-  padding: var(--s-2) 0;
   background: var(--v-paper);
   box-shadow: 0 1px 0 var(--v-border);
 }
-.v-activity-feed[data-variant="ledger"] .v-activity-feed__cluster-inner {
+.v-activity-feed[data-variant="ledger"] .v-activity-feed__group-text {
+  padding: var(--s-2) 0;
+}
+/* A run is its rows: the first carries the avatar and name, the edges carry the padding. */
+.v-activity-feed[data-variant="ledger"] .v-activity-feed__inner {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
   column-gap: var(--s-3);
-  padding-block: var(--s-3);
+  padding-block: 3px;
 }
 .v-activity-feed[data-variant="ledger"]
-  .v-activity-feed__cluster
-  + .v-activity-feed__cluster
-  .v-activity-feed__cluster-inner {
+  .v-activity-feed__entry[data-first]
+  > .v-activity-feed__inner {
+  padding-block-start: calc(var(--s-3) + 3px);
+}
+.v-activity-feed[data-variant="ledger"]
+  .v-activity-feed__entry[data-last]
+  > .v-activity-feed__inner {
+  padding-block-end: calc(var(--s-3) + 3px);
+}
+.v-activity-feed[data-variant="ledger"]
+  .v-activity-feed__entry
+  + .v-activity-feed__entry[data-first]
+  > .v-activity-feed__inner {
   box-shadow: inset 0 1px 0 var(--v-border);
 }
 .v-activity-feed[data-variant="ledger"] .v-activity-feed__portrait {
   padding-block-start: 1px;
 }
-.v-activity-feed__cluster-body {
+.v-activity-feed__body-cell {
   min-width: 0;
 }
-.v-activity-feed__cluster-name {
-  margin: 0;
+.v-activity-feed__line {
+  position: relative;
+  min-width: 0;
+}
+.v-activity-feed__run-name {
+  margin: -3px 0 3px;
   font-size: var(--fs-small);
   font-weight: var(--fw-semibold);
   line-height: 1.5;
   color: var(--v-text);
-}
-.v-activity-feed[data-variant="ledger"] .v-activity-feed__inner {
-  padding-block: 3px;
 }
 /* The ink wash marks a new line, then fades within one draw. */
 .v-activity-feed__wash {
@@ -368,22 +404,50 @@
 }
 
 /* ---------- bursts: one card per actor's burst of updates ---------- */
-.v-activity-feed[data-variant="bursts"] .v-activity-feed__cluster::before {
+/* A card is its rows: each paints its own slice of the card, the edges round it off. */
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__entry {
+  --v-activity-gap: 0px;
+}
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__entry[data-last] {
+  --v-activity-gap: var(--s-3);
+}
+.v-activity-feed[data-variant="bursts"]
+  .v-activity-feed__entry[data-last][data-day-end] {
+  --v-activity-gap: calc(var(--s-3) + var(--s-4));
+}
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__entry::before {
   content: "";
   position: absolute;
-  inset: 0 0 var(--s-3);
-  border-radius: var(--r-card-sm) var(--r-card-sm) var(--r-card-sm) var(--r-sm);
+  inset: 0 0 var(--v-activity-gap);
   background: var(--v-canvas);
-  box-shadow: inset 0 0 0 1px var(--v-border);
+  border: 1px solid var(--v-border);
+  border-block-width: 0;
 }
-/* The card's bottom padding and the gap to the next card, kept inside the card's height. */
-.v-activity-feed[data-variant="bursts"] .v-activity-feed__cluster::after {
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__entry[data-first]::before {
+  border-block-start-width: 1px;
+  border-start-start-radius: var(--r-card-sm);
+  border-start-end-radius: var(--r-card-sm);
+}
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__entry[data-last]::before {
+  border-block-end-width: 1px;
+  border-end-end-radius: var(--r-card-sm);
+  border-end-start-radius: var(--r-sm);
+}
+/* The gap to the next card, kept inside the last row's height. */
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__entry[data-last]::after {
   content: "";
   display: block;
-  block-size: calc(var(--s-3) * 2);
+  block-size: var(--v-activity-gap);
 }
-.v-activity-feed__burst {
+.v-activity-feed__card {
   position: relative;
+  padding-inline: var(--s-4);
+}
+.v-activity-feed__entry[data-first] > .v-activity-feed__card {
+  padding-block-start: var(--s-3);
+}
+.v-activity-feed__entry[data-last] > .v-activity-feed__card {
+  padding-block-end: var(--s-3);
 }
 .v-activity-feed__card-head {
   position: relative;
@@ -392,9 +456,8 @@
   align-items: center;
   column-gap: var(--s-3);
   min-height: 28px;
-  padding: var(--s-3) var(--s-4) 0;
   list-style: none;
-  border-radius: var(--r-card-sm) var(--r-card-sm) var(--r-sm) var(--r-sm);
+  border-radius: var(--r-sm);
 }
 .v-activity-feed__card-head::-webkit-details-marker {
   display: none;
@@ -433,30 +496,27 @@ summary.v-activity-feed__card-head:focus-visible {
   color: var(--v-text-2);
   transition: rotate var(--t-element) var(--enter);
 }
-.v-activity-feed__burst[open]:not([data-closing]) .v-activity-feed__chevron {
+.v-activity-feed__fold[open]:not([data-closing]) .v-activity-feed__chevron {
   rotate: 180deg;
 }
-.v-activity-feed[data-variant="bursts"] .v-activity-feed__rows {
-  position: relative;
-  padding: var(--s-1) var(--s-4) 0 calc(var(--s-4) + 28px + var(--s-3));
-}
-.v-activity-feed__cluster:has(> .v-activity-feed__burst:not([open]))
-  > .v-activity-feed__rows {
-  display: none;
-}
 .v-activity-feed[data-variant="bursts"] .v-activity-feed__inner {
+  margin-inline-start: calc(28px + var(--s-3));
   padding-block: var(--s-2);
 }
 .v-activity-feed[data-variant="bursts"]
-  .v-activity-feed__entry
-  + .v-activity-feed__entry
+  .v-activity-feed__entry[data-first]
   .v-activity-feed__inner {
-  box-shadow: inset 0 1px 0 var(--v-border);
+  padding-block-start: calc(var(--s-1) + var(--s-2));
 }
 .v-activity-feed[data-variant="bursts"]
-  .v-activity-feed__entry:last-child
+  .v-activity-feed__entry[data-last]
   .v-activity-feed__inner {
   padding-block-end: 0;
+}
+.v-activity-feed[data-variant="bursts"]
+  .v-activity-feed__entry:not([data-first])
+  .v-activity-feed__inner {
+  box-shadow: inset 0 1px 0 var(--v-border);
 }
 
 /* Quiet and reduced motion: instant, nothing loops. */
@@ -476,7 +536,7 @@ summary.v-activity-feed__card-head:focus-visible {
   .v-activity-feed[data-variant="thread"] .v-activity-feed__inner {
     column-gap: var(--s-3);
   }
-  .v-activity-feed[data-variant="thread"] .v-activity-feed__group {
+  .v-activity-feed[data-variant="thread"] .v-activity-feed__group-text {
     padding-inline-start: calc(36px + var(--s-3));
   }
   .v-activity-feed__footer {
@@ -490,10 +550,7 @@ summary.v-activity-feed__card-head:focus-visible {
   }
 }
 @media (max-width: 560px) {
-  .v-activity-feed__card-head {
-    padding-inline: var(--s-3);
-  }
-  .v-activity-feed[data-variant="bursts"] .v-activity-feed__rows {
+  .v-activity-feed__card {
     padding-inline: var(--s-3);
   }
 }
