@@ -143,9 +143,12 @@ export function isLoopbackHost(hostname: string): boolean {
 export function sanitizeRoute(value: string): string | null {
   if (!value.startsWith("/") || value.startsWith("//")) return null;
   let route = value.split(/[?#]/, 1)[0] || "/";
-  // App Router strips basePath; browser location does not. Store one route form.
+  // App Router strips basePath; browser location does not. Strip only the
+  // configured site pathname at an exact boundary, preserving /ui siblings.
   const sitePath = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://cojeev.com/ui").pathname.replace(/\/+$/, "");
-  if (sitePath && (route === sitePath || route.startsWith(`${sitePath}/`))) route = route.slice(sitePath.length) || "/";
+  if (sitePath && (route === sitePath || route.startsWith(`${sitePath}/`))) {
+    route = route.slice(sitePath.length) || "/";
+  }
   if (/(?:^|\/)(?:feedback-admin|workspace)(?:\/|$)/i.test(route)) return null;
   return route;
 }

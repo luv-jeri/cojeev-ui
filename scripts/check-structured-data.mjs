@@ -48,6 +48,18 @@ async function typesFor(directory, route) {
 }
 
 const directory = path.resolve(argument("--dir", "out"));
+async function checkExportPaths(folder) {
+  for (const entry of await fs.readdir(folder, { withFileTypes: true })) {
+    const filename = path.join(folder, entry.name);
+    if (entry.isDirectory()) await checkExportPaths(filename);
+    else if (entry.isFile()) {
+      const content = await fs.readFile(filename);
+      assert.ok(!content.includes("/ui/ui"), `${path.relative(directory, filename)} must not contain doubled /ui/ui`);
+    }
+  }
+}
+
+await checkExportPaths(directory);
 const expectations = [
   ["", ["WebSite", "SoftwareSourceCode", "Person"]],
   ["docs", ["CollectionPage", "ItemList"]],

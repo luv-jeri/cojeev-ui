@@ -15,9 +15,10 @@ export const metadata: Metadata = {
   title: { default: site.title, template: `%s · ${site.title}` },
   description: site.description,
   metadataBase: new URL(new URL(site.url).origin),
+  alternates: { canonical: absoluteSiteUrl("/") },
   authors: [{ name: site.author, url: site.creatorUrl }],
-  openGraph: { title: site.title, description: site.description, siteName: site.title, type: "website", url: absoluteSiteUrl("/") },
-  twitter: { card: "summary_large_image", title: site.title, description: site.description },
+  openGraph: { title: site.title, description: site.description, siteName: site.title, type: "website", url: absoluteSiteUrl("/"), images: [{ url: absoluteSiteUrl("/opengraph-image.png"), width: 1200, height: 630, alt: site.title }] },
+  twitter: { card: "summary_large_image", title: site.title, description: site.description, images: [absoluteSiteUrl("/twitter-image.png")] },
   // Beta is a staging origin: keep the whole build out of search results in every crawler that fetches a page.
   ...(siteFlags.environment === "beta" ? { robots: { index: false, follow: false } } : {}),
 };

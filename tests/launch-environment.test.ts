@@ -35,11 +35,12 @@ test("a beta origin is closed to crawlers while every other build stays open", (
   assert.deepEqual(robotsRules(null), { userAgent: "*", allow: "/" });
 });
 
-test("a disallow-all beta robots file advertises no sitemap while production still does", () => {
+test("beta_robots_and_headers_block_indexing", () => {
   assert.equal(robotsFile("beta").sitemap, undefined, "a disallowed origin must not hand crawlers a URL list");
   assert.deepEqual(robotsFile("beta").rules, { userAgent: "*", disallow: "/" });
   for (const environment of ["production", null] as const) {
-    assert.match(String(robotsFile(environment).sitemap), /\/sitemap\.xml$/);
+    assert.deepEqual(robotsFile(environment).rules, { userAgent: "*", allow: "/" });
+    assert.equal(robotsFile(environment).sitemap, "https://cojeev.com/ui/sitemap.xml");
   }
 });
 

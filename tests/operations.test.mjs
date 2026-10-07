@@ -81,16 +81,103 @@ test('deployment configuration cannot redirect resources to the other environmen
   assert.throws(()=>validateDeploymentConfig('beta',{name:'cojeev-ui-reporting',account_id:'25369d7051a3d996a1bca81f462a1fbc'},'api'),/Deployment target mismatch: name/);
   const beta=JSON.parse(readFileSync(new URL('workers/reporting/wrangler.jsonc',sourceRoot),'utf8'));
   const config={...beta,...beta.env.beta,vars:{...beta.env.beta.vars}};delete config.env;
-  assert.doesNotThrow(()=>validateDeploymentConfig('beta',config,'api'));
-  assert.throws(()=>validateDeploymentConfig('beta',{...config,d1_databases:[{...config.d1_databases[0],database_id:'056bebac-a74e-403f-8d83-9734870d1ec1'}]},'api'),/mismatch: d1_databases/);
+  assert.doesNotThrow(()=>validateDeploymentConfig('beta',config,'api',{source:true}));
+  assert.throws(()=>validateDeploymentConfig('beta',{...config,d1_databases:[{...config.d1_databases[0],database_id:'056bebac-a74e-403f-8d83-9734870d1ec1'}]},'api',{source:true}),/mismatch: d1_databases/);
 });
-test('website hosting accepts the static-file bypass or the all-Worker setting older releases carry, nothing else',()=>{
-  const source=JSON.parse(readFileSync(new URL('workers/registry-host/wrangler.jsonc',sourceRoot),'utf8'));
-  const config={...source,...source.env.beta,assets:{...source.env.beta.assets,directory:'../site'}};delete config.env;
+test('website hosting rejects pre-migration bypass and all-Worker settings that cannot be replayed',()=>{
+  const config=deploymentConfig('beta','website','mounted');
   const rule=run_worker_first=>({...config,assets:{...config.assets,run_worker_first}});
-  assert.doesNotThrow(()=>validateDeploymentConfig('beta',rule(['/*','!/_next/*','!/*.txt']),'website'));
-  assert.doesNotThrow(()=>validateDeploymentConfig('beta',rule(true),'website'));
+  assert.doesNotThrow(()=>validateDeploymentConfig('beta',config,'website'));
+  assert.throws(()=>validateDeploymentConfig('beta',rule(['/*','!/_next/*','!/*.txt']),'website'),/mismatch: assets.run_worker_first/);
+  assert.throws(()=>validateDeploymentConfig('beta',rule(true),'website'),/mismatch: assets.run_worker_first/);
   for(const other of [false,['/*'],['/*','!/*']]) assert.throws(()=>validateDeploymentConfig('beta',rule(other),'website'),/mismatch: assets.run_worker_first/);
+});
+
+const deploymentTargets={
+  beta:{legacySite:'https://beta.000h.cojeev.com',canonicalSite:'https://beta.000h.cojeev.com/ui',routes:[{pattern:'beta.000h.cojeev.com',custom_domain:true}],homepageServices:[],registryService:'cojeev-ui-registry-beta',origins:['https://beta.000h.cojeev.com','https://feedback-beta.cojeev.com']},
+  production:{legacySite:'https://000h.cojeev.com',canonicalSite:'https://cojeev.com/ui',routes:[{pattern:'000h.cojeev.com',custom_domain:true},{pattern:'cojeev.com/ui*',zone_name:'cojeev.com'}],homepageServices:[{binding:'COJEEV_HOMEPAGE',service:'cojeev-coming-soon'}],registryService:'cojeev-ui-registry',origins:['https://000h.cojeev.com','https://cojeev.com','https://feedback.cojeev.com','https://luv-jeri.github.io']},
+};
+const fixedWorkerFirst=['/*','!/_next/*','!/ui/_next/*','!/ui/*.txt','!/ui/brand/*','!/ui/icon.png','!/ui/opengraph-image.png','!/ui/twitter-image.png'];
+const websitePhases={mounted:{MIGRATION_STAGE:'additive',REGISTRY_GRAPH:'baseline'},regenerated:{MIGRATION_STAGE:'additive',REGISTRY_GRAPH:'canonical'},redirect:{MIGRATION_STAGE:'redirect',REGISTRY_GRAPH:'canonical'}};
+function deploymentConfig(environment,kind,phase) {
+  const source=JSON.parse(readFileSync(new URL(`../workers/${kind==='api'?'reporting':'registry-host'}/wrangler.jsonc`,import.meta.url),'utf8'));
+  const target=deploymentTargets[environment];
+  const config={...source,...source.env[environment],vars:{...source.env[environment].vars,PHASE:phase,DEPLOYMENT_ID:`${kind}-${phase}-aaaaaaaaaaaa-bbbbbbbb`}};delete config.env;
+  if(kind==='website') {
+    config.routes=structuredClone(target.routes);
+    config.services=structuredClone(target.homepageServices);
+    Object.assign(config.vars,websitePhases[phase]);
+    config.assets={...config.assets,directory:'../site',run_worker_first:[...fixedWorkerFirst,'!/index.txt','!/docs/*.txt']};
+  } else {
+    config.services=[{binding:'REGISTRY_SITE',service:target.registryService}];
+    Object.assign(config.vars,{LEGACY_SITE_URL:target.legacySite,SITE_URL:phase==='prepared'?target.legacySite:target.canonicalSite,ALLOWED_ORIGINS:target.origins.join(',')});
+  }
+  return config;
+}
+
+test('deployment_guard_accepts_only_reviewed_routes_origins_bindings_and_phase_pairs',async t=>{
+  for(const environment of ['beta','production']) for(const kind of ['website','api']) {
+    for(const phase of kind==='website'?Object.keys(websitePhases):['prepared','linked']) await t.test(`${environment} ${kind} ${phase}`,()=>{
+      const config=deploymentConfig(environment,kind,phase),target=deploymentTargets[environment];
+      const validate=value=>validateDeploymentConfig(environment,value,kind);
+      const reject=(field,mutate)=>{
+        const changed=structuredClone(config);mutate(changed);
+        assert.throws(()=>validate(changed),{message:`Deployment target mismatch: ${field}`},`${environment} ${kind} ${phase} ${field}`);
+      };
+      assert.doesNotThrow(()=>validate(config));
+      reject('routes',value=>value.routes.push({pattern:'extra.cojeev.com',custom_domain:true}));
+      if(config.services.length) {
+        reject('services',value=>delete value.services);
+        reject('services',value=>value.services=[]);
+        reject('services',value=>value.services[0].binding='RENAMED');
+        reject('services',value=>value.services[0].service='unreviewed-worker');
+      }
+      reject('services',value=>value.services.push({binding:'EXTRA',service:'extra-worker'}));
+      reject('vars.PHASE',value=>value.vars.PHASE='unconfigured');
+      reject('vars.PHASE',value=>value.vars.PHASE='toString');
+      reject('vars.DEPLOYMENT_ID',value=>value.vars.DEPLOYMENT_ID=`${kind}-${phase}-AAAAAAAAAAAA-bbbbbbbb`);
+      reject('vars.DEPLOYMENT_ID',value=>value.vars.DEPLOYMENT_ID='unconfigured');
+      reject('vars.DEPLOYMENT_ID',value=>value.vars.DEPLOYMENT_ID=`${kind}-${phase==='mounted'?'redirect':phase==='prepared'?'linked':kind==='website'?'mounted':'prepared'}-aaaaaaaaaaaa-bbbbbbbb`);
+      if(kind==='website') {
+        if(environment==='production') {
+          reject('routes',value=>value.routes.pop());
+          reject('routes',value=>value.routes[1].pattern='cojeev.com/*');
+          reject('routes',value=>value.routes[1]={pattern:'cojeev.com',custom_domain:true});
+          reject('routes',value=>value.routes.reverse());
+        } else {
+          reject('services',value=>value.services=[{binding:'COJEEV_HOMEPAGE',service:'cojeev-coming-soon'}]);
+          const absent=structuredClone(config);delete absent.services;assert.doesNotThrow(()=>validate(absent));
+        }
+        reject('vars.MIGRATION_STAGE',value=>value.vars.MIGRATION_STAGE=phase==='redirect'?'additive':'redirect');
+        reject('vars.REGISTRY_GRAPH',value=>value.vars.REGISTRY_GRAPH=phase==='mounted'?'canonical':'baseline');
+        reject('assets.directory',value=>value.assets.directory='../../out');
+        reject('assets.not_found_handling',value=>value.assets.not_found_handling='single-page-application');
+        for(const rule of [true,false,['/*'],['/*','!/*'],['/*','!/_next/*','!/*.txt'],[...fixedWorkerFirst,'!/*.txt'],[...fixedWorkerFirst,...Array(93).fill('!/index.txt')],[...fixedWorkerFirst,'!/uikit/*.txt'],[...fixedWorkerFirst,'!/ui-other.txt'],[...fixedWorkerFirst,42]]) {
+          reject('assets.run_worker_first',value=>value.assets.run_worker_first=rule);
+        }
+        const source=structuredClone(config);
+        Object.assign(source.vars,{PHASE:'unconfigured',DEPLOYMENT_ID:'unconfigured',MIGRATION_STAGE:'unconfigured',REGISTRY_GRAPH:'unconfigured'});
+        source.assets.run_worker_first=[...fixedWorkerFirst];
+        assert.doesNotThrow(()=>validateDeploymentConfig(environment,source,kind,{source:true}));
+        source.assets.run_worker_first.push('!/index.txt');
+        assert.throws(()=>validateDeploymentConfig(environment,source,kind,{source:true}),{message:'Deployment target mismatch: assets.run_worker_first'});
+      } else {
+        reject('services',value=>value.services[0].service=environment==='beta'?'cojeev-ui-registry':'cojeev-ui-registry-beta');
+        reject('vars.ALLOWED_ORIGINS',value=>value.vars.ALLOWED_ORIGINS+=',https://cojeev.com/ui');
+        if(environment==='production') reject('vars.ALLOWED_ORIGINS',value=>value.vars.ALLOWED_ORIGINS=target.origins.filter(origin=>origin!=='https://cojeev.com').join(','));
+        reject('vars.ALLOWED_ORIGINS',value=>value.vars.ALLOWED_ORIGINS='not a URL');
+        reject('vars.ALLOWED_ORIGINS',value=>value.vars.ALLOWED_ORIGINS=undefined);
+        reject('vars.SITE_URL',value=>value.vars.SITE_URL=phase==='prepared'?target.canonicalSite:target.legacySite);
+        reject('vars.LEGACY_SITE_URL',value=>value.vars.LEGACY_SITE_URL=target.canonicalSite);
+        reject('vars.LOCAL_MODE',value=>value.vars.LOCAL_MODE='true');
+        reject('r2_buckets',value=>value.r2_buckets[0].bucket_name='other-environment');
+        const reordered=structuredClone(config);reordered.vars.ALLOWED_ORIGINS=[...target.origins].reverse().join(',');assert.doesNotThrow(()=>validate(reordered));
+        const source=structuredClone(config);Object.assign(source.vars,{PHASE:'unconfigured',DEPLOYMENT_ID:'unconfigured',SITE_URL:target.canonicalSite});
+        assert.doesNotThrow(()=>validateDeploymentConfig(environment,source,kind,{source:true}));
+        assert.throws(()=>validate(source),{message:'Deployment target mismatch: vars.PHASE'});
+      }
+    });
+  }
 });
 test('bootstrap secrets reject missing or test Turnstile configuration and only accept known secret names',()=>{
   assert.throws(()=>validateSecrets('{}','beta'),/secret/);
@@ -157,7 +244,7 @@ async function fixture(environment='beta',{headers=true}={}) {
   for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
     await fs.mkdir(path.join(dir,kind));
     const source=JSON.parse(await fs.readFile(new URL(`workers/${worker}/wrangler.jsonc`,sourceRoot),'utf8'));
-    const config={...source,...source.env[environment],main:'./index.js',vars:{...source.env[environment].vars,RELEASE:'a'.repeat(40)}};delete config.env;
+    const config={...source,...source.env[environment],services:source.env[environment].services,main:'./index.js',vars:{...source.env[environment].vars,RELEASE:'a'.repeat(40)}};delete config.env;
     if(kind==='website')config.assets.directory='../site';
     await fs.writeFile(path.join(dir,kind,'wrangler.jsonc'),JSON.stringify(config));
     await fs.writeFile(path.join(dir,kind,'index.js'),'export default {}');

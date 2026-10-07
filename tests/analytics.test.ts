@@ -45,6 +45,67 @@ const enabled = {
 };
 const RELEASE = "a4a04600000000000000000000000000000000ab";
 
+test("ui_browser_and_router_paths_share_analytics_bucket", () => {
+  for (const siteUrl of ["https://cojeev.com/ui", "https://beta.000h.cojeev.com/ui/"]) {
+    const previous = process.env.NEXT_PUBLIC_SITE_URL;
+    process.env.NEXT_PUBLIC_SITE_URL = siteUrl;
+    try {
+      assert.equal(sanitizeRoute("/ui/docs/button/?private=yes#copy"), "/docs/button/");
+      assert.equal(sanitizeRoute("/docs/button/"), "/docs/button/");
+      assert.equal(sanitizeRoute("/ui"), "/");
+      assert.equal(sanitizeRoute("/ui/"), "/");
+    } finally {
+      if (previous === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+      else process.env.NEXT_PUBLIC_SITE_URL = previous;
+    }
+  }
+  const previous = process.env.NEXT_PUBLIC_SITE_URL;
+  process.env.NEXT_PUBLIC_SITE_URL = "https://cojeev.com/catalog/";
+  try {
+    assert.equal(sanitizeRoute("/catalog/docs/button/"), "/docs/button/");
+    assert.equal(sanitizeRoute("/ui/docs/button/"), "/ui/docs/button/", "the configured site URL owns the base");
+  } finally {
+    if (previous === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+    else process.env.NEXT_PUBLIC_SITE_URL = previous;
+  }
+});
+
+test("ui_prefix_boundary_does_not_strip_uikit", () => {
+  for (const route of ["/uikit/x", "/ui-kit/x", "/uiui/x"]) {
+    assert.equal(sanitizeRoute(route), route);
+  }
+});
+
+test("ui_private_routes_stay_excluded", () => {
+  for (const route of ["/ui/feedback-admin/", "/ui/workspace/", "/feedback-admin/", "/workspace/"]) {
+    assert.equal(sanitizeRoute(`${route}?private=yes#draft`), null);
+  }
+});
+
+test("analytics_keeps_provider_hosts_and_release_environment_labels", () => {
+  for (const host of ["https://us.i.posthog.com", "https://eu.i.posthog.com"]) {
+    for (const environment of ["production", "beta"]) {
+      assert.deepEqual(readAnalyticsConfig({
+        NEXT_PUBLIC_ANALYTICS_ENABLED: "true",
+        NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_public_test_token",
+        NEXT_PUBLIC_POSTHOG_HOST: `${host}/`,
+        NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: environment,
+        NEXT_PUBLIC_RELEASE_SHA: RELEASE,
+      }), { enabled: true, host, projectToken: "phc_public_test_token", environment, release: RELEASE });
+    }
+  }
+  for (const host of ["https://posthog.com", "https://eu.i.posthog.com.example.com", "http://us.i.posthog.com"]) {
+    const config = readAnalyticsConfig({ NEXT_PUBLIC_ANALYTICS_ENABLED: "true", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_public_test_token", NEXT_PUBLIC_POSTHOG_HOST: host });
+    assert.equal(config.host, null);
+    assert.equal(config.enabled, false);
+  }
+});
+
+test("homepage_funnel_is_same_origin_not_outbound", () => {
+  assert.equal(categorizeOutboundUrl("https://cojeev.com/", "https://cojeev.com"), null);
+  assert.equal(categorizeOutboundUrl("https://cojeev.com/?from=ui#home", "https://cojeev.com"), null);
+});
+
 test("capture needs a token, an approved host, and the explicit enable flag in every build", () => {
   const configured = { NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_x", NEXT_PUBLIC_POSTHOG_HOST: "https://eu.i.posthog.com" };
   // `next build` always sets NODE_ENV=production, so a released build must still obey the flag.
