@@ -1241,7 +1241,7 @@ Functions:
   - **Registry** (`registry-*`):
     - For every manifest file under `site/r/` and `site/ui/r/`, GET the legacy `/r/<f>` and canonical `/ui/r/<f>`. Each must give 200, a JSON content type, no `Location`, and sha256 equal to the manifest entry. A live digest header is ignored.
     - `HEAD /r/button.json` → 200 with no body.
-    - `/r/__cojeev_missing__.json` and `/ui/r/__cojeev_missing__.json` → 404.
+    - `/r/cojeev-missing-probe.json` and `/ui/r/cojeev-missing-probe.json` → 404.
   - **Legacy** (`legacy-*`; stage from the expected manifest):
     - Additive: legacy `/` and `/docs/button/` → 200 HTML.
     - Redirect: GET and HEAD of `/`, `/about/`, `/work-with-me/`, `/requests/`, `/track/`, `/feedback-admin/`, `/docs/button/?utm_source=move&x=a%2Fb` and `/nope/` → 301 with exact `Location: ${canonicalSite}` + path + query, no-store.
@@ -1249,7 +1249,7 @@ Functions:
   - **Apex** (production only, `apex-*`): each `apexProbes` path except `/robots.txt` → equal status and content type, and equal `sha256` where recorded. No response carries a `content-security-policy` equal to `securityHeaders("production")`'s, or an `x-robots-tag`. `/robots.txt` passes either with the recorded status and content type (before B8), or with 200 `text/plain` and `robotsProblems(robotsBefore, body)` empty (after B8).
 - **Contract set for a baseline website** (start state and Prepared): the website is still the B1 root-only deployment, so no canonical, SEO, private-page, beacon, RSC-chain or `/ui/r` check runs.
   - Legacy additive pages: legacy `/` and `/docs/button/` → 200 HTML.
-  - Legacy registry: for every `site/r/` entry in `baseline.hashes`, legacy `/r/<f>` → 200 JSON, no `Location`, sha256 equal to the baseline entry. `HEAD /r/button.json` → 200 with no body, and `/r/__cojeev_missing__.json` → 404.
+  - Legacy registry: for every `site/r/` entry in `baseline.hashes`, legacy `/r/<f>` → 200 JSON, no `Location`, sha256 equal to the baseline entry. `HEAD /r/button.json` → 200 with no body, and `/r/cojeev-missing-probe.json` → 404.
   - Legacy `/health` direct 200 and `/__cojeev_missing__.txt` → 404.
   - Apex (production only), as above.
 - What live does not check: full header parity between a delegated sibling and the apex Worker. Live checks status, content type, sha256 where recorded, and the absence of the registry CSP and `x-robots-tag`; full body and header parity is proven in the packaged router (A11, A17).
@@ -1349,7 +1349,7 @@ This one read-only CLI replaces both the former `steady-pair` command and A23's 
 | 3 | A16a `readLivePair`; the live website `id` must equal the expected peer, else `Stale peer` | A16a `readLivePair`; the live API `id` must equal the expected peer, else `Stale peer` |
 | 4 | `assertTransition` with A16a `reachedRedirect` | `assertTransition` with A16a `reachedRedirect`. Production `mounted` also requires beta's `readLivePair` to be the Redirect pair. |
 | 5 | `assertGates(evidence, …)` for the returned gates | the same |
-| 6 | Production secrets preflight (existing). With `--rollback`: `ROLLBACK_SCHEMA_ACK === "0002_safe_delivery.sql"` (existing). | — |
+| 6 | Production secrets preflight (existing). With `--rollback`: `ROLLBACK_SCHEMA_ACK` equals the newest packaged `api/migrations/*.sql` name, and `0002_safe_delivery.sql` is present (ruling R-A22-1, 2026-10-07; main gained 0003 and 0004 after this plan). | — |
 | 7 | Without `--rollback`: `backupDatabase`, then `d1 migrations apply` (existing order) | — |
 | 8 | Secrets file in a 0700 temp dir, then `wrangler deploy --config <dir>/api/wrangler.jsonc --no-bundle --secrets-file <f> --message "cojeev-migration side=api phase=<phase> id=<deploymentId>"`. Remove the temp dir in `finally`. | `wrangler deploy --config <dir>/website/wrangler.jsonc --no-bundle --message "cojeev-migration side=website phase=<phase> id=<deploymentId>"` |
 | 9 | `recordDeploymentEvent` with side, phase and ID | the same |
@@ -1635,7 +1635,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 
   7. `node scripts/release.mjs promote-<side> ENV COMMIT artifacts/candidate/<env>/<side>-<target_phase> DIGEST <peer id> [--rollback]`.
      - It gets `PEER_DIRECTORY`, `PEER_DIGEST` and `PROMOTION_EVIDENCE`.
-     - It gets `ROLLBACK_SCHEMA_ACK: 0002_safe_delivery.sql` only when `side == 'api' && rollback`.
+     - It gets `ROLLBACK_SCHEMA_ACK: 0004_status_key.sql` (the newest packaged migration; ruling R-A22-1) only when `side == 'api' && rollback`.
      - It gets the existing four reporting secrets (`REPORTING_SECRETS_JSON`, `REPORTING_ADDITIONAL_SECRETS_JSON`, `RESEND_WEBHOOK_SECRET`, `REPORTING_ADMIN_TOKEN`) plus `CLOUDFLARE_API_TOKEN`. The reporting secrets appear on no other step, with one exception: `REPORTING_ADMIN_TOKEN` is also mapped to `ADMIN_TOKEN` on the component-gate steps (the step-6 `component-head` gate and the step-8 post-promotion run). No new secret is added (M8).
   8. `node scripts/release.mjs live ENV …` for the new pair. When the new pair is Linked or Redirect (forward or rollback), also run `node scripts/deployed-component-gate.mjs ENV` with the same three values as the gate step. This is the spec's post-cutover run: beta after its cutover, production after `SITE_URL` switches, and production again after old-page redirects.
   9. On `failure()`: `node scripts/operations-health.mjs ENV` with `EXPECTED_WEBSITE_ID`, `EXPECTED_API_ID`, `UPDATE_ALERT: 'true'` and `OPERATIONS_FAILURE: deployment-failed`.
