@@ -42,22 +42,28 @@ How task PRs merged (ruling in the ledger):
 1. `gh pr merge N --squash --match-head-commit <full sha>`.
 2. Cancel the PR's `Verify and release` run. The full suite runs at the integration-to-main PR (B2).
 
-## State at 2026-10-07 (latest update)
+## State at 2026-10-07 20:55 IST (latest update; Part A and the final review are done)
 
-- **Owner rule (2026-10-07):** "compete all the task then do the review at last please". No per-task reviews. Build each task with Sol, run the tsc gate, and merge. After the last task, run ONE Astra review over the whole integration diff, then fix its findings in one wave. Gemini is skipped.
-- **Merged into the integration branch (26 of 27 code tasks, plus the main sync):**
-  - A5 #105, A21 #106, A2 #107, A3 #108, A24 #109, A1 #110, fix #111, A7 #112, A10 #113;
-  - A11 #119, A9 #120, A12 #121, A6 #122, A18 #123, main-sync M1 #124, A8 #125, A11b #126, A13 #127, A15a #128, A14 #129;
-  - A16a #130, A15b #131, A17 #132, A16b #133, A19 #134, A22 #135, A23 #136 (51a1f92).
-- **Building (Sol):** A20 in `.worktrees/t-a20` on branch `task/a20-ci-callers`. Its brief requires the PR's own `verify` run to be fully green, so do NOT merge it with merge.sh's CI cancel: open the PR, let `verify` finish green, then merge. A25 runs after B10 only.
-- **Then:** `bash final-review.sh xhigh` in the SDD workspace (ONE Astra review of the whole integration diff, writes `final-review-astra.md`), then one Sol fix wave for its findings.
-- **Rulings since A14** (full text in the ledger): R-A19-1 keep the asset-layer 307; R-A19-2 the search journey picks the exact "Button" result (ranking bug filed as #137); R-A19-3 the ERR_ABORTED exemption covers same-origin `/ui/` only; R-A22-1 the rollback ack must equal the newest packaged migration (now `0004_status_key.sql`, pinned by `tests/promote-workflow.test.mjs`); R-A22-2 the missing-registry probe is `/r/cojeev-missing-probe.json`.
-- **Seams to check in the final review** (listed in the ledger): the hand merges of `scripts/release.mjs` (A14 over A15a, then A15b, A17, A22); the M1 test fix for optional `source`; the A8 merge of the docs-search aliases.
-- **Open concerns for B2:** A17, A19 and A22 skipped their real-install Extras (full A14 variants were unavailable); A16a did not confirm that Cloudflare returns live version messages.
-- **Owner finding on main (pre-existing):** main's `rollback.yml` plus `scripts/release.mjs:102` have refused every artifact since `0003_triage` landed (2026-09-29). The fix reaches main at B2.
-- **Known red on M1:** `tests/ci-affected-ids.test.mjs` and `tests/icon-pack-retry.test.ts` fail with `ERR_MODULE_NOT_FOUND` on the `@/registry/cojeev/lib/lucide-icon-data` alias. Both already fail on pre-merge main (d43561a). Settle them at B2.
-- **Merging:** `merge.sh ID "TITLE"` in the SDD workspace pushes, opens the PR, squash-merges at the head, and cancels PR CI. Parallel siblings: rebase onto `origin/feat/move-to-cojeev-ui`, hand-merge conflicts by checking which names each side actually uses, then run the tsc gate and the affected tests.
-- **Production:** unchanged at 16a3d05; cojeev.com/ui still returns 404. B1 needs re-baselining (production moved off C0). B2–B10 each need owner go.
+- **Owner rule (2026-10-07):** "compete all the task then do the review at last please". One Astra review over the whole integration diff, then one fix wave. Done.
+- **Every Part A code task is merged** into `feat/move-to-cojeev-ui`. A25 runs only after B10.
+  - Latest: A23 #136, lint fix #139 (ea52bce), A20 #138 (497f4bd), fix wave #141 (97addf6).
+- **Final review:** Astra, `final-review-astra.md`, verdict NOT_READY. 0 Critical, 8 Important, 1 Minor. All fixed in #141 over two Sol rounds, plus Finding 9 from the B1 read-only run.
+- **Rulings since A19** (full text in the ledger):
+  - **R-A20-1:** a PR into the integration branch merges when every step before "Fetch the pinned baselines" is green. That step needs `scripts/release-baseline.json`, which only B1 writes. The B1 record PR must then be FULLY green: packaging, gates and migration gates.
+  - **R-FW1-1:** the browser gate also exempts aborted same-origin `/ui/` HEAD fetches, which are Next's output-export route discovery. A HEAD request is never a demanded resource.
+  - R-A19-1/2/3 and R-A22-1/2 are unchanged. R-A19-3 is narrowed by finding 8.
+- **Flake fixed in A20:** `workers/reporting/test/integration.test.mjs`. The webhook timestamp cases now use ±310 s, because ±301 s with `Math.floor` could land inside the 300 s window.
+- **B1 read-only run (2026-10-07):** STOPPED at step 1. Drafts are in the session scratchpad and need a re-run.
+  - **Health:** production `/health` = 16a3d05 and beta = 1b50e87 (main head). The main runs for #117 and #118 are waiting for production approval.
+  - **Passed:** steps 5 and 8–14. Robots decision (b). Reporting `other` = 0. Apex storage empty.
+  - **403 on the Workers-Scripts-Read token:** steps 6 (routes, dynamic redirects, DNS) and 7 (Turnstile). They need more read scopes on that token (owner go).
+- **Cloudflare read token:** `~/.config/cojeev-ui/cloudflare-read-token` (Account > Workers Scripts > Read). Use it only as `$(cat …)` inside a command; never echo it.
+- **Open owner question (asked, unanswered):** the order for B1 and the freeze. Proposed:
+  1. The owner approves the pending production deploy of #117 and #118.
+  2. B1 re-runs with C0 = that commit.
+  3. `main` freezes from B1 step 2 until the B2 merge.
+- **Next:** B1 (after the answer), then the B1 record PR (fully green), then B2–B10, each with owner go.
+- **Production:** unchanged at 16a3d05; cojeev.com/ui still returns 404.
 
 ## Standing rules
 
