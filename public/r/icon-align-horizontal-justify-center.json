@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-horizontal-justify-center",
+  "title": "Align horizontal justify center icon",
+  "description": "Align horizontal justify center icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-horizontal-justify-center.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignHorizontalJustifyCenterIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-horizontal-justify-center\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignHorizontalJustifyCenterIcon(props:AlignHorizontalJustifyCenterIconProps){return <Icon name=\"align-horizontal-justify-center\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-horizontal-justify-center.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-horizontal-justify-center"
+  },
+  "type": "registry:component"
+}

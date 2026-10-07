@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-wallet-cards",
+  "title": "Wallet cards icon",
+  "description": "Wallet cards icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/wallet-cards.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type WalletCardsIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"wallet-cards\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function WalletCardsIcon(props:WalletCardsIconProps){return <Icon name=\"wallet-cards\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/wallet-cards.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "wallet-cards"
+  },
+  "type": "registry:component"
+}

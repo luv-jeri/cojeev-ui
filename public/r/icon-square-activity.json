@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-activity",
+  "title": "Square activity icon",
+  "description": "Square activity icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-activity.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareActivityIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-activity\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareActivityIcon(props:SquareActivityIconProps){return <Icon name=\"square-activity\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-activity.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-activity"
+  },
+  "type": "registry:component"
+}

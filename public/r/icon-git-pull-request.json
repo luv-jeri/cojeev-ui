@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-git-pull-request",
+  "title": "Git pull request icon",
+  "description": "Git pull request icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/git-pull-request.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type GitPullRequestIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"git-pull-request\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function GitPullRequestIcon(props:GitPullRequestIconProps){return <Icon name=\"git-pull-request\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/git-pull-request.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "git-pull-request"
+  },
+  "type": "registry:component"
+}

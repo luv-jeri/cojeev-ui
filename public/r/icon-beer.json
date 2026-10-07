@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-beer",
+  "title": "Beer icon",
+  "description": "Beer icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/beer.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BeerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"beer\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BeerIcon(props:BeerIconProps){return <Icon name=\"beer\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/beer.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "beer"
+  },
+  "type": "registry:component"
+}

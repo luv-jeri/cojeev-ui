@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-key-square",
+  "title": "Key square icon",
+  "description": "Key square icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/key-square.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type KeySquareIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"key-square\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function KeySquareIcon(props:KeySquareIconProps){return <Icon name=\"key-square\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/key-square.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "key-square"
+  },
+  "type": "registry:component"
+}

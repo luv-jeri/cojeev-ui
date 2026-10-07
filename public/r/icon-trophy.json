@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-trophy",
+  "title": "Trophy icon",
+  "description": "Trophy icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/trophy.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TrophyIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"trophy\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TrophyIcon(props:TrophyIconProps){return <Icon name=\"trophy\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/trophy.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "trophy"
+  },
+  "type": "registry:component"
+}

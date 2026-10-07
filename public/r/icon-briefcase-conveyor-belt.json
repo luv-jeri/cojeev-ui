@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-briefcase-conveyor-belt",
+  "title": "Briefcase conveyor belt icon",
+  "description": "Briefcase conveyor belt icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/briefcase-conveyor-belt.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BriefcaseConveyorBeltIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"briefcase-conveyor-belt\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BriefcaseConveyorBeltIcon(props:BriefcaseConveyorBeltIconProps){return <Icon name=\"briefcase-conveyor-belt\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/briefcase-conveyor-belt.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "briefcase-conveyor-belt"
+  },
+  "type": "registry:component"
+}

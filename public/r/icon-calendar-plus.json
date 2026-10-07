@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-calendar-plus",
+  "title": "Calendar plus icon",
+  "description": "Calendar plus icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/calendar-plus.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CalendarPlusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"calendar-plus\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CalendarPlusIcon(props:CalendarPlusIconProps){return <Icon name=\"calendar-plus\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/calendar-plus.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "calendar-plus"
+  },
+  "type": "registry:component"
+}

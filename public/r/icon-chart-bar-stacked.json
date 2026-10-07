@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chart-bar-stacked",
+  "title": "Chart bar stacked icon",
+  "description": "Chart bar stacked icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chart-bar-stacked.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChartBarStackedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chart-bar-stacked\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChartBarStackedIcon(props:ChartBarStackedIconProps){return <Icon name=\"chart-bar-stacked\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chart-bar-stacked.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chart-bar-stacked"
+  },
+  "type": "registry:component"
+}

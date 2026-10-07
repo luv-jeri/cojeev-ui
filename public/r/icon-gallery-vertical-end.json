@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-gallery-vertical-end",
+  "title": "Gallery vertical end icon",
+  "description": "Gallery vertical end icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/gallery-vertical-end.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type GalleryVerticalEndIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"gallery-vertical-end\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function GalleryVerticalEndIcon(props:GalleryVerticalEndIconProps){return <Icon name=\"gallery-vertical-end\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/gallery-vertical-end.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "gallery-vertical-end"
+  },
+  "type": "registry:component"
+}

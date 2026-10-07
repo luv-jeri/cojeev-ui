@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-github",
+  "title": "Github icon",
+  "description": "Github icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/github.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type GithubIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"github\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function GithubIcon(props:GithubIconProps){return <Icon name=\"github\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/github.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "github"
+  },
+  "type": "registry:component"
+}

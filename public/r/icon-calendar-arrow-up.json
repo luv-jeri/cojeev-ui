@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-calendar-arrow-up",
+  "title": "Calendar arrow up icon",
+  "description": "Calendar arrow up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/calendar-arrow-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CalendarArrowUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"calendar-arrow-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CalendarArrowUpIcon(props:CalendarArrowUpIconProps){return <Icon name=\"calendar-arrow-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/calendar-arrow-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "calendar-arrow-up"
+  },
+  "type": "registry:component"
+}

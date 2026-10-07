@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-move-horizontal",
+  "title": "Move horizontal icon",
+  "description": "Move horizontal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/move-horizontal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MoveHorizontalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"move-horizontal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MoveHorizontalIcon(props:MoveHorizontalIconProps){return <Icon name=\"move-horizontal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/move-horizontal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "move-horizontal"
+  },
+  "type": "registry:component"
+}

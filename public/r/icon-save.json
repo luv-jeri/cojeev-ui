@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-save",
+  "title": "Save icon",
+  "description": "Save icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/save.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SaveIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"save\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SaveIcon(props:SaveIconProps){return <Icon name=\"save\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/save.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "save"
+  },
+  "type": "registry:component"
+}

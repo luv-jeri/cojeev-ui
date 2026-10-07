@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tally-3",
+  "title": "Tally 3 icon",
+  "description": "Tally 3 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tally-3.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Tally3IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tally-3\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Tally3Icon(props:Tally3IconProps){return <Icon name=\"tally-3\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tally-3.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tally-3"
+  },
+  "type": "registry:component"
+}

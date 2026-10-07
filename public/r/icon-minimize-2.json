@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-minimize-2",
+  "title": "Minimize 2 icon",
+  "description": "Minimize 2 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/minimize-2.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Minimize2IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"minimize-2\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Minimize2Icon(props:Minimize2IconProps){return <Icon name=\"minimize-2\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/minimize-2.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "minimize-2"
+  },
+  "type": "registry:component"
+}

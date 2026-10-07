@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-candy-off",
+  "title": "Candy off icon",
+  "description": "Candy off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/candy-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CandyOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"candy-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CandyOffIcon(props:CandyOffIconProps){return <Icon name=\"candy-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/candy-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "candy-off"
+  },
+  "type": "registry:component"
+}

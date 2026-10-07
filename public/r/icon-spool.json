@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-spool",
+  "title": "Spool icon",
+  "description": "Spool icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/spool.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SpoolIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"spool\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SpoolIcon(props:SpoolIconProps){return <Icon name=\"spool\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/spool.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "spool"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tv-minimal-play",
+  "title": "Tv minimal play icon",
+  "description": "Tv minimal play icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tv-minimal-play.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TvMinimalPlayIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tv-minimal-play\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TvMinimalPlayIcon(props:TvMinimalPlayIconProps){return <Icon name=\"tv-minimal-play\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tv-minimal-play.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tv-minimal-play"
+  },
+  "type": "registry:component"
+}

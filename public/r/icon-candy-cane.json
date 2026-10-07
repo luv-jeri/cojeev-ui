@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-candy-cane",
+  "title": "Candy cane icon",
+  "description": "Candy cane icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/candy-cane.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CandyCaneIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"candy-cane\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CandyCaneIcon(props:CandyCaneIconProps){return <Icon name=\"candy-cane\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/candy-cane.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "candy-cane"
+  },
+  "type": "registry:component"
+}

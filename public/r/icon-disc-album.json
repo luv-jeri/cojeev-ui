@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-disc-album",
+  "title": "Disc album icon",
+  "description": "Disc album icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/disc-album.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DiscAlbumIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"disc-album\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DiscAlbumIcon(props:DiscAlbumIconProps){return <Icon name=\"disc-album\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/disc-album.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "disc-album"
+  },
+  "type": "registry:component"
+}

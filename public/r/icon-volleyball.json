@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-volleyball",
+  "title": "Volleyball icon",
+  "description": "Volleyball icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/volleyball.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type VolleyballIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"volleyball\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function VolleyballIcon(props:VolleyballIconProps){return <Icon name=\"volleyball\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/volleyball.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "volleyball"
+  },
+  "type": "registry:component"
+}

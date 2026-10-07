@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-user-round",
+  "title": "Circle user round icon",
+  "description": "Circle user round icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-user-round.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CircleUserRoundIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-user-round\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CircleUserRoundIcon(props:CircleUserRoundIconProps){return <Icon name=\"circle-user-round\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-user-round.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-user-round"
+  },
+  "type": "registry:component"
+}

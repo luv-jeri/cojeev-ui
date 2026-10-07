@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-vertical-distribute-end",
+  "title": "Align vertical distribute end icon",
+  "description": "Align vertical distribute end icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-vertical-distribute-end.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignVerticalDistributeEndIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-vertical-distribute-end\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignVerticalDistributeEndIcon(props:AlignVerticalDistributeEndIconProps){return <Icon name=\"align-vertical-distribute-end\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-vertical-distribute-end.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-vertical-distribute-end"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-heart-pulse",
+  "title": "Heart pulse icon",
+  "description": "Heart pulse icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/heart-pulse.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HeartPulseIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"heart-pulse\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HeartPulseIcon(props:HeartPulseIconProps){return <Icon name=\"heart-pulse\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/heart-pulse.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "heart-pulse"
+  },
+  "type": "registry:component"
+}

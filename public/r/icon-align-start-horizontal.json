@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-start-horizontal",
+  "title": "Align start horizontal icon",
+  "description": "Align start horizontal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-start-horizontal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignStartHorizontalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-start-horizontal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignStartHorizontalIcon(props:AlignStartHorizontalIconProps){return <Icon name=\"align-start-horizontal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-start-horizontal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-start-horizontal"
+  },
+  "type": "registry:component"
+}

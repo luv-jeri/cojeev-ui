@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-x",
+  "title": "File x icon",
+  "description": "File x icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-x.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileXIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-x\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileXIcon(props:FileXIconProps){return <Icon name=\"file-x\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-x.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-x"
+  },
+  "type": "registry:component"
+}

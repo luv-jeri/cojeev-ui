@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-x-line-top",
+  "title": "X line top icon",
+  "description": "X line top icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/x-line-top.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type XLineTopIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"x-line-top\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function XLineTopIcon(props:XLineTopIconProps){return <Icon name=\"x-line-top\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/x-line-top.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "x-line-top"
+  },
+  "type": "registry:component"
+}

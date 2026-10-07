@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-octagon-alert",
+  "title": "Octagon alert icon",
+  "description": "Octagon alert icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/octagon-alert.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type OctagonAlertIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"octagon-alert\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function OctagonAlertIcon(props:OctagonAlertIconProps){return <Icon name=\"octagon-alert\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/octagon-alert.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "octagon-alert"
+  },
+  "type": "registry:component"
+}

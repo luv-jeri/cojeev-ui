@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-panel-bottom-dashed",
+  "title": "Panel bottom dashed icon",
+  "description": "Panel bottom dashed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/panel-bottom-dashed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PanelBottomDashedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"panel-bottom-dashed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PanelBottomDashedIcon(props:PanelBottomDashedIconProps){return <Icon name=\"panel-bottom-dashed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/panel-bottom-dashed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "panel-bottom-dashed"
+  },
+  "type": "registry:component"
+}

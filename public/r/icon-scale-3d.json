@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-scale-3d",
+  "title": "Scale 3d icon",
+  "description": "Scale 3d icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/scale-3d.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Scale3dIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"scale-3d\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Scale3dIcon(props:Scale3dIconProps){return <Icon name=\"scale-3d\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/scale-3d.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "scale-3d"
+  },
+  "type": "registry:component"
+}

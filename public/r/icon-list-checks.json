@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-list-checks",
+  "title": "List checks icon",
+  "description": "List checks icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/list-checks.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ListChecksIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"list-checks\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ListChecksIcon(props:ListChecksIconProps){return <Icon name=\"list-checks\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/list-checks.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "list-checks"
+  },
+  "type": "registry:component"
+}

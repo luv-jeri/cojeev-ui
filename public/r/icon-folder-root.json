@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-folder-root",
+  "title": "Folder root icon",
+  "description": "Folder root icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/folder-root.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FolderRootIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"folder-root\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FolderRootIcon(props:FolderRootIconProps){return <Icon name=\"folder-root\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/folder-root.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "folder-root"
+  },
+  "type": "registry:component"
+}

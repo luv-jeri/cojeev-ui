@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-pause",
+  "title": "Square pause icon",
+  "description": "Square pause icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-pause.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquarePauseIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-pause\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquarePauseIcon(props:SquarePauseIconProps){return <Icon name=\"square-pause\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-pause.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-pause"
+  },
+  "type": "registry:component"
+}

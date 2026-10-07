@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-utensils-crossed",
+  "title": "Utensils crossed icon",
+  "description": "Utensils crossed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/utensils-crossed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type UtensilsCrossedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"utensils-crossed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function UtensilsCrossedIcon(props:UtensilsCrossedIconProps){return <Icon name=\"utensils-crossed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/utensils-crossed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "utensils-crossed"
+  },
+  "type": "registry:component"
+}

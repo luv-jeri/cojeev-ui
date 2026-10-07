@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-hand-grab",
+  "title": "Hand grab icon",
+  "description": "Hand grab icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/hand-grab.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HandGrabIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"hand-grab\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HandGrabIcon(props:HandGrabIconProps){return <Icon name=\"hand-grab\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/hand-grab.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "hand-grab"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-alarm-clock-plus",
+  "title": "Alarm clock plus icon",
+  "description": "Alarm clock plus icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/alarm-clock-plus.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlarmClockPlusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"alarm-clock-plus\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlarmClockPlusIcon(props:AlarmClockPlusIconProps){return <Icon name=\"alarm-clock-plus\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/alarm-clock-plus.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "alarm-clock-plus"
+  },
+  "type": "registry:component"
+}

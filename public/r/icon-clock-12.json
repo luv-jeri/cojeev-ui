@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-clock-12",
+  "title": "Clock 12 icon",
+  "description": "Clock 12 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/clock-12.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Clock12IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"clock-12\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Clock12Icon(props:Clock12IconProps){return <Icon name=\"clock-12\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/clock-12.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "clock-12"
+  },
+  "type": "registry:component"
+}

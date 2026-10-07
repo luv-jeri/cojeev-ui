@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-monitor-pause",
+  "title": "Monitor pause icon",
+  "description": "Monitor pause icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/monitor-pause.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MonitorPauseIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"monitor-pause\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MonitorPauseIcon(props:MonitorPauseIconProps){return <Icon name=\"monitor-pause\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/monitor-pause.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "monitor-pause"
+  },
+  "type": "registry:component"
+}

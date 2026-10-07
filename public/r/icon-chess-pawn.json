@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chess-pawn",
+  "title": "Chess pawn icon",
+  "description": "Chess pawn icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chess-pawn.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChessPawnIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chess-pawn\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChessPawnIcon(props:ChessPawnIconProps){return <Icon name=\"chess-pawn\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chess-pawn.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chess-pawn"
+  },
+  "type": "registry:component"
+}

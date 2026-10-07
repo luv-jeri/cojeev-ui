@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-heading",
+  "title": "Heading icon",
+  "description": "Heading icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/heading.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HeadingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"heading\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HeadingIcon(props:HeadingIconProps){return <Icon name=\"heading\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/heading.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "heading"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-beef",
+  "title": "Beef icon",
+  "description": "Beef icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/beef.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BeefIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"beef\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BeefIcon(props:BeefIconProps){return <Icon name=\"beef\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/beef.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "beef"
+  },
+  "type": "registry:component"
+}

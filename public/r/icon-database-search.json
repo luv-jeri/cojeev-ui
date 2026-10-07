@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-database-search",
+  "title": "Database search icon",
+  "description": "Database search icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/database-search.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DatabaseSearchIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"database-search\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DatabaseSearchIcon(props:DatabaseSearchIconProps){return <Icon name=\"database-search\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/database-search.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "database-search"
+  },
+  "type": "registry:component"
+}

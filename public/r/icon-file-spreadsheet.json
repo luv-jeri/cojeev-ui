@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-spreadsheet",
+  "title": "File spreadsheet icon",
+  "description": "File spreadsheet icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-spreadsheet.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileSpreadsheetIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-spreadsheet\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileSpreadsheetIcon(props:FileSpreadsheetIconProps){return <Icon name=\"file-spreadsheet\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-spreadsheet.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-spreadsheet"
+  },
+  "type": "registry:component"
+}

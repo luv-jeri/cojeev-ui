@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ticket-minus",
+  "title": "Ticket minus icon",
+  "description": "Ticket minus icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ticket-minus.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TicketMinusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ticket-minus\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TicketMinusIcon(props:TicketMinusIconProps){return <Icon name=\"ticket-minus\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ticket-minus.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ticket-minus"
+  },
+  "type": "registry:component"
+}

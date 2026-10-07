@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-search-x",
+  "title": "Search x icon",
+  "description": "Search x icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/search-x.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SearchXIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"search-x\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SearchXIcon(props:SearchXIconProps){return <Icon name=\"search-x\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/search-x.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "search-x"
+  },
+  "type": "registry:component"
+}

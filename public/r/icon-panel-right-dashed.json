@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-panel-right-dashed",
+  "title": "Panel right dashed icon",
+  "description": "Panel right dashed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/panel-right-dashed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PanelRightDashedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"panel-right-dashed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PanelRightDashedIcon(props:PanelRightDashedIconProps){return <Icon name=\"panel-right-dashed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/panel-right-dashed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "panel-right-dashed"
+  },
+  "type": "registry:component"
+}

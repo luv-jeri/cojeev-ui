@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-a-large-small",
+  "title": "A large small icon",
+  "description": "A large small icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/a-large-small.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ALargeSmallIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"a-large-small\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ALargeSmallIcon(props:ALargeSmallIconProps){return <Icon name=\"a-large-small\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/a-large-small.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "a-large-small"
+  },
+  "type": "registry:component"
+}

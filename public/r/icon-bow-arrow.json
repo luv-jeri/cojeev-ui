@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-bow-arrow",
+  "title": "Bow arrow icon",
+  "description": "Bow arrow icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/bow-arrow.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BowArrowIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"bow-arrow\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BowArrowIcon(props:BowArrowIconProps){return <Icon name=\"bow-arrow\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/bow-arrow.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "bow-arrow"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-quote",
+  "title": "Quote icon",
+  "description": "Quote icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/quote.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type QuoteIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"quote\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function QuoteIcon(props:QuoteIconProps){return <Icon name=\"quote\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/quote.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "quote"
+  },
+  "type": "registry:component"
+}

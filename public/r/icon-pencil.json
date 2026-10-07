@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-pencil",
+  "title": "Pencil icon",
+  "description": "Pencil icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/pencil.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PencilIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"pencil\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PencilIcon(props:PencilIconProps){return <Icon name=\"pencil\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/pencil.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "pencil"
+  },
+  "type": "registry:component"
+}

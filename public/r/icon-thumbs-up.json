@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-thumbs-up",
+  "title": "Thumbs up icon",
+  "description": "Thumbs up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/thumbs-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ThumbsUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"thumbs-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ThumbsUpIcon(props:ThumbsUpIconProps){return <Icon name=\"thumbs-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/thumbs-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "thumbs-up"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-pill",
+  "title": "Pill icon",
+  "description": "Pill icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/pill.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PillIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"pill\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PillIcon(props:PillIconProps){return <Icon name=\"pill\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/pill.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "pill"
+  },
+  "type": "registry:component"
+}

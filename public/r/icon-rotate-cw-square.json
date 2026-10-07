@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-rotate-cw-square",
+  "title": "Rotate cw square icon",
+  "description": "Rotate cw square icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/rotate-cw-square.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RotateCwSquareIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"rotate-cw-square\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RotateCwSquareIcon(props:RotateCwSquareIconProps){return <Icon name=\"rotate-cw-square\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/rotate-cw-square.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "rotate-cw-square"
+  },
+  "type": "registry:component"
+}

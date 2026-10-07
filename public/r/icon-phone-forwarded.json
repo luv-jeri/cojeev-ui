@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-phone-forwarded",
+  "title": "Phone forwarded icon",
+  "description": "Phone forwarded icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/phone-forwarded.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PhoneForwardedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"phone-forwarded\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PhoneForwardedIcon(props:PhoneForwardedIconProps){return <Icon name=\"phone-forwarded\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/phone-forwarded.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "phone-forwarded"
+  },
+  "type": "registry:component"
+}

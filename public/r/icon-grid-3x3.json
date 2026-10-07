@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-grid-3x3",
+  "title": "Grid 3x3 icon",
+  "description": "Grid 3x3 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/grid-3x3.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Grid3x3IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"grid-3x3\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Grid3x3Icon(props:Grid3x3IconProps){return <Icon name=\"grid-3x3\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/grid-3x3.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "grid-3x3"
+  },
+  "type": "registry:component"
+}

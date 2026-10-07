@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-line-dot-right-horizontal",
+  "title": "Line dot right horizontal icon",
+  "description": "Line dot right horizontal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/line-dot-right-horizontal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LineDotRightHorizontalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"line-dot-right-horizontal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LineDotRightHorizontalIcon(props:LineDotRightHorizontalIconProps){return <Icon name=\"line-dot-right-horizontal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/line-dot-right-horizontal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "line-dot-right-horizontal"
+  },
+  "type": "registry:component"
+}

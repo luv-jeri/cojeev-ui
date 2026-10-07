@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-mouse-pointer-2",
+  "title": "Mouse pointer 2 icon",
+  "description": "Mouse pointer 2 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/mouse-pointer-2.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MousePointer2IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"mouse-pointer-2\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MousePointer2Icon(props:MousePointer2IconProps){return <Icon name=\"mouse-pointer-2\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/mouse-pointer-2.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "mouse-pointer-2"
+  },
+  "type": "registry:component"
+}

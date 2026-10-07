@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-venetian-mask",
+  "title": "Venetian mask icon",
+  "description": "Venetian mask icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/venetian-mask.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type VenetianMaskIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"venetian-mask\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function VenetianMaskIcon(props:VenetianMaskIconProps){return <Icon name=\"venetian-mask\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/venetian-mask.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "venetian-mask"
+  },
+  "type": "registry:component"
+}

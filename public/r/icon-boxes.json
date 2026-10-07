@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-boxes",
+  "title": "Boxes icon",
+  "description": "Boxes icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/boxes.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BoxesIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"boxes\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BoxesIcon(props:BoxesIconProps){return <Icon name=\"boxes\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/boxes.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "boxes"
+  },
+  "type": "registry:component"
+}

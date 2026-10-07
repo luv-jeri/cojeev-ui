@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-lens-convex",
+  "title": "Lens convex icon",
+  "description": "Lens convex icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/lens-convex.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LensConvexIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"lens-convex\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LensConvexIcon(props:LensConvexIconProps){return <Icon name=\"lens-convex\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/lens-convex.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "lens-convex"
+  },
+  "type": "registry:component"
+}

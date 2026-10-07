@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-mouse-right",
+  "title": "Mouse right icon",
+  "description": "Mouse right icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/mouse-right.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MouseRightIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"mouse-right\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MouseRightIcon(props:MouseRightIconProps){return <Icon name=\"mouse-right\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/mouse-right.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "mouse-right"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-fog",
+  "title": "Cloud fog icon",
+  "description": "Cloud fog icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-fog.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudFogIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-fog\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudFogIcon(props:CloudFogIconProps){return <Icon name=\"cloud-fog\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-fog.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-fog"
+  },
+  "type": "registry:component"
+}

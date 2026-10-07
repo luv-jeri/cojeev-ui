@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-pilcrow-left",
+  "title": "Pilcrow left icon",
+  "description": "Pilcrow left icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/pilcrow-left.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PilcrowLeftIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"pilcrow-left\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PilcrowLeftIcon(props:PilcrowLeftIconProps){return <Icon name=\"pilcrow-left\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/pilcrow-left.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "pilcrow-left"
+  },
+  "type": "registry:component"
+}

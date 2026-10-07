@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-sync",
+  "title": "Cloud sync icon",
+  "description": "Cloud sync icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-sync.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudSyncIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-sync\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudSyncIcon(props:CloudSyncIconProps){return <Icon name=\"cloud-sync\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-sync.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-sync"
+  },
+  "type": "registry:component"
+}

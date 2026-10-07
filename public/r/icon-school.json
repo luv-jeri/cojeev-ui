@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-school",
+  "title": "School icon",
+  "description": "School icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/school.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SchoolIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"school\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SchoolIcon(props:SchoolIconProps){return <Icon name=\"school\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/school.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "school"
+  },
+  "type": "registry:component"
+}

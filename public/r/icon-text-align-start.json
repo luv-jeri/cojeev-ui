@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-text-align-start",
+  "title": "Text align start icon",
+  "description": "Text align start icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/text-align-start.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TextAlignStartIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"text-align-start\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TextAlignStartIcon(props:TextAlignStartIconProps){return <Icon name=\"text-align-start\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/text-align-start.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "text-align-start"
+  },
+  "type": "registry:component"
+}

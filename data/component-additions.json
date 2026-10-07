@@ -107,13 +107,6 @@
       "directory"
     ]
   },
-  "stepper": {
-    "variants": [
-      "rail",
-      "ledger",
-      "compact"
-    ]
-  },
   "carousel": {
     "variants": [
       "shelf",

@@ -21,7 +21,6 @@ try {
   };
   for (const [id, names] of Object.entries({
     breadcrumb: ["Trail", "Pocket", "Directory"],
-    stepper: ["Rail", "Ledger", "Compact"],
   })) {
     await page.goto(`${base}/docs/${id}/`, { waitUntil: "domcontentloaded" });
     await page.waitForFunction(
@@ -57,100 +56,6 @@ try {
         "Field notes",
       );
       await example.getByRole("button", { name: "Reset path" }).click();
-    } else {
-      const next = example.getByRole("button", {
-        name: "Next step",
-        exact: true,
-      });
-      assert.equal(
-        await next.isDisabled(),
-        true,
-        "Name validation gates progression",
-      );
-      await example
-        .getByRole("textbox", { name: "Name your idea" })
-        .fill("A small garden");
-      await next.click();
-      assert.equal(
-        await example.locator("[data-step-heading]:visible").evaluate(el => el === document.activeElement),
-        true,
-        "Advancing focuses the new stage heading",
-      );
-      await choose("Rail");
-      await page.emulateMedia({ reducedMotion: "no-preference" });
-      const marker = example.locator(
-        '[data-slot="stepper-item"][data-state="active"] [data-slot="stepper-indicator"]',
-      );
-      await marker.scrollIntoViewIfNeeded();
-      const paint = marker.locator(":scope > svg.v-morph");
-      await paint.waitFor({ state: "attached" });
-      assert.notEqual(
-        await paint
-          .locator("[data-morph-body]")
-          .evaluate((el) => getComputedStyle(el).fill),
-        "rgba(0, 0, 0, 0)",
-        "Normal-motion current marker has real paint",
-      );
-      const hit = marker.locator(".."),
-        rect = await hit.boundingBox(),
-        markRect = await marker.boundingBox();
-      await page.mouse.move(markRect.x + 2, markRect.y + markRect.height / 2);
-      const changes = await paint.evaluate(async (svg) => {
-        const frames = [];
-        for (let i = 0; i < 12; i++) {
-          await new Promise(requestAnimationFrame);
-          frames.push(svg.querySelector("[data-morph-body]").getAttribute("d"));
-        }
-        return new Set(frames).size;
-      });
-      assert.ok(
-        changes > 1,
-        "Current step contour responds through the shared paint engine",
-      );
-      await page.mouse.down();
-      await page.waitForTimeout(80);
-      const held = await hit.boundingBox();
-      await page.mouse.up();
-      assert.ok(
-        Math.abs(held.x - rect.x) < 0.5 &&
-          Math.abs(held.width - rect.width) < 0.5,
-        "Held marker does not move its native trigger",
-      );
-      await page.emulateMedia({ reducedMotion: "reduce" });
-      await example.getByRole("radio", { name: "Weekly", exact: true }).click();
-      await next.click();
-      assert.match(
-        await example.locator("[data-step-panel]:visible").innerText(),
-        /A small garden/,
-      );
-      for (const name of names) {
-        await choose(name);
-        assert.match(
-          await example.getByRole("status").first().innerText(),
-          /Stage 3 of 3/,
-        );
-      }
-      await example
-        .getByRole("button", { name: "Save draft", exact: true })
-        .click();
-      assert.match(
-        await example.getByRole("status").last().innerText(),
-        /Saved here.*A small garden/,
-      );
-      await example.getByRole("button", { name: "Back", exact: true }).click();
-      await example.getByRole("button", { name: "Back", exact: true }).click();
-      assert.equal(
-        await example
-          .getByRole("textbox", { name: "Name your idea" })
-          .inputValue(),
-        "A small garden",
-      );
-      await next.click();
-      assert.equal(
-        await example.getByRole("radio", { name: "Weekly" }).isChecked(),
-        true,
-      );
-      await next.click();
     }
     await page.addStyleTag({
       content: ".report-launcher,nextjs-portal{visibility:hidden!important}",
@@ -167,25 +72,6 @@ try {
           await example.scrollIntoViewIfNeeded();
           await page.mouse.move(width - 5, 5);
           await page.waitForTimeout(100);
-          if (id === "stepper" && name === "Compact")
-            assert.equal(
-              await example
-                .locator('[data-slot="stepper-progress-mark"]')
-                .evaluateAll(
-                  (nodes) =>
-                    nodes.length === 3 &&
-                    nodes.every((n) => {
-                      const b = n.getBoundingClientRect();
-                      return (
-                        b.width > 30 &&
-                        b.height >= 4 &&
-                        getComputedStyle(n).visibility === "visible"
-                      );
-                    }),
-                ),
-              true,
-              "Compact has three visible progress marks, not empty targets",
-            );
           if (id === "breadcrumb" && name === "Pocket")
             assert.equal(
               await example
@@ -234,7 +120,7 @@ try {
     );
   }
   console.log(
-    "PASS progression docs: six approaches, useful ancestors, draft validation/state/focus/keyboard, 24 theme/responsive captures and configured copy",
+    "PASS progression docs: three approaches, useful ancestors, keyboard, 12 theme/responsive captures and configured copy",
   );
 } finally {
   await browser.close();

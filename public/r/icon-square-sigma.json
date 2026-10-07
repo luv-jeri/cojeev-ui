@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-sigma",
+  "title": "Square sigma icon",
+  "description": "Square sigma icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-sigma.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareSigmaIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-sigma\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareSigmaIcon(props:SquareSigmaIconProps){return <Icon name=\"square-sigma\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-sigma.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-sigma"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-italic",
+  "title": "Italic icon",
+  "description": "Italic icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/italic.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ItalicIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"italic\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ItalicIcon(props:ItalicIconProps){return <Icon name=\"italic\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/italic.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "italic"
+  },
+  "type": "registry:component"
+}

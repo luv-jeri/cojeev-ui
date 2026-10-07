@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-badge-pound-sterling",
+  "title": "Badge pound sterling icon",
+  "description": "Badge pound sterling icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/badge-pound-sterling.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BadgePoundSterlingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"badge-pound-sterling\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BadgePoundSterlingIcon(props:BadgePoundSterlingIconProps){return <Icon name=\"badge-pound-sterling\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/badge-pound-sterling.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "badge-pound-sterling"
+  },
+  "type": "registry:component"
+}

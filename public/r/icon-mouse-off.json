@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-mouse-off",
+  "title": "Mouse off icon",
+  "description": "Mouse off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/mouse-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MouseOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"mouse-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MouseOffIcon(props:MouseOffIconProps){return <Icon name=\"mouse-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/mouse-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "mouse-off"
+  },
+  "type": "registry:component"
+}

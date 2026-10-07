@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-user-round-key",
+  "title": "User round key icon",
+  "description": "User round key icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/user-round-key.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type UserRoundKeyIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"user-round-key\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function UserRoundKeyIcon(props:UserRoundKeyIconProps){return <Icon name=\"user-round-key\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/user-round-key.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "user-round-key"
+  },
+  "type": "registry:component"
+}

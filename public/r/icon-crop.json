@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-crop",
+  "title": "Crop icon",
+  "description": "Crop icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/crop.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CropIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"crop\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CropIcon(props:CropIconProps){return <Icon name=\"crop\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/crop.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "crop"
+  },
+  "type": "registry:component"
+}

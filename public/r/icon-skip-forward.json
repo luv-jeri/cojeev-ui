@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-skip-forward",
+  "title": "Skip forward icon",
+  "description": "Skip forward icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/skip-forward.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SkipForwardIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"skip-forward\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SkipForwardIcon(props:SkipForwardIconProps){return <Icon name=\"skip-forward\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/skip-forward.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "skip-forward"
+  },
+  "type": "registry:component"
+}

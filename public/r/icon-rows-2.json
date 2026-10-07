@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-rows-2",
+  "title": "Rows 2 icon",
+  "description": "Rows 2 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/rows-2.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Rows2IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"rows-2\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Rows2Icon(props:Rows2IconProps){return <Icon name=\"rows-2\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/rows-2.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "rows-2"
+  },
+  "type": "registry:component"
+}

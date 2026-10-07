@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-fire-extinguisher",
+  "title": "Fire extinguisher icon",
+  "description": "Fire extinguisher icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/fire-extinguisher.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FireExtinguisherIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"fire-extinguisher\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FireExtinguisherIcon(props:FireExtinguisherIconProps){return <Icon name=\"fire-extinguisher\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/fire-extinguisher.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "fire-extinguisher"
+  },
+  "type": "registry:component"
+}

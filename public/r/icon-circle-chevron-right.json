@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-chevron-right",
+  "title": "Circle chevron right icon",
+  "description": "Circle chevron right icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-chevron-right.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CircleChevronRightIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-chevron-right\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CircleChevronRightIcon(props:CircleChevronRightIconProps){return <Icon name=\"circle-chevron-right\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-chevron-right.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-chevron-right"
+  },
+  "type": "registry:component"
+}

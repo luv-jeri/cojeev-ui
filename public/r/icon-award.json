@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-award",
+  "title": "Award icon",
+  "description": "Award icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/award.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AwardIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"award\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AwardIcon(props:AwardIconProps){return <Icon name=\"award\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/award.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "award"
+  },
+  "type": "registry:component"
+}

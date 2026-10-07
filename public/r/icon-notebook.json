@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-notebook",
+  "title": "Notebook icon",
+  "description": "Notebook icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/notebook.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type NotebookIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"notebook\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function NotebookIcon(props:NotebookIconProps){return <Icon name=\"notebook\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/notebook.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "notebook"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-corner-right-up",
+  "title": "Corner right up icon",
+  "description": "Corner right up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/corner-right-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CornerRightUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"corner-right-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CornerRightUpIcon(props:CornerRightUpIconProps){return <Icon name=\"corner-right-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/corner-right-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "corner-right-up"
+  },
+  "type": "registry:component"
+}

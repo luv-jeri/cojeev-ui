@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-signpost",
+  "title": "Signpost icon",
+  "description": "Signpost icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/signpost.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SignpostIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"signpost\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SignpostIcon(props:SignpostIconProps){return <Icon name=\"signpost\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/signpost.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "signpost"
+  },
+  "type": "registry:component"
+}

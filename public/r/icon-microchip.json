@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-microchip",
+  "title": "Microchip icon",
+  "description": "Microchip icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/microchip.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MicrochipIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"microchip\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MicrochipIcon(props:MicrochipIconProps){return <Icon name=\"microchip\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/microchip.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "microchip"
+  },
+  "type": "registry:component"
+}

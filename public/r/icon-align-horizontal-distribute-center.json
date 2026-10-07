@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-horizontal-distribute-center",
+  "title": "Align horizontal distribute center icon",
+  "description": "Align horizontal distribute center icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-horizontal-distribute-center.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignHorizontalDistributeCenterIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-horizontal-distribute-center\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignHorizontalDistributeCenterIcon(props:AlignHorizontalDistributeCenterIconProps){return <Icon name=\"align-horizontal-distribute-center\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-horizontal-distribute-center.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-horizontal-distribute-center"
+  },
+  "type": "registry:component"
+}

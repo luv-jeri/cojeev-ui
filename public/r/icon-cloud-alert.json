@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-alert",
+  "title": "Cloud alert icon",
+  "description": "Cloud alert icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-alert.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudAlertIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-alert\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudAlertIcon(props:CloudAlertIconProps){return <Icon name=\"cloud-alert\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-alert.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-alert"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chart-bar",
+  "title": "Chart bar icon",
+  "description": "Chart bar icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chart-bar.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChartBarIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chart-bar\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChartBarIcon(props:ChartBarIconProps){return <Icon name=\"chart-bar\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chart-bar.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chart-bar"
+  },
+  "type": "registry:component"
+}

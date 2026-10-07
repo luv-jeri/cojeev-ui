@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-zoom-out",
+  "title": "Zoom out icon",
+  "description": "Zoom out icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/zoom-out.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ZoomOutIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"zoom-out\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ZoomOutIcon(props:ZoomOutIconProps){return <Icon name=\"zoom-out\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/zoom-out.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "zoom-out"
+  },
+  "type": "registry:component"
+}

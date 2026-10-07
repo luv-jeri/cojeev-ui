@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-music-4",
+  "title": "Music 4 icon",
+  "description": "Music 4 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/music-4.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Music4IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"music-4\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Music4Icon(props:Music4IconProps){return <Icon name=\"music-4\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/music-4.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "music-4"
+  },
+  "type": "registry:component"
+}

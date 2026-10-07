@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-loader-pinwheel",
+  "title": "Loader pinwheel icon",
+  "description": "Loader pinwheel icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/loader-pinwheel.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LoaderPinwheelIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"loader-pinwheel\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LoaderPinwheelIcon(props:LoaderPinwheelIconProps){return <Icon name=\"loader-pinwheel\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/loader-pinwheel.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "loader-pinwheel"
+  },
+  "type": "registry:component"
+}

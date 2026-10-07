@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chart-pie",
+  "title": "Chart pie icon",
+  "description": "Chart pie icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chart-pie.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChartPieIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chart-pie\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChartPieIcon(props:ChartPieIconProps){return <Icon name=\"chart-pie\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chart-pie.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chart-pie"
+  },
+  "type": "registry:component"
+}

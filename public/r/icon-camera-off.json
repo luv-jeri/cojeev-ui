@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-camera-off",
+  "title": "Camera off icon",
+  "description": "Camera off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/camera-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CameraOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"camera-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CameraOffIcon(props:CameraOffIconProps){return <Icon name=\"camera-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/camera-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "camera-off"
+  },
+  "type": "registry:component"
+}

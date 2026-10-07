@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-bean",
+  "title": "Bean icon",
+  "description": "Bean icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/bean.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BeanIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"bean\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BeanIcon(props:BeanIconProps){return <Icon name=\"bean\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/bean.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "bean"
+  },
+  "type": "registry:component"
+}
