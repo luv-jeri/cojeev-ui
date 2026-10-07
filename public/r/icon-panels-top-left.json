@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-panels-top-left",
+  "title": "Panels top left icon",
+  "description": "Panels top left icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/panels-top-left.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PanelsTopLeftIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"panels-top-left\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PanelsTopLeftIcon(props:PanelsTopLeftIconProps){return <Icon name=\"panels-top-left\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/panels-top-left.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "panels-top-left"
+  },
+  "type": "registry:component"
+}

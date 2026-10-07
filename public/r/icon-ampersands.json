@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ampersands",
+  "title": "Ampersands icon",
+  "description": "Ampersands icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ampersands.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AmpersandsIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ampersands\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AmpersandsIcon(props:AmpersandsIconProps){return <Icon name=\"ampersands\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ampersands.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ampersands"
+  },
+  "type": "registry:component"
+}

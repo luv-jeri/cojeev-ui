@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-database-backup",
+  "title": "Database backup icon",
+  "description": "Database backup icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/database-backup.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DatabaseBackupIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"database-backup\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DatabaseBackupIcon(props:DatabaseBackupIconProps){return <Icon name=\"database-backup\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/database-backup.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "database-backup"
+  },
+  "type": "registry:component"
+}

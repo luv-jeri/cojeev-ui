@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-land-plot",
+  "title": "Land plot icon",
+  "description": "Land plot icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/land-plot.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LandPlotIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"land-plot\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LandPlotIcon(props:LandPlotIconProps){return <Icon name=\"land-plot\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/land-plot.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "land-plot"
+  },
+  "type": "registry:component"
+}

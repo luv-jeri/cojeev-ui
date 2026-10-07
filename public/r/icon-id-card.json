@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-id-card",
+  "title": "Id card icon",
+  "description": "Id card icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/id-card.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type IdCardIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"id-card\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function IdCardIcon(props:IdCardIconProps){return <Icon name=\"id-card\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/id-card.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "id-card"
+  },
+  "type": "registry:component"
+}

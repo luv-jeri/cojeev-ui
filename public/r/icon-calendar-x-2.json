@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-calendar-x-2",
+  "title": "Calendar x 2 icon",
+  "description": "Calendar x 2 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/calendar-x-2.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CalendarX2IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"calendar-x-2\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CalendarX2Icon(props:CalendarX2IconProps){return <Icon name=\"calendar-x-2\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/calendar-x-2.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "calendar-x-2"
+  },
+  "type": "registry:component"
+}

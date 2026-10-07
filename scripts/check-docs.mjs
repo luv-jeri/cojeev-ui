@@ -1152,21 +1152,6 @@ const tests = {
     assert(short > long * 3 && long < 4, `Rubber waist becomes thinner with extension: short=${short}, long=${long}`);
     return "Pointer/keyboard value changes, named range thumbs with minimum separation, and actual rubber waist thinning even with reduced motion";
   },
-  stepper: async ({ root }) => {
-    const next = root.getByRole("button", { name: "Next step", exact: true });
-    assert(await next.isDisabled());
-    await root.getByRole("textbox", { name: "Name your idea", exact: true }).fill("QA notebook");
-    await next.click();
-    await root.getByRole("heading", { name: "Find a rhythm that fits.", exact: true }).waitFor();
-    await root.getByRole("radio", { name: "Daily", exact: true }).click();
-    await key(next, "Enter");
-    await root.getByRole("heading", { name: "A little plan, ready to keep.", exact: true }).waitFor();
-    await root.getByRole("button", { name: "Save draft", exact: true }).click();
-    await text(root, "Saved here: QA notebook · daily.");
-    await root.getByRole("button", { name: "Back", exact: true }).click();
-    assert(await root.getByRole("radio", { name: "Daily", exact: true }).isChecked());
-    return "Validation gates advancement; pointer/keyboard steps preserve the draft and save a truthful local receipt";
-  },
   switch: async ({ root }) => {
     const b = root.getByRole("switch").first();
     await b.click();

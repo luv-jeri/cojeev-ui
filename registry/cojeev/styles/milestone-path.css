@@ -1,3 +1,23 @@
+.v-milestone-path__marker {
+  transition:
+    background var(--t-element) var(--enter),
+    box-shadow var(--t-element) var(--enter),
+    color var(--t-element);
+}
+.v-milestone-path__marker .v-icon {
+  width: 17px;
+  height: 17px;
+}
+.v-milestone-path__title {
+  transition: color var(--t-element);
+}
+.v-milestone-path__item.-on .v-milestone-path__title {
+  letter-spacing: -0.005em;
+}
+.v-milestone-path [data-motion="off"] .v-milestone-path__marker,
+.v-milestone-path [data-motion="off"] .v-milestone-path__title {
+  transition: none;
+}
 .v-milestone-path[data-slot] {
   min-width: 0;
   width: 100%;

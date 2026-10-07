@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-text-select",
+  "title": "Text select icon",
+  "description": "Text select icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/text-select.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TextSelectIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"text-select\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TextSelectIcon(props:TextSelectIconProps){return <Icon name=\"text-select\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/text-select.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "text-select"
+  },
+  "type": "registry:component"
+}

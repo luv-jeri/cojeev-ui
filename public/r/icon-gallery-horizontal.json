@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-gallery-horizontal",
+  "title": "Gallery horizontal icon",
+  "description": "Gallery horizontal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/gallery-horizontal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type GalleryHorizontalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"gallery-horizontal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function GalleryHorizontalIcon(props:GalleryHorizontalIconProps){return <Icon name=\"gallery-horizontal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/gallery-horizontal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "gallery-horizontal"
+  },
+  "type": "registry:component"
+}

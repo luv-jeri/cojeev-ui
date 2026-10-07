@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-arrow-right-from-line",
+  "title": "Arrow right from line icon",
+  "description": "Arrow right from line icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/arrow-right-from-line.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ArrowRightFromLineIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"arrow-right-from-line\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ArrowRightFromLineIcon(props:ArrowRightFromLineIconProps){return <Icon name=\"arrow-right-from-line\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/arrow-right-from-line.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "arrow-right-from-line"
+  },
+  "type": "registry:component"
+}

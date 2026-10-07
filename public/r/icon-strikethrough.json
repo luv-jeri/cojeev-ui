@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-strikethrough",
+  "title": "Strikethrough icon",
+  "description": "Strikethrough icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/strikethrough.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type StrikethroughIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"strikethrough\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function StrikethroughIcon(props:StrikethroughIconProps){return <Icon name=\"strikethrough\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/strikethrough.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "strikethrough"
+  },
+  "type": "registry:component"
+}

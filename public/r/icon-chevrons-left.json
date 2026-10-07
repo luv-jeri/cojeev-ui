@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chevrons-left",
+  "title": "Chevrons left icon",
+  "description": "Chevrons left icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chevrons-left.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChevronsLeftIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chevrons-left\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChevronsLeftIcon(props:ChevronsLeftIconProps){return <Icon name=\"chevrons-left\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chevrons-left.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chevrons-left"
+  },
+  "type": "registry:component"
+}

@@ -518,13 +518,17 @@
     position: relative;
     z-index: 2;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--s-4);
+    gap: var(--s-2) var(--s-4);
     min-height: 84px;
     padding-block: var(--s-4);
     border-block-end: 1px solid var(--v-border);
   }
+  /* The brand stays on one line; when brand, Beta stamp and actions no longer
+     share a row, the actions wrap under the brand instead of overflowing. */
+  .docs-mobile .docs-brand { white-space: nowrap; }
   .docs-mobile-actions { display: flex; align-items: center; gap: var(--s-2); }
   .docs-mobile-actions > button { min-height: 44px; padding-inline: var(--s-5); }
   .docs-mobile-actions > button.docs-share-icon { min-height: 40px; padding-inline: 0; }

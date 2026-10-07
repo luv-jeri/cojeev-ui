@@ -79,7 +79,25 @@ base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({p
 // drops the comment a source opens with, notice included.
 fs.writeFileSync(`${source}/NOTICES.txt`,noticeText(fs.readFileSync("LICENCE","utf8"),["lib","motion","ui"].flatMap(folder=>fs.readdirSync(`${source}/${folder}`).sort().filter(name=>/\.tsx?$/.test(name)).map(name=>[`${source}/${folder}/${name}`,fs.readFileSync(`${source}/${folder}/${name}`,"utf8")]))));
 base.files.push({path:`${source}/NOTICES.txt`,type:"registry:file",target:"lib/cojeev/NOTICES.txt"});
-const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"cojeev",homepage:`${(process.env.NEXT_PUBLIC_SITE_URL??"https://cojeev.com/ui").replace(/\/+$/,"")}/`,items};
+// One installable item per Lucide name: consumers get typed, tree-shaken imports,
+// and the shadcn Registry Directory (shadcn-ui/ui #12058) ranks by distinct item
+// names, capped at 500. Sources are generated here and stay out of git; the
+// payloads under public/r are committed like every other item.
+const iconNames=[...new Set(fs.readFileSync(`${source}/lib/lucide-icon-names.ts`,"utf8").match(/"[a-z0-9-]+"/g).map(name=>name.slice(1,-1)))].sort();
+if(iconNames.length<1000)throw new Error(`Only ${iconNames.length} Lucide names found: lucide-icon-names.ts changed shape.`);
+fs.rmSync(`${source}/icons`,{recursive:true,force:true});
+fs.mkdirSync(`${source}/icons`);
+const iconExport=name=>`${name.replace(/(?:^|-)([a-z0-9])/g,(_,c)=>c.toUpperCase())}Icon`;
+const iconTitle=name=>name.replace(/-/g," ").replace(/^./,c=>c.toUpperCase());
+const iconItems=iconNames.map(name=>{
+  const component=iconExport(name);
+  fs.writeFileSync(`${source}/icons/${name}.tsx`,`import * as React from "react";\nimport {Icon,type IconProps} from "@/registry/cojeev/ui/icon";\n\nexport type ${component}Props=Omit<IconProps,"name">;\n/** Lucide "${name}" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ${component}(props:${component}Props){return <Icon name="${name}" {...props}/>;}\n`);
+  return {name:`icon-${name}`,type:"registry:component",title:`${iconTitle(name)} icon`,description:`${iconTitle(name)} icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.`,registryDependencies:[`${baseURL}/r/cojeev.json`,`${baseURL}/r/icon.json`],files:[{path:`${source}/icons/${name}.tsx`,type:"registry:component",target:`components/icons/${name}.tsx`}],meta:{category:"Icons",icon:name}};
+});
+items.push(...iconItems);
+// The directory's health monitor compares this name with the listed namespace
+// "@000h-cojeev" (case-insensitive, "@" stripped); a mismatch costs setup points.
+const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"000h-cojeev",homepage:`${(process.env.NEXT_PUBLIC_SITE_URL??"https://cojeev.com/ui").replace(/\/+$/,"")}/`,items};
 fs.writeFileSync("registry.json",JSON.stringify(registry,null,2)+"\n");
 // Refresh the live documentation catalogue without producing distributable
 // payloads, invoking the shadcn CLI, or running a production build.
@@ -94,4 +112,4 @@ const registryCLI=process.env.COJEEV_REGISTRY_CLI??"node_modules/shadcn/dist/ind
 execFileSync(process.execPath,[registryCLI,"build"],{stdio:"inherit"});
 for(const item of items){const file=path.join("public/r",`${item.name}.json`);const data=JSON.parse(fs.readFileSync(file,"utf8"));for(const f of data.files??[])if(f.content){if(/\.[cm]?[jt]sx?$/.test(f.path))f.content=rewriteInstalledImports(f.path,f.content);if(f.path.startsWith(`${source}/styles/`)){const name=path.basename(f.path,".css");if(!["fonts","tokens","theme","base"].includes(name)){const layer=name==="morph"?"cojeev-morph":name==="flow-press"?"cojeev-flow":"cojeev-states";f.content=`@layer ${layer} {\n${f.content}\n}\n`;}}}fs.writeFileSync(file,JSON.stringify(data,null,2)+"\n");}
 fs.copyFileSync("public/r/registry.json","public/registry.json");
-console.log(`Registry built: ${items.length} items (${ids.filter(id=>reference[id]?.tier==="base").length} base components, ${ids.filter(id=>reference[id]?.tier!=="base").length} additional entries)`);
+console.log(`Registry built: ${items.length} items (${ids.filter(id=>reference[id]?.tier==="base").length} base components, ${ids.filter(id=>reference[id]?.tier!=="base").length} additional entries, ${iconItems.length} icons)`);

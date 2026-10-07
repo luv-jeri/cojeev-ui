@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chess-knight",
+  "title": "Chess knight icon",
+  "description": "Chess knight icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chess-knight.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChessKnightIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chess-knight\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChessKnightIcon(props:ChessKnightIconProps){return <Icon name=\"chess-knight\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chess-knight.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chess-knight"
+  },
+  "type": "registry:component"
+}

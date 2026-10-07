@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ruler",
+  "title": "Ruler icon",
+  "description": "Ruler icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ruler.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RulerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ruler\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RulerIcon(props:RulerIconProps){return <Icon name=\"ruler\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ruler.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ruler"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-scan-line",
+  "title": "Scan line icon",
+  "description": "Scan line icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/scan-line.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ScanLineIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"scan-line\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ScanLineIcon(props:ScanLineIconProps){return <Icon name=\"scan-line\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/scan-line.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "scan-line"
+  },
+  "type": "registry:component"
+}

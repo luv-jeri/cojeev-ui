@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-thermometer-snowflake",
+  "title": "Thermometer snowflake icon",
+  "description": "Thermometer snowflake icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/thermometer-snowflake.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ThermometerSnowflakeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"thermometer-snowflake\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ThermometerSnowflakeIcon(props:ThermometerSnowflakeIconProps){return <Icon name=\"thermometer-snowflake\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/thermometer-snowflake.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "thermometer-snowflake"
+  },
+  "type": "registry:component"
+}

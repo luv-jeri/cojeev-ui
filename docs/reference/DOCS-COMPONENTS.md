@@ -13,7 +13,7 @@ The other shared helpers are Icon, Shape and Motion Adjuster. All four have thei
 - Explicit, typed React examples exist for all 77 public entries. There is no catchall placeholder example.
 - Each page renders one configurable live specimen. Variant and size controls select the displayed invocation; the code tab and clipboard use that exact selection. All 246 extracted default, variant and size snippets compile.
 - Copyable snippets are extracted from the live example functions with TypeScript AST parsing. Only referenced imports are included, rewritten to consumer `@/components/ui` paths. The example install command includes every component directly imported by that snippet.
-- Stateful controls use real local state. Attachment downloads actual generated text; Dropzone lists selected file metadata without uploading; textarea creates a displayed local note; tables filter/sort/page actual data; tabs, menus and overlays use their production APIs; questionnaire answers update progress; stepper, carousel and message scrolling use their contexts.
+- Stateful controls use real local state. Attachment downloads actual generated text; Dropzone lists selected file metadata without uploading; textarea creates a displayed local note; tables filter/sort/page actual data; tabs, menus and overlays use their production APIs; questionnaire answers update progress; carousel and message scrolling use their contexts.
 - The navigation supports filtering, active links, keyboard access, a mobile toggle and a skip link. Appearance persists when local storage is available and synchronizes across tabs. Storage-denied environments still support changes in the current page.
 - Publication/fidelity status is stated separately; a rendered docs example is not a visual gate approval.
 
@@ -87,7 +87,6 @@ The other shared helpers are Icon, Shape and Motion Adjuster. All four have thei
 | `skeleton` | line, disk, card, skel-group |  |
 | `slider` | pink |  |
 | `spinner` | point |  |
-| `stepper` |  |  |
 | `switch` |  |  |
 | `table` |  |  |
 | `tabs` | underline, lenses |  |

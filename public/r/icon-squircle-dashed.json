@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-squircle-dashed",
+  "title": "Squircle dashed icon",
+  "description": "Squircle dashed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/squircle-dashed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquircleDashedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"squircle-dashed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquircleDashedIcon(props:SquircleDashedIconProps){return <Icon name=\"squircle-dashed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/squircle-dashed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "squircle-dashed"
+  },
+  "type": "registry:component"
+}

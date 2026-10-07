@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-columns-3-cog",
+  "title": "Columns 3 cog icon",
+  "description": "Columns 3 cog icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/columns-3-cog.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Columns3CogIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"columns-3-cog\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Columns3CogIcon(props:Columns3CogIconProps){return <Icon name=\"columns-3-cog\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/columns-3-cog.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "columns-3-cog"
+  },
+  "type": "registry:component"
+}

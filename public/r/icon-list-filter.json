@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-list-filter",
+  "title": "List filter icon",
+  "description": "List filter icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/list-filter.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ListFilterIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"list-filter\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ListFilterIcon(props:ListFilterIconProps){return <Icon name=\"list-filter\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/list-filter.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "list-filter"
+  },
+  "type": "registry:component"
+}

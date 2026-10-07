@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-zap",
+  "title": "Zap icon",
+  "description": "Zap icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/zap.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ZapIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"zap\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ZapIcon(props:ZapIconProps){return <Icon name=\"zap\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/zap.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "zap"
+  },
+  "type": "registry:component"
+}

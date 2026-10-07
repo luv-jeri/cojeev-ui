@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-picture-in-picture",
+  "title": "Picture in picture icon",
+  "description": "Picture in picture icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/picture-in-picture.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PictureInPictureIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"picture-in-picture\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PictureInPictureIcon(props:PictureInPictureIconProps){return <Icon name=\"picture-in-picture\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/picture-in-picture.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "picture-in-picture"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-waves-ladder",
+  "title": "Waves ladder icon",
+  "description": "Waves ladder icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/waves-ladder.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type WavesLadderIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"waves-ladder\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function WavesLadderIcon(props:WavesLadderIconProps){return <Icon name=\"waves-ladder\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/waves-ladder.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "waves-ladder"
+  },
+  "type": "registry:component"
+}

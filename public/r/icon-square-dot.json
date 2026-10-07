@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-dot",
+  "title": "Square dot icon",
+  "description": "Square dot icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-dot.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareDotIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-dot\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareDotIcon(props:SquareDotIconProps){return <Icon name=\"square-dot\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-dot.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-dot"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-radiation",
+  "title": "Radiation icon",
+  "description": "Radiation icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/radiation.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RadiationIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"radiation\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RadiationIcon(props:RadiationIconProps){return <Icon name=\"radiation\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/radiation.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "radiation"
+  },
+  "type": "registry:component"
+}

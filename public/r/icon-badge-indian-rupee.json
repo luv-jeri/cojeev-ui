@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-badge-indian-rupee",
+  "title": "Badge indian rupee icon",
+  "description": "Badge indian rupee icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/badge-indian-rupee.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BadgeIndianRupeeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"badge-indian-rupee\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BadgeIndianRupeeIcon(props:BadgeIndianRupeeIconProps){return <Icon name=\"badge-indian-rupee\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/badge-indian-rupee.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "badge-indian-rupee"
+  },
+  "type": "registry:component"
+}

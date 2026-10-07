@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-sticky-note",
+  "title": "Sticky note icon",
+  "description": "Sticky note icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/sticky-note.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type StickyNoteIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"sticky-note\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function StickyNoteIcon(props:StickyNoteIconProps){return <Icon name=\"sticky-note\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/sticky-note.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "sticky-note"
+  },
+  "type": "registry:component"
+}

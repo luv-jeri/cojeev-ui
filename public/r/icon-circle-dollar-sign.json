@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-dollar-sign",
+  "title": "Circle dollar sign icon",
+  "description": "Circle dollar sign icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-dollar-sign.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CircleDollarSignIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-dollar-sign\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CircleDollarSignIcon(props:CircleDollarSignIconProps){return <Icon name=\"circle-dollar-sign\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-dollar-sign.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-dollar-sign"
+  },
+  "type": "registry:component"
+}

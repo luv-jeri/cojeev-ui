@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-lightning",
+  "title": "Cloud lightning icon",
+  "description": "Cloud lightning icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-lightning.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudLightningIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-lightning\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudLightningIcon(props:CloudLightningIconProps){return <Icon name=\"cloud-lightning\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-lightning.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-lightning"
+  },
+  "type": "registry:component"
+}

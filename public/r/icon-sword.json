@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-sword",
+  "title": "Sword icon",
+  "description": "Sword icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/sword.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SwordIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"sword\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SwordIcon(props:SwordIconProps){return <Icon name=\"sword\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/sword.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "sword"
+  },
+  "type": "registry:component"
+}

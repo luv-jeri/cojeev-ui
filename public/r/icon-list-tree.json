@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-list-tree",
+  "title": "List tree icon",
+  "description": "List tree icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/list-tree.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ListTreeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"list-tree\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ListTreeIcon(props:ListTreeIconProps){return <Icon name=\"list-tree\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/list-tree.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "list-tree"
+  },
+  "type": "registry:component"
+}

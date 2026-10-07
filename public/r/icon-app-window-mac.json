@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-app-window-mac",
+  "title": "App window mac icon",
+  "description": "App window mac icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/app-window-mac.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AppWindowMacIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"app-window-mac\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AppWindowMacIcon(props:AppWindowMacIconProps){return <Icon name=\"app-window-mac\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/app-window-mac.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "app-window-mac"
+  },
+  "type": "registry:component"
+}

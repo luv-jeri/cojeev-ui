@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-zodiac-capricorn",
+  "title": "Zodiac capricorn icon",
+  "description": "Zodiac capricorn icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/zodiac-capricorn.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ZodiacCapricornIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"zodiac-capricorn\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ZodiacCapricornIcon(props:ZodiacCapricornIconProps){return <Icon name=\"zodiac-capricorn\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/zodiac-capricorn.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "zodiac-capricorn"
+  },
+  "type": "registry:component"
+}

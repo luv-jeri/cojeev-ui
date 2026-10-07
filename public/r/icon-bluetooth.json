@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-bluetooth",
+  "title": "Bluetooth icon",
+  "description": "Bluetooth icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/bluetooth.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BluetoothIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"bluetooth\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BluetoothIcon(props:BluetoothIconProps){return <Icon name=\"bluetooth\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/bluetooth.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "bluetooth"
+  },
+  "type": "registry:component"
+}

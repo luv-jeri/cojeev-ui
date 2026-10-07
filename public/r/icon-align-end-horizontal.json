@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-end-horizontal",
+  "title": "Align end horizontal icon",
+  "description": "Align end horizontal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-end-horizontal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignEndHorizontalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-end-horizontal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignEndHorizontalIcon(props:AlignEndHorizontalIconProps){return <Icon name=\"align-end-horizontal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-end-horizontal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-end-horizontal"
+  },
+  "type": "registry:component"
+}

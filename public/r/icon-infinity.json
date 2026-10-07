@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-infinity",
+  "title": "Infinity icon",
+  "description": "Infinity icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/infinity.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type InfinityIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"infinity\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function InfinityIcon(props:InfinityIconProps){return <Icon name=\"infinity\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/infinity.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "infinity"
+  },
+  "type": "registry:component"
+}

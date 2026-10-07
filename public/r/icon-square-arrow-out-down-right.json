@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-arrow-out-down-right",
+  "title": "Square arrow out down right icon",
+  "description": "Square arrow out down right icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-arrow-out-down-right.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareArrowOutDownRightIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-arrow-out-down-right\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareArrowOutDownRightIcon(props:SquareArrowOutDownRightIconProps){return <Icon name=\"square-arrow-out-down-right\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-arrow-out-down-right.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-arrow-out-down-right"
+  },
+  "type": "registry:component"
+}

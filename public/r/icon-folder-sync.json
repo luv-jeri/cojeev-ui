@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-folder-sync",
+  "title": "Folder sync icon",
+  "description": "Folder sync icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/folder-sync.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FolderSyncIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"folder-sync\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FolderSyncIcon(props:FolderSyncIconProps){return <Icon name=\"folder-sync\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/folder-sync.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "folder-sync"
+  },
+  "type": "registry:component"
+}

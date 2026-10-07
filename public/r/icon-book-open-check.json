@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-book-open-check",
+  "title": "Book open check icon",
+  "description": "Book open check icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/book-open-check.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BookOpenCheckIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"book-open-check\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BookOpenCheckIcon(props:BookOpenCheckIconProps){return <Icon name=\"book-open-check\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/book-open-check.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "book-open-check"
+  },
+  "type": "registry:component"
+}

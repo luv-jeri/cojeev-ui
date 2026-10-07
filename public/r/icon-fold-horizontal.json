@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-fold-horizontal",
+  "title": "Fold horizontal icon",
+  "description": "Fold horizontal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/fold-horizontal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FoldHorizontalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"fold-horizontal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FoldHorizontalIcon(props:FoldHorizontalIconProps){return <Icon name=\"fold-horizontal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/fold-horizontal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "fold-horizontal"
+  },
+  "type": "registry:component"
+}

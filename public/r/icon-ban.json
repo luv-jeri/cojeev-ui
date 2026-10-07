@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ban",
+  "title": "Ban icon",
+  "description": "Ban icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ban.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BanIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ban\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BanIcon(props:BanIconProps){return <Icon name=\"ban\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ban.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ban"
+  },
+  "type": "registry:component"
+}

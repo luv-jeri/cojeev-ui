@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-paint-roller",
+  "title": "Paint roller icon",
+  "description": "Paint roller icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/paint-roller.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PaintRollerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"paint-roller\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PaintRollerIcon(props:PaintRollerIconProps){return <Icon name=\"paint-roller\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/paint-roller.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "paint-roller"
+  },
+  "type": "registry:component"
+}

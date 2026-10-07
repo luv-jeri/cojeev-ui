@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-arrow-down-to-dot",
+  "title": "Arrow down to dot icon",
+  "description": "Arrow down to dot icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/arrow-down-to-dot.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ArrowDownToDotIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"arrow-down-to-dot\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ArrowDownToDotIcon(props:ArrowDownToDotIconProps){return <Icon name=\"arrow-down-to-dot\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/arrow-down-to-dot.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "arrow-down-to-dot"
+  },
+  "type": "registry:component"
+}

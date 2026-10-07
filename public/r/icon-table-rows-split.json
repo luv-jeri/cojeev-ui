@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-table-rows-split",
+  "title": "Table rows split icon",
+  "description": "Table rows split icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/table-rows-split.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TableRowsSplitIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"table-rows-split\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TableRowsSplitIcon(props:TableRowsSplitIconProps){return <Icon name=\"table-rows-split\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/table-rows-split.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "table-rows-split"
+  },
+  "type": "registry:component"
+}

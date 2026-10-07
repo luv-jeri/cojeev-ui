@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-squares-exclude",
+  "title": "Squares exclude icon",
+  "description": "Squares exclude icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/squares-exclude.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquaresExcludeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"squares-exclude\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquaresExcludeIcon(props:SquaresExcludeIconProps){return <Icon name=\"squares-exclude\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/squares-exclude.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "squares-exclude"
+  },
+  "type": "registry:component"
+}

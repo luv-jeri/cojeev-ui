@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-receipt-japanese-yen",
+  "title": "Receipt japanese yen icon",
+  "description": "Receipt japanese yen icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/receipt-japanese-yen.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ReceiptJapaneseYenIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"receipt-japanese-yen\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ReceiptJapaneseYenIcon(props:ReceiptJapaneseYenIconProps){return <Icon name=\"receipt-japanese-yen\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/receipt-japanese-yen.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "receipt-japanese-yen"
+  },
+  "type": "registry:component"
+}

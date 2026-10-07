@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-fingerprint-pattern",
+  "title": "Fingerprint pattern icon",
+  "description": "Fingerprint pattern icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/fingerprint-pattern.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FingerprintPatternIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"fingerprint-pattern\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FingerprintPatternIcon(props:FingerprintPatternIconProps){return <Icon name=\"fingerprint-pattern\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/fingerprint-pattern.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "fingerprint-pattern"
+  },
+  "type": "registry:component"
+}

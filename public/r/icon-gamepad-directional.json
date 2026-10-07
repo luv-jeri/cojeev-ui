@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-gamepad-directional",
+  "title": "Gamepad directional icon",
+  "description": "Gamepad directional icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/gamepad-directional.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type GamepadDirectionalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"gamepad-directional\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function GamepadDirectionalIcon(props:GamepadDirectionalIconProps){return <Icon name=\"gamepad-directional\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/gamepad-directional.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "gamepad-directional"
+  },
+  "type": "registry:component"
+}

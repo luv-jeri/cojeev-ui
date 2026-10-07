@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-triangle-alert",
+  "title": "Triangle alert icon",
+  "description": "Triangle alert icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/triangle-alert.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TriangleAlertIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"triangle-alert\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TriangleAlertIcon(props:TriangleAlertIconProps){return <Icon name=\"triangle-alert\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/triangle-alert.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "triangle-alert"
+  },
+  "type": "registry:component"
+}

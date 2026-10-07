@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-arrow-down-wide-narrow",
+  "title": "Arrow down wide narrow icon",
+  "description": "Arrow down wide narrow icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/arrow-down-wide-narrow.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ArrowDownWideNarrowIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"arrow-down-wide-narrow\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ArrowDownWideNarrowIcon(props:ArrowDownWideNarrowIconProps){return <Icon name=\"arrow-down-wide-narrow\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/arrow-down-wide-narrow.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "arrow-down-wide-narrow"
+  },
+  "type": "registry:component"
+}

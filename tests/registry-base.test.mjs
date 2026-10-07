@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
-const baseline = file => execFileSync('git', ['show', `a71c722:${file}`], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+const baseline = file => execFileSync('git', ['show', `1b50e87e6a4df79ce69877fdc9fae8d212ad4b2e:${file}`], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
 const registryFiles = () => fs.readdirSync('public/r').filter(file => file.endsWith('.json'));
 
 test('registry_regeneration_matches_all_three_indexes', () => {
@@ -46,7 +46,7 @@ test('registry_schemas_and_component_identity_are_unchanged', () => {
   const names = items => items.map(item => item.name).sort();
   for (const file of ['registry.json', 'public/registry.json', 'public/r/registry.json']) {
     const index = read(file);
-    assert.equal(index.name, 'cojeev', file);
+    assert.equal(index.name, '000h-cojeev', file);
     assert.equal(index.$schema, original.$schema, file);
     assert.deepEqual(names(index.items), names(original.items), file);
     for (const item of index.items) assert.equal(item.$schema, original.items.find(value => value.name === item.name).$schema, item.name);

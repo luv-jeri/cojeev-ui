@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-power",
+  "title": "Circle power icon",
+  "description": "Circle power icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-power.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CirclePowerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-power\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CirclePowerIcon(props:CirclePowerIconProps){return <Icon name=\"circle-power\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-power.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-power"
+  },
+  "type": "registry:component"
+}

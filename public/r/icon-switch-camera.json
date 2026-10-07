@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-switch-camera",
+  "title": "Switch camera icon",
+  "description": "Switch camera icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/switch-camera.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SwitchCameraIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"switch-camera\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SwitchCameraIcon(props:SwitchCameraIconProps){return <Icon name=\"switch-camera\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/switch-camera.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "switch-camera"
+  },
+  "type": "registry:component"
+}

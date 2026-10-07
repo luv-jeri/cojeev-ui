@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-car-taxi-front",
+  "title": "Car taxi front icon",
+  "description": "Car taxi front icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/car-taxi-front.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CarTaxiFrontIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"car-taxi-front\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CarTaxiFrontIcon(props:CarTaxiFrontIconProps){return <Icon name=\"car-taxi-front\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/car-taxi-front.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "car-taxi-front"
+  },
+  "type": "registry:component"
+}

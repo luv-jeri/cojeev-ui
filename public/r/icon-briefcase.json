@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-briefcase",
+  "title": "Briefcase icon",
+  "description": "Briefcase icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/briefcase.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BriefcaseIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"briefcase\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BriefcaseIcon(props:BriefcaseIconProps){return <Icon name=\"briefcase\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/briefcase.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "briefcase"
+  },
+  "type": "registry:component"
+}

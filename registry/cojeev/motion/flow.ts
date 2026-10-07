@@ -5,8 +5,8 @@ import { scheduleMotion, cancelMotion, getMotionTime, type MotionTimer } from ".
 export { flowClock, motionClock } from "./clock"
 
 export type FlowGroupOptions={kind?:"pill"|"bar"|"fill";itemSelector?:string;activeSelector?:string}
-export const FLOW_GROUPS='[role="tablist"],[data-filters],.v-seg,.v-pager,.v-weekdays,.v-tabs,.v-nav,.v-quest__opts,.v-iradios,.v-menu,.v-cmd__list,.v-list,.v-stepper-flow,.v-carousel__dots,.v-cal__grid,[data-flow-group],[data-flow-fields],[data-flow-owned]'
-const SPECIAL:[string,string,string|null][]=[['.v-menu','.v-menu__item',null],['.v-cmd__list','.v-menu__item',null],['.v-list','.v-item',null],['.v-stepper-flow','.v-step','.v-step__n'],['.v-carousel__dots','button',null],['.v-cal__grid','.v-cal__d',null]]
+export const FLOW_GROUPS='[role="tablist"],[data-filters],.v-seg,.v-pager,.v-weekdays,.v-tabs,.v-nav,.v-quest__opts,.v-iradios,.v-menu,.v-cmd__list,.v-list,.v-carousel__dots,.v-cal__grid,[data-flow-group],[data-flow-fields],[data-flow-owned]'
+const SPECIAL:[string,string,string|null][]=[['.v-menu','.v-menu__item',null],['.v-cmd__list','.v-menu__item',null],['.v-list','.v-item',null],['.v-carousel__dots','button',null],['.v-cal__grid','.v-cal__d',null]]
 const ITEMS='button,[role="tab"],label,.v-nav__item,.v-item,[role="radio"]'
 export const FLOW_FIELD_ITEMS='.v-input,.v-textarea,.v-igroup,.v-native,.v-otp input'
 const ACTIVE='[aria-selected="true"],[aria-pressed="true"],[aria-checked="true"],[aria-current="page"],[aria-current="true"],[aria-current="step"],.-on,.-selected,label:has(input:checked),[data-state="active"],[data-state="on"],[data-state="checked"]'

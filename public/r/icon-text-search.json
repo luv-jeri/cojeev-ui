@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-text-search",
+  "title": "Text search icon",
+  "description": "Text search icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/text-search.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TextSearchIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"text-search\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TextSearchIcon(props:TextSearchIconProps){return <Icon name=\"text-search\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/text-search.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "text-search"
+  },
+  "type": "registry:component"
+}

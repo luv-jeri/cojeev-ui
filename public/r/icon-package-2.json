@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-package-2",
+  "title": "Package 2 icon",
+  "description": "Package 2 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/package-2.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Package2IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"package-2\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Package2Icon(props:Package2IconProps){return <Icon name=\"package-2\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/package-2.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "package-2"
+  },
+  "type": "registry:component"
+}

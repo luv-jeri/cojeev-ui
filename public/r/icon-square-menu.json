@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-menu",
+  "title": "Square menu icon",
+  "description": "Square menu icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-menu.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareMenuIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-menu\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareMenuIcon(props:SquareMenuIconProps){return <Icon name=\"square-menu\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-menu.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-menu"
+  },
+  "type": "registry:component"
+}

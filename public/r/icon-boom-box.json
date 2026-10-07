@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-boom-box",
+  "title": "Boom box icon",
+  "description": "Boom box icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/boom-box.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BoomBoxIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"boom-box\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BoomBoxIcon(props:BoomBoxIconProps){return <Icon name=\"boom-box\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/boom-box.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "boom-box"
+  },
+  "type": "registry:component"
+}

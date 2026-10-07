@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-book-headphones",
+  "title": "Book headphones icon",
+  "description": "Book headphones icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/book-headphones.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BookHeadphonesIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"book-headphones\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BookHeadphonesIcon(props:BookHeadphonesIconProps){return <Icon name=\"book-headphones\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/book-headphones.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "book-headphones"
+  },
+  "type": "registry:component"
+}

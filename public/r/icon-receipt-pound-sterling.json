@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-receipt-pound-sterling",
+  "title": "Receipt pound sterling icon",
+  "description": "Receipt pound sterling icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/receipt-pound-sterling.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ReceiptPoundSterlingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"receipt-pound-sterling\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ReceiptPoundSterlingIcon(props:ReceiptPoundSterlingIconProps){return <Icon name=\"receipt-pound-sterling\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/receipt-pound-sterling.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "receipt-pound-sterling"
+  },
+  "type": "registry:component"
+}

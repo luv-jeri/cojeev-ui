@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-asterisk",
+  "title": "Square asterisk icon",
+  "description": "Square asterisk icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-asterisk.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareAsteriskIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-asterisk\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareAsteriskIcon(props:SquareAsteriskIconProps){return <Icon name=\"square-asterisk\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-asterisk.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-asterisk"
+  },
+  "type": "registry:component"
+}

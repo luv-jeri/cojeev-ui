@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ellipse",
+  "title": "Ellipse icon",
+  "description": "Ellipse icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ellipse.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type EllipseIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ellipse\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function EllipseIcon(props:EllipseIconProps){return <Icon name=\"ellipse\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ellipse.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ellipse"
+  },
+  "type": "registry:component"
+}

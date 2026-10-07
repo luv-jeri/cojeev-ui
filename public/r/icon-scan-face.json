@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-scan-face",
+  "title": "Scan face icon",
+  "description": "Scan face icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/scan-face.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ScanFaceIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"scan-face\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ScanFaceIcon(props:ScanFaceIconProps){return <Icon name=\"scan-face\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/scan-face.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "scan-face"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-droplet-off",
+  "title": "Droplet off icon",
+  "description": "Droplet off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/droplet-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DropletOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"droplet-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DropletOffIcon(props:DropletOffIconProps){return <Icon name=\"droplet-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/droplet-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "droplet-off"
+  },
+  "type": "registry:component"
+}

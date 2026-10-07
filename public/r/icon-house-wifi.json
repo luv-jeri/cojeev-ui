@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-house-wifi",
+  "title": "House wifi icon",
+  "description": "House wifi icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/house-wifi.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HouseWifiIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"house-wifi\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HouseWifiIcon(props:HouseWifiIconProps){return <Icon name=\"house-wifi\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/house-wifi.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "house-wifi"
+  },
+  "type": "registry:component"
+}

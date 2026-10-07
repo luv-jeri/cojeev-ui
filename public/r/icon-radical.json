@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-radical",
+  "title": "Radical icon",
+  "description": "Radical icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/radical.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RadicalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"radical\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RadicalIcon(props:RadicalIconProps){return <Icon name=\"radical\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/radical.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "radical"
+  },
+  "type": "registry:component"
+}

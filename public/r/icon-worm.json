@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-worm",
+  "title": "Worm icon",
+  "description": "Worm icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/worm.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type WormIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"worm\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function WormIcon(props:WormIconProps){return <Icon name=\"worm\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/worm.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "worm"
+  },
+  "type": "registry:component"
+}

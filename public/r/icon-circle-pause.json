@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-pause",
+  "title": "Circle pause icon",
+  "description": "Circle pause icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-pause.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CirclePauseIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-pause\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CirclePauseIcon(props:CirclePauseIconProps){return <Icon name=\"circle-pause\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-pause.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-pause"
+  },
+  "type": "registry:component"
+}

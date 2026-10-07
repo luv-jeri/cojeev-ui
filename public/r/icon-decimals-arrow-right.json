@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-decimals-arrow-right",
+  "title": "Decimals arrow right icon",
+  "description": "Decimals arrow right icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/decimals-arrow-right.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DecimalsArrowRightIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"decimals-arrow-right\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DecimalsArrowRightIcon(props:DecimalsArrowRightIconProps){return <Icon name=\"decimals-arrow-right\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/decimals-arrow-right.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "decimals-arrow-right"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-bring-to-front",
+  "title": "Bring to front icon",
+  "description": "Bring to front icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/bring-to-front.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BringToFrontIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"bring-to-front\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BringToFrontIcon(props:BringToFrontIconProps){return <Icon name=\"bring-to-front\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/bring-to-front.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "bring-to-front"
+  },
+  "type": "registry:component"
+}

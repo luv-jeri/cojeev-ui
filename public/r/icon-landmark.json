@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-landmark",
+  "title": "Landmark icon",
+  "description": "Landmark icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/landmark.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LandmarkIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"landmark\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LandmarkIcon(props:LandmarkIconProps){return <Icon name=\"landmark\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/landmark.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "landmark"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chart-gantt",
+  "title": "Chart gantt icon",
+  "description": "Chart gantt icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chart-gantt.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChartGanttIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chart-gantt\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChartGanttIcon(props:ChartGanttIconProps){return <Icon name=\"chart-gantt\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chart-gantt.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chart-gantt"
+  },
+  "type": "registry:component"
+}

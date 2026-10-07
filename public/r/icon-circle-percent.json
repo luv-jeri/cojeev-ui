@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-percent",
+  "title": "Circle percent icon",
+  "description": "Circle percent icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-percent.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CirclePercentIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-percent\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CirclePercentIcon(props:CirclePercentIconProps){return <Icon name=\"circle-percent\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-percent.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-percent"
+  },
+  "type": "registry:component"
+}

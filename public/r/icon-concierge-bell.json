@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-concierge-bell",
+  "title": "Concierge bell icon",
+  "description": "Concierge bell icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/concierge-bell.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ConciergeBellIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"concierge-bell\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ConciergeBellIcon(props:ConciergeBellIconProps){return <Icon name=\"concierge-bell\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/concierge-bell.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "concierge-bell"
+  },
+  "type": "registry:component"
+}

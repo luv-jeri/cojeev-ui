@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-video-camera",
+  "title": "File video camera icon",
+  "description": "File video camera icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-video-camera.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileVideoCameraIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-video-camera\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileVideoCameraIcon(props:FileVideoCameraIconProps){return <Icon name=\"file-video-camera\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-video-camera.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-video-camera"
+  },
+  "type": "registry:component"
+}

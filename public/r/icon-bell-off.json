@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-bell-off",
+  "title": "Bell off icon",
+  "description": "Bell off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/bell-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BellOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"bell-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BellOffIcon(props:BellOffIconProps){return <Icon name=\"bell-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/bell-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "bell-off"
+  },
+  "type": "registry:component"
+}
