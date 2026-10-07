@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { load } from "cheerio";
-import { elapsedOf, elapsedParts, planTravel } from "../registry/cojeev/lib/milestone-travel";
+import { MARK_PATHS, elapsedOf, elapsedParts, planTravel } from "../registry/cojeev/lib/milestone-travel";
 import { MilestonePath, type Milestone } from "../registry/cojeev/ui/milestone-path";
 
 const noop = () => {};
@@ -89,4 +89,33 @@ test("needs without an action is rejected before its row renders", () => {
   const running: Milestone = { id: "y", title: "Y", state: "complete", duration: { kind: "running", startedAt: 0 } };
   void missing;
   void running;
+});
+
+test("each travel character rests in its own look; seed keeps the plain star", () => {
+  const items: Milestone[] = [
+    { id: "a", title: "Plan", state: "complete" },
+    { id: "b", title: "Build", state: "current" },
+    { id: "c", title: "Ship", state: "upcoming" },
+  ];
+  const look = (travel: "seed" | "droplet" | "division") => {
+    const $ = load(renderToStaticMarkup(createElement(MilestonePath, { items, travel })));
+    const mark = (id: string) => $(`[data-milestone-id="${id}"] .v-milestone-path__marker`);
+    return {
+      done: mark("a").find(".v-milestone-path__shape").attr("d"),
+      work: mark("b").find(".v-milestone-path__shape").attr("d"),
+      deco: mark("a").find(".v-milestone-path__deco").attr("data-deco") ?? null,
+      check: mark("a").find(".v-milestone-path__check").length,
+      core: mark("b").find(".v-milestone-path__core").length,
+    };
+  };
+  const seed = look("seed"),
+    droplet = look("droplet"),
+    division = look("division");
+  assert.equal(seed.done, MARK_PATHS.star, "the done star stays the library STAR4");
+  assert.equal(seed.check, 0);
+  assert.equal(seed.deco, null);
+  for (const key of ["done", "work"] as const)
+    assert.equal(new Set([seed[key], droplet[key], division[key]]).size, 3, `${key} marks differ per character`);
+  assert.deepEqual([droplet.deco, division.deco], ["depth", "membrane"]);
+  assert.deepEqual([droplet.check, division.check, droplet.core, division.core], [1, 1, 1, 1], "done keeps its check, work its nucleus");
 });

@@ -5,8 +5,12 @@ import { cn } from "../lib/utils";
 import {
   BANG_PATH,
   CHECK_PATH,
+  MARK_GLYPH_Y,
+  MARK_LOOKS,
   MARK_PATHS,
+  MARK_POINTS,
   elapsedOf,
+  markDeco,
   elapsedParts,
   useMilestoneTravel,
   type MilestoneTravel,
@@ -271,12 +275,15 @@ function Mark({
     );
   const shape =
     state === "complete"
-      ? travel === "seed"
-        ? "star"
-        : "done"
+      ? MARK_LOOKS[travel].done
       : state === "needs"
         ? "needs"
-        : "pebble";
+        : MARK_LOOKS[travel].work;
+  const fill =
+    state === "complete" ? "olive" : state === "needs" ? "danger" : "pink";
+  const gy = MARK_GLYPH_Y[shape];
+  const deco =
+    state === "needs" ? null : markDeco(travel, MARK_POINTS[shape], gy);
   return (
     <svg viewBox="-18 -18 36 36" className="v-milestone-path__mark">
       {state !== "complete" && (
@@ -290,17 +297,27 @@ function Mark({
         <path
           d={MARK_PATHS[shape]}
           className="v-milestone-path__shape"
-          data-fill={
-            state === "complete" ? "olive" : state === "needs" ? "danger" : "pink"
-          }
+          data-fill={fill}
           data-breathe={breathe || undefined}
         />
+        {deco && (
+          <path
+            d={deco.d}
+            className="v-milestone-path__deco"
+            data-deco={deco.kind}
+            data-fill={fill}
+          />
+        )}
       </g>
       {state === "current" && (
-        <circle r={3.2} className="v-milestone-path__core" />
+        <circle cy={gy || undefined} r={3.2} className="v-milestone-path__core" />
       )}
       {state === "complete" && travel !== "seed" && (
-        <path d={CHECK_PATH} className="v-milestone-path__check" />
+        <path
+          d={CHECK_PATH}
+          transform={gy ? `translate(0 ${gy.toFixed(2)})` : undefined}
+          className="v-milestone-path__check"
+        />
       )}
       {state === "needs" && (
         <g className="v-milestone-path__bang">
@@ -480,6 +497,7 @@ function Steps({
     travel: shared.travel,
     axis,
     allowed: shared.allowed,
+    lead: !nested,
   });
   const list = (
     <div
