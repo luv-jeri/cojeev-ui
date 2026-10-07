@@ -43,7 +43,7 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
           await root.getByRole("radio", { name: label, exact: true }).click();
           await attribute(feed, "data-variant", look);
           assert.equal(await entries.count(), 5, `${label} keeps every entry`);
-          if (look === "bursts") await text(feed.locator("details summary").first(), "2 updates");
+          if (look === "bursts") await text(feed.locator("summary.v-activity-feed__card-head").first(), "2 updates");
         }
       });
       return "Progressive reveal moves focus, local prepend preserves all five entries, quiet content remains readable, caller undo/redo keeps focus, and the three looks keep every entry";

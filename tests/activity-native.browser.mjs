@@ -14,7 +14,7 @@ const bundle = await build({
   stdin: {
     loader: "tsx",
     resolveDir: process.cwd(),
-    contents: `import React from'react';import{createRoot}from'react-dom/client';import{flushSync}from'react-dom';import{ActivityFeed}from'./registry/cojeev/ui/activity-feed';import{MilestonePath}from'./registry/cojeev/ui/milestone-path';import{setMotionMode,setFlowSettings}from'./registry/cojeev/motion/settings';import{motionClock}from'./registry/cojeev/motion/clock';window.clock=motionClock;const st=(p,i,d)=>p.at==null?d:i<p.at?'complete':i===p.at?'current':'upcoming';const order=(p,xs)=>p.order?p.order.map(id=>xs.find(x=>x.id===id)):xs;window.mode=setMotionMode;window.flow=setFlowSettings;const root=createRoot(document.getElementById('root'));window.selections=[];window.render=p=>flushSync(()=>root.render(<><ActivityFeed ref={n=>window.feedNode=n} aria-label="History" entries={(p.ids??['a','b','c','d']).map(id=>({id,title:'Update '+id,group:id==='d'?'Earlier':'Recent',timestamp:'10:30',dateTime:'2026-09-08T10:30:00+05:30',content:<input aria-label={'Edit '+id} defaultValue={id}/>}))} initialVisible={p.all?undefined:2} pageSize={2}/><MilestonePath ref={n=>window.pathNode=n} aria-label="Project path" presentation={p.presentation} travel={p.travel} items={p.empty?[]:order(p,[{id:'a',title:'A complete checkpoint',state:st(p,0,p.mixed?'upcoming':'complete')},{id:'b',title:'A current checkpoint with a long label that wraps',description:'Keep meaningful descriptions visible in every layout.',state:st(p,1,p.done||p.next?'complete':'current'),disabled:p.disabled},{id:'c',title:'A future checkpoint',state:st(p,2,p.mixed?'complete':p.next?'current':'upcoming')}])} onMilestoneSelect={p.readonly?undefined:id=>window.selections.push(id)}/></>));window.render({});const root2=createRoot(document.getElementById('root2'));window.renderFeed=p=>flushSync(()=>root2.render(<ActivityFeed key={p.key} ref={n=>window.feed2=n} aria-label="Variants" variant={p.variant} initialVisible={p.initialVisible} pageSize={p.pageSize} entries={p.entries.map(([id,who,time,group])=>({id,title:'Entry '+id,actor:who?{name:who}:undefined,group,timestamp:time?time.slice(11,16):undefined,dateTime:time??undefined}))}/>));`,
+    contents: `import React from'react';import{createRoot}from'react-dom/client';import{flushSync}from'react-dom';import{ActivityFeed}from'./registry/cojeev/ui/activity-feed';import{MilestonePath}from'./registry/cojeev/ui/milestone-path';import{setMotionMode,setFlowSettings}from'./registry/cojeev/motion/settings';import{motionClock}from'./registry/cojeev/motion/clock';window.clock=motionClock;const st=(p,i,d)=>p.at==null?d:i<p.at?'complete':i===p.at?'current':'upcoming';const order=(p,xs)=>p.order?p.order.map(id=>xs.find(x=>x.id===id)):xs;window.mode=setMotionMode;window.flow=setFlowSettings;const root=createRoot(document.getElementById('root'));window.selections=[];window.render=p=>flushSync(()=>root.render(<><ActivityFeed ref={n=>window.feedNode=n} aria-label="History" entries={(p.ids??['a','b','c','d']).map(id=>({id,title:'Update '+id,group:id==='d'?'Earlier':'Recent',timestamp:'10:30',dateTime:'2026-09-08T10:30:00+05:30',content:<input aria-label={'Edit '+id} defaultValue={id}/>}))} initialVisible={p.all?undefined:2} pageSize={2}/><MilestonePath ref={n=>window.pathNode=n} aria-label="Project path" presentation={p.presentation} travel={p.travel} items={p.empty?[]:order(p,[{id:'a',title:'A complete checkpoint',state:st(p,0,p.mixed?'upcoming':'complete')},{id:'b',title:'A current checkpoint with a long label that wraps',description:'Keep meaningful descriptions visible in every layout.',state:st(p,1,p.done||p.next?'complete':'current'),disabled:p.disabled},{id:'c',title:'A future checkpoint',state:st(p,2,p.mixed?'complete':p.next?'current':'upcoming')}])} onMilestoneSelect={p.readonly?undefined:id=>window.selections.push(id)}/></>));window.render({});const root2=createRoot(document.getElementById('root2'));window.renderFeed=p=>flushSync(()=>root2.render(<ActivityFeed key={p.key} ref={n=>window.feed2=n} aria-label="Variants" variant={p.variant} initialVisible={p.initialVisible} pageSize={p.pageSize} entries={p.entries.map(([id,who,time,group])=>({id,title:'Entry '+id,actor:who?{name:who}:undefined,group,timestamp:time?time.slice(11,16):undefined,dateTime:time??undefined,content:p.inputs?<input aria-label={'Edit '+id} id={'input-'+id} defaultValue={id}/>:undefined}))}/>));`,
   },
   bundle: true,
   write: false,
@@ -283,11 +283,19 @@ try {
   ];
   const fresh = ["e0", "Mira Shah", at("10", "50"), "Today"];
   const feedRender = (p) => page.evaluate((p) => window.renderFeed(p), p);
+  // Runs and cards are read from the flat list: each starts at a row marked first.
   const sizes = () =>
+    v.evaluate((el) => {
+      const out = [];
+      for (const row of el.querySelectorAll(".v-activity-feed__list > [data-activity-entry]:not([data-leaving])")) {
+        if (row.hasAttribute("data-first") || !out.length) out.push(0);
+        out[out.length - 1]++;
+      }
+      return out;
+    });
+  const folds = () =>
     v.evaluate((el) =>
-      [...el.querySelectorAll(".v-activity-feed__cluster")].map(
-        (c) => c.querySelectorAll("[data-activity-entry]").length,
-      ),
+      [...el.querySelectorAll("[data-burst] > .v-activity-feed__card > details")].map((d) => d.open && !d.hasAttribute("data-closing")),
     );
   const stash = (sel, name) =>
     v.evaluate((el, [sel, name]) => (window[name] = el.querySelector(sel)), [sel, name]);
@@ -298,43 +306,56 @@ try {
   await feedRender({ entries: fixture });
   assert.equal(await v.getAttribute("data-variant"), "thread");
   assert.equal(await v.locator(".v-activity-feed__list > [data-activity-entry]").count(), 7);
-  assert.equal(await v.locator(".v-activity-feed__cluster, details").count(), 0);
+  assert.equal(await v.locator("[data-first], details").count(), 0, "The thread has no runs or disclosures");
   assert.equal(await v.locator(".v-activity-feed__group").count(), 2);
   assert.equal(await v.locator("[data-brand]").count(), 1);
   assert.equal(await v.locator('[data-activity-entry="e5"] [data-brand] path').count(), 1, "An entry without an actor carries the brand star");
   // Ledger: one run per actor within a day, no time limit; the label pins.
   await feedRender({ entries: fixture, variant: "ledger" });
   assert.equal(await v.getAttribute("data-variant"), "ledger");
-  assert.equal(await v.locator(".v-activity-feed__day").count(), 2);
+  assert.equal(await v.locator(".v-activity-feed__list > .v-activity-feed__group").count(), 2, "Day labels are list items beside the rows");
+  assert.equal(await v.locator(".v-activity-feed__list > [data-activity-entry]").count(), 7, "Every row is a direct list item, whatever its run");
   assert.deepEqual(await sizes(), [3, 1, 1, 2], "Ledger joins same-actor runs inside a day, across an hour");
-  assert.equal(await v.locator(".v-activity-feed__cluster-name").first().textContent(), "Mira Shah");
+  assert.equal(await v.locator(".v-activity-feed__run-name").first().textContent(), "Mira Shah");
   assert.match(await v.locator('[data-activity-entry="e2"]').textContent(), /Mira Shah/, "Each row keeps its actor in text");
   assert.equal(await v.locator(".v-activity-feed__group").first().evaluate((el) => getComputedStyle(el).position), "sticky");
-  assert.equal(await v.locator(".v-activity-feed__cluster [data-brand]").count(), 1);
+  assert.equal(await v.locator('[data-activity-entry="e5"] [data-brand]').count(), 1);
+  // The breathing dot's place is always kept, so it coming and going never rewraps a line.
+  {
+    const meta = () => v.locator('[data-activity-entry="e1"] .v-activity-feed__meta').evaluate((el) => el.getBoundingClientRect().width);
+    const still = await meta();
+    await v.locator('[data-activity-entry="e1"]').evaluate((el) => el.setAttribute("data-breath", ""));
+    assert.equal(await meta(), still, "The breathing dot takes no new space");
+    await v.locator('[data-activity-entry="e1"]').evaluate((el) => el.removeAttribute("data-breath"));
+  }
   // Bursts: same actor within 30 minutes by dateTime; an entry without one stands alone.
   await feedRender({ entries: fixture, variant: "bursts" });
   assert.deepEqual(await sizes(), [2, 1, 1, 1, 1, 1]);
-  const burst = v.locator("details.v-activity-feed__burst");
-  assert.equal(await burst.count(), 1, "Only a burst of two or more is a disclosure");
-  const summary = burst.locator("summary");
+  const summary = v.locator("summary.v-activity-feed__card-head");
+  assert.equal(await summary.count(), 1, "Only a burst of two or more has a disclosure head");
+  const burst = summary.locator("xpath=..");
   assert.match(await summary.textContent(), /Mira Shah\s*2 updates/);
   assert.equal(await burst.evaluate((d) => d.open), true);
+  assert.deepEqual(await folds(), [true, true]);
+  // Each entry sits inside a native disclosure, so find in page and links can reveal it.
   assert.equal(
-    await summary.evaluate((s) => document.getElementById(s.getAttribute("aria-controls"))?.contains(document.querySelector('[data-activity-entry="e2"]'))),
+    await v.evaluate((el) => [...el.querySelectorAll("[data-activity-entry] .v-activity-feed__content")].every((c) => c.closest("details"))),
     true,
   );
   await summary.click();
-  assert.equal(await burst.evaluate((d) => d.open), false, "Quiet toggles are instant");
-  assert.equal(await v.locator('[data-activity-entry="e1"]').isVisible(), false);
+  assert.deepEqual(await folds(), [false, false], "Quiet toggles are instant");
+  assert.equal(await v.locator('[data-activity-entry="e1"] .v-activity-feed__content').isVisible(), false);
+  assert.equal(await v.locator('[data-activity-entry="e2"] .v-activity-feed__content').isVisible(), false);
   await summary.press("Enter");
-  assert.equal(await burst.evaluate((d) => d.open), true);
+  assert.deepEqual(await folds(), [true, true]);
   // Prepends keep rows and cards mounted; the new entry joins the burst.
   await stash('[data-activity-entry="e2"]', "keptRow");
-  await stash(".v-activity-feed__cluster", "keptCard");
+  await stash('[data-activity-entry="e1"] details', "keptFold");
   await feedRender({ entries: [fresh, ...fixture], variant: "bursts" });
   assert.deepEqual(await sizes(), [3, 1, 1, 1, 1, 1]);
   assert.equal(await same('[data-activity-entry="e2"]', "keptRow"), true);
-  assert.equal(await same(".v-activity-feed__cluster", "keptCard"), true, "A growing burst keeps its card");
+  assert.equal(await same('[data-activity-entry="e1"] details', "keptFold"), true, "A growing burst keeps each row's disclosure");
+  assert.match(await summary.textContent(), /3 updates/);
   // Show more into a closed burst opens it and focuses the first new entry.
   const run = [
     ["b1", "Mira Shah", at("10", "42"), "Today"],
@@ -345,11 +366,19 @@ try {
   // initialVisible applies on mount, so this feed mounts afresh.
   await feedRender({ key: "paged", entries: run, variant: "bursts", initialVisible: 2, pageSize: 2 });
   await summary.click();
-  assert.equal(await burst.evaluate((d) => d.open), false);
+  assert.deepEqual(await folds(), [false, false]);
   await v.getByRole("button", { name: "Show 2 more" }).press("Enter");
   assert.equal(await page.evaluate(() => document.activeElement?.dataset.activityEntry), "b3");
-  assert.equal(await burst.evaluate((d) => d.open), true);
+  assert.deepEqual(await folds(), [true, true, true]);
   assert.deepEqual(await sizes(), [3, 1]);
+  // A link into a closed burst opens the whole card natively.
+  await feedRender({ key: "linked", entries: fixture, variant: "bursts", inputs: true });
+  await summary.click();
+  assert.deepEqual(await folds(), [false, false]);
+  await page.evaluate(() => (location.hash = "#input-e2"));
+  await page.waitForTimeout(80);
+  assert.deepEqual(await folds(), [true, true], "Fragment navigation reveals the burst");
+  assert.equal(await v.locator("#input-e2").isVisible(), true);
   // Reduced motion: arrivals and removals are instant, nothing is left mid-way.
   await feedRender({ entries: fixture });
   await feedRender({ entries: [fresh, ...fixture.filter(([id]) => id !== "e3")] });
@@ -375,10 +404,6 @@ try {
       { n, read: read.toString(), arg },
     );
   const freeze = () => page.evaluate(() => window.clock((window.clockAt = performance.now())));
-  const height = (feed, id) => {
-    const el = feed.querySelector(`[data-activity-entry="${id}"]`);
-    return el ? el.getBoundingClientRect().height : null;
-  };
   const glides = (hs, from, to, label) => {
     const between = hs.filter((h) => h !== null && h > Math.min(from, to) + 1 && h < Math.max(from, to) - 1);
     assert.ok(new Set(between.map(Math.round)).size >= 3, `${label}: several intermediate frames (${hs.map((h) => h === null ? "x" : h.toFixed(0)).join(",")})`);
@@ -391,35 +416,52 @@ try {
     await feedRender({ key: variant, entries: fixture, variant });
     await page.waitForTimeout(120);
     await freeze();
-    // Arrival: the new line opens from nothing on the shared spring.
+    // Arrival, read from before the change to rest: the new line, the run or card that takes it,
+    // and the text below it. Settled text never jumps; everything glides on the shared spring.
+    const look = (feed, variant) => {
+      const top = feed.getBoundingClientRect().top;
+      const rows = [...feed.querySelectorAll(".v-activity-feed__list > [data-activity-entry]:not([data-leaving])")];
+      const i1 = rows.findIndex((r) => r.dataset.activityEntry === "e1");
+      let end = i1;
+      if (variant !== "thread") while (end < rows.length - 1 && !rows[end].hasAttribute("data-last")) end++;
+      const e0 = feed.querySelector('[data-activity-entry="e0"]');
+      return {
+        e0: e0 ? e0.getBoundingClientRect().height : 0,
+        card: rows[end].getBoundingClientRect().bottom - rows[0].getBoundingClientRect().top,
+        title: rows[i1].querySelector(".v-activity-feed__title").getBoundingClientRect().top - top,
+        label: feed.querySelector(".v-activity-feed__group").getBoundingClientRect().top - top,
+      };
+    };
+    const still = await v.evaluate(look, variant);
     await feedRender({ key: variant, entries: [fresh, ...fixture], variant });
     const box = '[data-activity-entry="e0"]';
-    const arriving = await frames(150, height, "e0");
-    const rest = arriving.at(-1);
+    const first = await v.evaluate(look, variant);
+    const arriving = [first, ...(await frames(150, look, variant))];
+    const rest = arriving.at(-1).e0;
     assert.ok(rest > 20, `${variant}: the arrival lands at its natural height`);
-    if (variant === "thread") glides(arriving, 0, rest, `${variant} arrival`);
+    assert.ok(Math.abs(first.title - still.title) < 0.5, `${variant}: settled text does not move when the arrival starts (${still.title} -> ${first.title})`);
+    assert.ok(arriving.every((f) => Math.abs(f.label - still.label) < 0.5), `${variant}: the group heading never moves`);
+    assert.ok(arriving.every((f) => f.title > still.title - 0.5), `${variant}: settled text never jumps up`);
+    glides(arriving.map((f) => f.e0), first.e0, rest, `${variant} arrival`);
+    glides([still.card, ...arriving.map((f) => f.card)], still.card, arriving.at(-1).card, `${variant} run or card`);
+    glides([still.title, ...arriving.map((f) => f.title)], still.title, arriving.at(-1).title, `${variant} text below`);
     assert.equal(await v.locator(`${box}[data-moving]`).count(), 0, `${variant}: the arrival hands its height back`);
     if (variant === "ledger") {
       const wash = v.locator('[data-activity-entry="e0"] .v-activity-feed__wash');
       await frames(60, () => 0);
       assert.equal(await wash.evaluate((el) => getComputedStyle(el).opacity), "0", "The wash fades within one draw");
     }
-    if (variant !== "thread") {
-      // A growing run or burst opens its box on the spring instead.
-      const card = await v.evaluate((el) => el.querySelector(".v-activity-feed__cluster").getBoundingClientRect().height);
-      assert.ok(card > rest, `${variant}: the run holds the new line`);
-    }
+    if (variant !== "thread")
+      assert.ok(arriving.at(-1).card > rest, `${variant}: the run holds the new line`);
     // Removal: the row closes through its height, inert, then leaves the tree.
-    // e4 is alone in its run or card, so in ledger and bursts the whole box leaves.
+    // e4 is alone in its run or card, so in ledger and bursts its row is the whole box.
     const leaver = (feed) => {
-      const row = feed.querySelector('[data-activity-entry="e4"]');
-      const el = row && (row.closest(".v-activity-feed__cluster") ?? row);
+      const el = feed.querySelector('[data-activity-entry="e4"]');
       return el ? el.getBoundingClientRect().height : null;
     };
     const before = await v.evaluate(leaver);
     await feedRender({ key: variant, entries: [fresh, ...fixture.filter(([id]) => id !== "e4")], variant });
-    // Only the outermost leaving box knows: the row, or the run that held only it.
-    assert.equal(await v.locator('[data-leaving]:has([data-activity-entry="e4"]), [data-activity-entry="e4"][data-leaving]').evaluate((el) => el.inert), true);
+    assert.equal(await v.locator('[data-activity-entry="e4"][data-leaving]').evaluate((el) => el.inert), true);
     const spines = (feed) => feed.querySelectorAll('.v-activity-feed__spine:not([display="none"])').length;
     const midway = variant === "thread" ? await frames(3, spines) : [];
     const leaving = await frames(150, leaver);
@@ -438,17 +480,51 @@ try {
   await feedRender({ entries: fixture, variant: "bursts" });
   await page.waitForTimeout(120);
   await freeze();
-  const card = (feed) => feed.querySelector(".v-activity-feed__cluster").getBoundingClientRect().height;
+  const card = (feed) =>
+    feed.querySelector('[data-activity-entry="e2"]').getBoundingClientRect().bottom -
+    feed.querySelector('[data-activity-entry="e1"]').getBoundingClientRect().top;
   const open = await v.evaluate(card);
   await summary.click();
   const closing = await frames(150, card);
-  assert.equal(await burst.evaluate((d) => d.open || d.hasAttribute("data-closing")), false);
+  assert.deepEqual(await v.evaluate((el) => [...el.querySelectorAll("[data-burst] details")].map((d) => d.open || d.hasAttribute("data-closing"))), [false, false]);
   glides([open, ...closing], open, closing.at(-1), "burst close");
-  assert.equal(await v.locator('[data-activity-entry="e1"]').isVisible(), false);
+  assert.equal(await v.locator('[data-activity-entry="e1"] .v-activity-feed__content').isVisible(), false);
   await summary.click();
   const opening = await frames(150, card);
   glides([closing.at(-1), ...opening], closing.at(-1), open, "burst open");
   assert.ok(Math.abs(opening.at(-1) - open) < 1);
+  // Removing the entry between two runs of one actor merges them without remounting a row:
+  // the caller's edited, focused input in the last row keeps its node, value and focus.
+  for (const variant of ["ledger", "bursts"]) {
+    const xyx = [
+      ["x1", "Mira Shah", at("10", "42"), "Today"],
+      ["y1", "Arun Rao", at("10", "40"), "Today"],
+      ["x2", "Mira Shah", at("10", "38"), "Today"],
+    ];
+    await page.evaluate(() => window.clock(null));
+    await feedRender({ key: `regroup-${variant}`, entries: xyx, variant, inputs: true });
+    await page.waitForTimeout(80);
+    await freeze();
+    assert.deepEqual(await sizes(), [1, 1, 1]);
+    const input = v.locator("#input-x2");
+    await input.fill("edited");
+    await input.focus();
+    await stash('[data-activity-entry="x2"]', "keptX2");
+    await stash("#input-x2", "keptInput");
+    await feedRender({ key: `regroup-${variant}`, entries: [xyx[0], xyx[2]], variant, inputs: true });
+    const kept = async (when) => {
+      assert.equal(await v.locator('[data-activity-entry="x2"]').count(), 1, `${variant} ${when}: one row for x2`);
+      assert.equal(await same('[data-activity-entry="x2"]', "keptX2"), true, `${variant} ${when}: the row keeps its node`);
+      assert.equal(await same("#input-x2", "keptInput"), true, `${variant} ${when}: the input keeps its node`);
+      assert.equal(await input.inputValue(), "edited", `${variant} ${when}: the edit survives`);
+      assert.equal(await page.evaluate(() => document.activeElement?.id), "input-x2", `${variant} ${when}: focus stays`);
+    };
+    await kept("mid-removal");
+    assert.deepEqual(await sizes(), [2], `${variant}: the runs merge`);
+    await frames(150, () => 0);
+    await kept("after removal");
+    assert.equal(await v.locator("[data-leaving],[data-moving]").count(), 0);
+  }
   // Only the newest fresh entry breathes, and quiet stops it.
   await page.evaluate(() => window.clock(null));
   await feedRender({ entries: fixture, variant: "thread" });
@@ -481,7 +557,7 @@ try {
     );
   }
   console.log(
-    "PASS activity/milestone native: retained nodes/edits, pagination/focus/time/empty, state authority,44px stationary targets, disabled/readonly/ref, owned sequence scrolling, travel without layout shift, continuous seed/droplet/division travel with retarget and reorder release, and quiet; feed variants: thread/ledger/bursts grouping, burst disclosure and reveal, legacy default, quiet instant changes, spring arrival/removal/burst toggle without teleport, one breath",
+    "PASS activity/milestone native: retained nodes/edits, pagination/focus/time/empty, state authority,44px stationary targets, disabled/readonly/ref, owned sequence scrolling, travel without layout shift, continuous seed/droplet/division travel with retarget and reorder release, and quiet; feed variants: thread/ledger/bursts grouping, burst disclosure and reveal, legacy default, quiet instant changes, rows kept through regrouping with caller focus and edits, link reveal of a closed burst, reserved breathing dot, spring arrival per look with settled text and headings still, removal and burst toggle without teleport, one breath",
   );
 } finally {
   await browser.close();
