@@ -216,7 +216,7 @@ test('unknown_and_variant_hosts_fail_closed', async () => {
   const response = await host.fetch(new Request('https://000H.cojeev.com/about/'), mixed.env);
   assert.equal(response.status, 301);
   assert.equal(response.headers.get('location'), 'https://cojeev.com/ui/about/');
-  for (const hostname of ['000h.cojeev.com.', 'x.workers.dev', 'beta.000h.cojeev.com']) {
+  for (const hostname of ['000h.cojeev.com.', 'x.workers.dev', 'beta.000h.cojeev.com', '000h.cojeev.com:8443', 'cojeev.com:8443']) {
     const f = fixture({stage: 'redirect'});
     const response = await host.fetch(new Request(`https://${hostname}/about/`), f.env);
     assert.equal(response.status, 404, hostname);

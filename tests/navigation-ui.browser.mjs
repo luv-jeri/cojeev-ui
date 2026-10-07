@@ -40,7 +40,11 @@ function observe(context) {
     try {
       const url = new URL(request.url());
       const pageOrigin = new URL(request.frame().page().url()).origin;
-      if (request.failure()?.errorText === "net::ERR_ABORTED" && url.origin === pageOrigin && url.pathname.startsWith("/ui/")) {
+      const headers = request.headers();
+      const resource = request.resourceType();
+      const rscPrefetch = ["fetch", "xhr"].includes(resource) && headers.rsc === "1" &&
+        (headers["next-router-prefetch"] === "1" || headers["next-router-segment-prefetch"] !== undefined);
+      if (request.failure()?.errorText === "net::ERR_ABORTED" && url.origin === pageOrigin && url.pathname.startsWith("/ui/") && rscPrefetch) {
         ignoredCancellations.push(url.pathname);
         return;
       }

@@ -164,6 +164,14 @@ test('manifest_rejects_cross_environment_hosts_and_wrong_base_paths',async t => 
   assert.doesNotThrow(() => validateContent(js,'const route="/docs/button"','production',{origin:'build',registryGraph:'canonical'}));
 });
 test('beta_manifest_allows_exact_cojeev_homepage_navigation_only',async t => {
+  const inline=payload=>`<script>self.__next_f.push([1,${JSON.stringify(payload)}])</script>`;
+  await t.test('HTML embedded Next navigation',()=>checkContent(html,inline('1:["$","a",null,{"href":"https://cojeev.com/","children":"by Cojeev"}]\n'),'beta',true));
+  for(const payload of [
+    '["$","a",null,{"href":"https://cojeev.com/","data":{"url":"https://cojeev.com/ui/"}}]',
+    '["$","link",null,{"href":"https://cojeev.com/"}]',
+    '["$","a",null,{"data":{"href":"https://cojeev.com/"}}]',
+    '["$","a",null,{"href":"https://cojeev.com/"}];fetch("https://cojeev.com/")',
+  ]) await t.test(payload,()=>checkContent(html,inline(payload),'beta',false,/environment|metadata|fetch/));
   for(const row of rows.filter(row => row[1] === 'beta' && row[5])) await t.test(row[0],() => checkRow(row));
 });
 test('beta_manifest_rejects_production_ui_api_and_canonical_metadata',async t => {
@@ -205,4 +213,16 @@ test('mounted_registry_copy_keeps_baseline_provenance',async () => {
     await put(root,registry,content);
     await assert.rejects(createManifest(root,environment,commit,{...id,...identity('canonical')}),/site\/ui\/r\/registry.json/);
   });
+});
+
+test('manifest_allows_origin_only_connection_hints_only',async()=>{
+  const real=await fs.readFile(new URL('./fixtures/manifest-scan/next-origin-hint.html',import.meta.url),'utf8');
+  for(const environment of ['beta','production']) {
+    for(const content of [real,real.replace('preconnect','dns-prefetch')])
+      assert.doesNotThrow(()=>validateContent(html,content,environment,{origin:'build',registryGraph:'canonical'}));
+    for(const content of ['<link rel="preload" href="/x.js">','<link rel="preload" href="/">',
+      '<link rel="preconnect" href="/x">','<link rel="preconnect" href="//cojeev.com/">',
+      '<link rel="preconnect" href="https://cojeev.com/">'])
+      assert.throws(()=>validateContent(html,content,environment,{origin:'build',registryGraph:'canonical'}),/base path|environment/);
+  }
 });

@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {spawnSync} from 'node:child_process';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {writeFileSync,existsSync,readFileSync} from 'node:fs';
@@ -386,4 +387,29 @@ test('isolated restore refuses nonempty scratch without issuing import',async()=
   };
   await assert.rejects(restore('beta',key,{run,cf:policyAPI}),/empty/);
   assert.ok(!commands.some(args=>args[0]==='d1'&&args.includes('--file')));
+});
+
+// Copy the complete static graph into a directory with no installed packages.
+test('operations_health_imports_resolve_without_node_modules',async t=>{
+  const scratch=await fs.mkdtemp(path.join(os.tmpdir(),'operations-clean-'));
+  t.after(()=>fs.rm(scratch,{recursive:true,force:true}));
+  const root=path.resolve(import.meta.dirname,'..'),visited=new Set();
+  const copy=async relative=>{
+    if(visited.has(relative)) return;visited.add(relative);
+    const source=await fs.readFile(path.join(root,relative),'utf8');
+    for(const match of source.matchAll(/(?:import|export)\s+(?:[^;]*?\s+from\s+)?['"]([^'"]+)['"]/g)) {
+      const specifier=match[1];
+      if(specifier.startsWith('node:')) continue;
+      assert.ok(specifier.startsWith('.'),`reachable package import: ${relative} -> ${specifier}`);
+      await copy(path.normalize(path.join(path.dirname(relative),specifier)));
+    }
+    await fs.mkdir(path.dirname(path.join(scratch,relative)),{recursive:true});
+    await fs.writeFile(path.join(scratch,relative),source);
+  };
+  await copy('scripts/operations-health.mjs');
+  const run=spawnSync(process.execPath,['scripts/operations-health.mjs','beta'],{
+    cwd:scratch,env:{PATH:process.env.PATH,OPERATIONS_FAILURE:'recovery-failed'},encoding:'utf8',
+  });
+  assert.equal(run.status,1);assert.equal(run.stderr,'');
+  assert.deepEqual(JSON.parse(run.stdout),{environment:'beta',problems:['recovery-failed']});
 });

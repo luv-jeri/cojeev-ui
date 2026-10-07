@@ -62,7 +62,7 @@ function fixture(environment='production',stage='additive') {
   }
   for(const url of [legacy+'/health',canonical+'/health']) put(url,JSON.stringify({status:'ok',...website}),200,{'content-type':'application/json','cache-control':'no-store'});
   put(canonical+'/release.json',JSON.stringify({...website,analyticsEnabled:false}),200,{'content-type':'application/json','cache-control':'no-store'});
-  put(api+'/health',JSON.stringify({status:'ok',...apiIdentity}),200,{'content-type':'application/json'});
+  put(api+'/health',JSON.stringify({status:'ok',...apiIdentity,reportingBase:canonical}),200,{'content-type':'application/json'});
   put(api+'/v1/admin/health',JSON.stringify(delivery),200,{'content-type':'application/json'});
   const fetcher=async(input,options={})=>{
     const url=typeof input==='string'?input:input.url,method=options.method??'GET';requests.push({url,method});
@@ -249,4 +249,28 @@ test('apex_robots_transition_is_accepted_only_as_reviewed',async()=>{
   delete g.responses.get('GET '+g.origin+'/uikit?x=1').headers['x-robots-tag'];
   g.responses.get('GET '+g.origin+'/ui-other.txt').headers['content-security-policy']=securityHeaders('production')['content-security-policy'];
   assert.deepEqual(await problems(g),['apex-probe:/ui-other.txt']);
+});
+
+// Real catalogue size and real 20ms timers reproduce the sequential bottleneck.
+test('catalogue_contract_check_fits_budget_at_20ms_per_request',async()=>{
+  const f=fixture('beta'),names=(await fs.readdir(new URL('../public/r/',import.meta.url))).filter(name=>name.endsWith('.json'));
+  assert.ok(names.length>=1877,'use the complete real catalogue');
+  const bytes='{"catalogue":"valid"}';
+  for(const name of names) for(const mount of ['r/','ui/r/']) {
+    f.expected.website.manifest.files['site/'+mount+name]={sha256:hash(bytes),origin:'build'};
+    f.put((mount.startsWith('ui/')?f.origin:f.legacy)+'/'+mount+name,bytes,200,{'content-type':'application/json'});
+  }
+  let active=0,peak=0,calls=0;
+  const start=Date.now(),deadline=start+10000;
+  const fetcher=async(url,options)=>{
+    if(Date.now()>=deadline) throw new Error('Catalogue budget exhausted');
+    active++;peak=Math.max(peak,active);calls++;
+    try {await new Promise(resolve=>setTimeout(resolve,20));return await f.fetcher(url,options);}
+    finally {active--;}
+  };
+  const {contractProblems}=await import('../scripts/live-contracts.mjs');
+  assert.deepEqual(await contractProblems('beta',f.expected,{fetcher,baseline:f.baseline}),[]);
+  assert.ok(Date.now()-start<10000);
+  assert.ok(peak>1&&peak<=16,`bounded concurrency: ${peak}`);
+  assert.ok(calls>=names.length*2);
 });

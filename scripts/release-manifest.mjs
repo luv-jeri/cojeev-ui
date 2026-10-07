@@ -170,9 +170,9 @@ function validateContextualContent(file, content, environment, {origin,registryG
       check(match[0],kind,allowed,false,executable);
     }
   };
-  const scanJavaScript=(text,context,allowAnchors=false)=>{
+  const scanJavaScript=(text,context,allowAnchors=false,navigationPayload=false)=>{
     const source=ts.createSourceFile(file,text,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
-    const ranges=allowAnchors ? anchorRanges(file,text) : [];
+    const ranges=allowAnchors ? anchorRanges(navigationPayload ? `${file}.txt` : file,text) : [];
     const decodedRanges=[];
     const visit=node=>{
       if(ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
@@ -183,7 +183,15 @@ function validateContextualContent(file, content, environment, {origin,registryG
           parent.arguments?.[0]===node && /^(?:fetch|import|WebSocket|EventSource)$/.test(parent.expression.getText(source));
         // TypeScript exposes the evaluated literal value without executing code.
         // The allowance still belongs to this exact direct anchor prop range.
-        scan(node.text,context,allowed ? [[0,node.text.length]] : [],executable);
+        const call=parent?.parent;
+        const nextPayload=!navigationPayload && ts.isArrayLiteralExpression(parent) && parent.elements.length===2 &&
+          parent.elements[1]===node && ts.isNumericLiteral(parent.elements[0]) && parent.elements[0].text==='1' &&
+          ts.isCallExpression(call) && call.arguments.length===1 && call.arguments[0]===parent &&
+          call.expression.getText(source)==='self.__next_f.push';
+        // Decode only Next's serialized navigation argument, without executing it.
+        // Direct anchor props receive an allowance; dependencies and metadata do not.
+        if(nextPayload) scanJavaScript(node.text,context,true,true);
+        else scan(node.text,context,allowed ? [[0,node.text.length]] : [],executable);
       }
       ts.forEachChild(node,visit);
     };
@@ -208,7 +216,10 @@ function validateContextualContent(file, content, environment, {origin,registryG
           const location=element.sourceCodeLocation?.attrs?.[name];
           if(location) ranges.push([location.startOffset,location.endOffset]);
         }
+        const originHint=element.name==='link' && name==='href' && value==='/' &&
+          ['preconnect','dns-prefetch'].includes(element.attribs.rel?.toLowerCase());
         if(['href','src','action'].includes(name)) {
+          if(originHint) continue;
           if(!anchor) base(value,context); else check(value,context,true);
         } else if(name==='srcset') {
           for(const candidate of value.split(',')) base(candidate.trim().split(/\s+/)[0],context);

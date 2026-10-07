@@ -199,9 +199,7 @@ export async function rehearseRollback(artifactRoot, environment, {install} = {}
   async function checks() {
     const problems = (await liveProblems(environment, {
       website: {kind: 'variant', manifest: website.manifest},
-      // The manifest records canonical/legacy; the public health contract
-      // exposes the actual URL. Resolve it from the verified packaged config.
-      api: {kind: 'variant', manifest: {...api.manifest, reportingBase: api.config.vars.SITE_URL}},
+      api: {kind: 'variant', manifest: api.manifest},
       token: secrets.HEALTH_TOKEN, fetcher, baseline, robotsBefore: '',
     })).problems;
     const health = await (await fetcher(target.api + '/health')).json();

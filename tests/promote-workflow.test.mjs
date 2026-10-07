@@ -281,3 +281,13 @@ test('workflow_and_job_env_never_use_the_runner_context', () => {
         assert.doesNotMatch(String(value), /\$\{\{[^}]*\brunner\./, `${name} ${where}.env.${key}`);
   }
 });
+
+test('website_promotion_receives_no_reporting_secrets',()=>{
+  const workflow=load('promote.yml'),steps=stepsOf(workflow);
+  const secrets=Object.fromEntries(['REPORTING_SECRETS_JSON','REPORTING_ADDITIONAL_SECRETS_JSON','RESEND_WEBHOOK_SECRET','REPORTING_ADMIN_TOKEN'].map(name=>[name,'dummy-'+name]));
+  const evaluate=(expression,side)=>Function('inputs','secrets',`return (${expression.slice(3,-2)})`)({side},secrets);
+  for(const [name,value] of Object.entries(secrets)) {
+    assert.equal(evaluate(get(steps,'promote').env[name],'website'),'');
+    assert.equal(evaluate(get(steps,'promote').env[name],'api'),value);
+  }
+});
