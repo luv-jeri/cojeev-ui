@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -15,17 +16,32 @@ const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex'};
 const delivery={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850},providers:{email:true,github:true,resendWebhook:true,ownerNotification:true},activationCutoff:1,deploymentIntent:'active'};
 const website={environment:'beta',release:commit,deploymentId:'website-mounted-aaaaaaaaaaaa-12345678',phase:'mounted',migrationStage:'additive',registryGraph:'baseline'};
 const apiIdentity={environment:'beta',release:apiCommit,deploymentId:'api-linked-bbbbbbbbbbbb-12345678',phase:'linked',reportingBase:'canonical'};
-const expected={website:{kind:'variant',manifest:{...website,commit,side:'website'}},api:{kind:'variant',manifest:{...apiIdentity,commit:apiCommit,side:'api'}}};
+const rscHash=createHash('sha256').update('RSC').digest('hex');
+const files={'site/ui/docs/button/index.txt':{sha256:rscHash,origin:'build'},'site/docs/button/index.txt':{sha256:rscHash,origin:'baseline'},'site/_next/chunk.js':{sha256:createHash('sha256').update('chunk').digest('hex'),origin:'baseline'}};
+const expected={website:{kind:'variant',manifest:{...website,commit,side:'website',files}},api:{kind:'variant',manifest:{...apiIdentity,commit:apiCommit,side:'api'}}};
 const baseline={kind:'baseline',commit,versionId:'baseline-version'};
 function edge({health=website,uiHealth=health,uiRelease={...health,analyticsEnabled:false},apiHealth=apiIdentity,registry,legacyHealth}={}) {
   return async(url,options)=>{
-    if(url===`${site}/health`) return legacyHealth?.()??Response.json({status:'ok',...health});
-    if(url===`${site}/ui/health`) return Response.json({status:'ok',...uiHealth});
+    if(url===`${site}/health`) return legacyHealth?.()??Response.json({status:'ok',...health},{headers});
+    if(url===`${site}/ui/health`) return Response.json({status:'ok',...uiHealth},{headers:{...headers,'cache-control':'no-store'}});
     if(url===`${site}/ui/release.json`) return Response.json(uiRelease);
     if(url===`${api}/health`) return Response.json({status:'ok',...apiHealth});
     if(url===`${api}/v1/admin/health`) return Response.json(delivery);
     if(url===`${site}/release.json`) return Response.json({...health,analyticsEnabled:false},{headers});
-    if(url===`${site}/r/button.json`) return registry?.()??Response.json({name:'button'},{headers});
+    if(url===`${site}/r/button.json`) return registry?.()??(options?.method==='HEAD'?new Response(null,{headers}):Response.json({name:'button'},{headers}));
+    if(url===`${site}/ui?x=1`) return new Response(null,{status:301,headers:{...headers,location:site+'/ui/?x=1','cache-control':'no-store'}});
+    if(url===`${site}/ui/sitemap.xml`) return new Response('<xml/>',{headers:{...headers,'content-type':'application/xml'}});
+    if(url===`${site}/ui/robots.txt`) return new Response('User-agent: *',{headers});
+    if(url.endsWith('.png')) return new Response('png',{headers:{...headers,'content-type':'image/png'}});
+    if(url.endsWith('/index.txt')) return new Response('RSC',{headers:{...headers,'content-type':'text/plain'}});
+    if(url===`${site}/_next/chunk.js`) return new Response('chunk',{headers});
+    if(url===`${site}/`||url===`${site}/docs/button/`) return new Response('old page',{headers:{...headers,'content-type':'text/html'}});
+    if(url.includes('__cojeev_missing')) return new Response('missing',{status:404,headers});
+    if(url===`${site}/ui/track/`||url===`${site}/ui/feedback-admin/`) return new Response('<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">',{headers:{...headers,'content-type':'text/html'}});
+    if(url.startsWith(site+'/ui/')) {
+      const path=new URL(url).pathname.replace('/ui',''),own=path==='/docs/aspect-ratio/'?'/docs/bento-grid/':path==='/work-with-me/'?'/about/':path,canonical=site+'/ui';
+      return new Response(`<link rel="canonical" href="${canonical}${own}"><meta property="og:url" content="${canonical}${own}"><meta property="og:image" content="${canonical}/opengraph-image.png"><meta name="twitter:image" content="${canonical}/twitter-image.png">`,{headers:{...headers,'content-type':'text/html','cache-control':'public, max-age=0, must-revalidate'}});
+    }
     if(url===`${site}/__cojeev_missing_release_probe__/`) return new Response('missing',{status:404,headers});
     throw new Error(`Unexpected URL: ${url}`);
   };
@@ -53,8 +69,8 @@ test('split_edge_identity_retries_within_budget',async()=>{
   for(const catchesUp of [true,false]) {
     let attempts=0;const routes=[];const time=fakeTime();
     const fetcher=async(url,options)=>{
-      if(url===`${site}/health`) attempts++;
-      if(url===`${site}/release.json`) routes.push(url);
+      if(url===`${site}/health`&&!routes.length) attempts++;
+      if(url===`${site}/ui/`) routes.push(url);
       const health=catchesUp&&attempts>2?website:{...website,deploymentId:'website-mounted-aaaaaaaaaaaa-87654321'};
       return edge({health,uiHealth:website,uiRelease:{...website,analyticsEnabled:false}})(url,options);
     };
@@ -153,6 +169,7 @@ test('variant_analytics_uses_ui_release_and_production_reads_canonical_host',asy
   const result=await release.liveProblems('beta',{...expected,token,expectedAnalyticsEnabled:true,fetcher});
   assert.deepEqual(result.problems,[]);
   assert.equal(result.observed.website.uiRelease.analyticsEnabled,true);
+  assert.deepEqual((await release.liveProblems('beta',{...expected,token,expectedAnalyticsEnabled:true,fetcher:edge()})).problems,['analytics-config-mismatch']);
   const raw=await release.readIdentities('beta',{fetcher:edge({apiHealth:{...apiIdentity,reportingBase:'https://beta.000h.cojeev.com/ui'}})});
   assert.equal(raw.api.health.reportingBase,'https://beta.000h.cojeev.com/ui');
   const urls=[];
@@ -169,20 +186,28 @@ test('live_and_health_clis_resolve_baselines_and_print_only_fixed_results',async
   t.after(()=>fs.rm(directory,{recursive:true,force:true}));
   await fs.mkdir(path.join(directory,'scripts'));
   const websiteVersionId='11111111-1111-1111-1111-111111111111',apiVersionId='22222222-2222-2222-2222-222222222222';
-  await fs.writeFile(path.join(directory,'scripts/release-baseline.json'),JSON.stringify({schema:1,beta:{commit,runId:'123',digest:'d'.repeat(64),websiteVersionId,apiVersionId}}));
+  const artifact=path.join(directory,'baseline');
+  await fs.mkdir(path.join(artifact,'site/r'),{recursive:true});
+  await fs.writeFile(path.join(artifact,'site/index.html'),'old page');
+  await fs.writeFile(path.join(artifact,'site/r/button.json'),'{"name":"button"}');
+  const manifest=await createManifest(artifact,'beta',commit);
+  await fs.writeFile(path.join(artifact,'manifest.json'),JSON.stringify(manifest));
+  await fs.writeFile(path.join(directory,'scripts/release-baseline.json'),JSON.stringify({schema:1,beta:{commit,runId:'123',digest:manifestDigest(manifest),websiteVersionId,apiVersionId}}));
   const preload=path.join(directory,'fetch.mjs');
-  await fs.writeFile(preload,`globalThis.fetch=async url=>{
+  await fs.writeFile(preload,`globalThis.fetch=async(url,options={})=>{
     const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex'};
     if(url.endsWith('/v1/admin/health')) return Response.json(${JSON.stringify(delivery)});
-    if(url.endsWith('/health')) return Response.json({status:'ok',environment:'beta',release:'${commit}'});
+    if(url.endsWith('/health')) return Response.json({status:'ok',environment:'beta',release:'${commit}'},{headers});
     if(url.endsWith('/release.json')) return Response.json({environment:'beta',release:'${commit}',analyticsEnabled:false},{headers});
-    if(url.endsWith('/r/button.json')) return Response.json({name:'button'},{headers});
+    if(url.endsWith('/r/button.json')) return options.method==='HEAD'?new Response(null,{headers}):Response.json({name:'button'},{headers});
+    if(url==='${site}/'||url==='${site}/docs/button/') return new Response('old',{headers:{...headers,'content-type':'text/html'}});
+    if(url.endsWith('/r/__cojeev_missing__.json')||url.endsWith('/__cojeev_missing__.txt')) return new Response('missing',{status:404,headers});
     if(url.endsWith('/__cojeev_missing_release_probe__/')) return new Response('missing',{status:404,headers});
     throw new Error('unexpected request');
   };`);
   const releaseScript=fileURLToPath(new URL('../scripts/release.mjs',import.meta.url));
   const healthScript=fileURLToPath(new URL('../scripts/operations-health.mjs',import.meta.url));
-  const env={PATH:process.env.PATH,HEALTH_TOKEN:token,EXPECTED_ANALYTICS_ENABLED:'false'};
+  const env={PATH:process.env.PATH,BASELINE_BETA_DIRECTORY:artifact,HEALTH_TOKEN:token,EXPECTED_ANALYTICS_ENABLED:'false'};
   const run=(script,args,extra={})=>execFileSync(process.execPath,['--import',preload,script,...args],{cwd:directory,env:{...env,...extra},encoding:'utf8',stdio:['ignore','pipe','pipe']});
   assert.equal(run(releaseScript,['live','beta','--api=baseline','--website=baseline']),`live ok website=baseline:${websiteVersionId} api=baseline:${apiVersionId}\n`);
   for(const ids of [{},{EXPECTED_WEBSITE_ID:`baseline:${websiteVersionId}`,EXPECTED_API_ID:`baseline:${apiVersionId}`}]) {
