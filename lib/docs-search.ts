@@ -6,6 +6,7 @@ const ALIASES: Record<string, string> = {
   table: "data-table DataTable",
   "bento-grid": "aspect-ratio AspectRatio",
   "activity-feed": "timeline history event-log audit-trail",
+  "milestone-path": "timeline workflow run-trace execution-trace nested-steps milestones progress user-flow event-sequence",
 };
 
 /** Public documentation only. Queries run locally against Fumadocs' static index. */

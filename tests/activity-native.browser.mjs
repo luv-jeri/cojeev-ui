@@ -14,7 +14,7 @@ const bundle = await build({
   stdin: {
     loader: "tsx",
     resolveDir: process.cwd(),
-    contents: `import React from'react';import{createRoot}from'react-dom/client';import{flushSync}from'react-dom';import{ActivityFeed}from'./registry/cojeev/ui/activity-feed';import{MilestonePath}from'./registry/cojeev/ui/milestone-path';import{setMotionMode,setFlowSettings}from'./registry/cojeev/motion/settings';window.mode=setMotionMode;window.flow=setFlowSettings;const root=createRoot(document.getElementById('root'));window.selections=[];window.render=p=>flushSync(()=>root.render(<><ActivityFeed ref={n=>window.feedNode=n} aria-label="History" entries={(p.ids??['a','b','c','d']).map(id=>({id,title:'Update '+id,group:id==='d'?'Earlier':'Recent',timestamp:'10:30',dateTime:'2026-09-08T10:30:00+05:30',content:<input aria-label={'Edit '+id} defaultValue={id}/>}))} initialVisible={p.all?undefined:2} pageSize={2}/><MilestonePath ref={n=>window.pathNode=n} aria-label="Project path" presentation={p.presentation} items={p.empty?[]:[{id:'a',title:'A complete checkpoint',state:p.mixed?'upcoming':'complete'},{id:'b',title:'A current checkpoint with a long label that wraps',description:'Keep meaningful descriptions visible in every layout.',state:p.done?'complete':'current',disabled:p.disabled},{id:'c',title:'A future checkpoint',state:p.mixed?'complete':'upcoming'}]} onMilestoneSelect={p.readonly?undefined:id=>window.selections.push(id)}/></>));window.render({});`,
+    contents: `import React from'react';import{createRoot}from'react-dom/client';import{flushSync}from'react-dom';import{ActivityFeed}from'./registry/cojeev/ui/activity-feed';import{MilestonePath}from'./registry/cojeev/ui/milestone-path';import{setMotionMode,setFlowSettings}from'./registry/cojeev/motion/settings';window.mode=setMotionMode;window.flow=setFlowSettings;const root=createRoot(document.getElementById('root'));window.selections=[];window.render=p=>flushSync(()=>root.render(<><ActivityFeed ref={n=>window.feedNode=n} aria-label="History" entries={(p.ids??['a','b','c','d']).map(id=>({id,title:'Update '+id,group:id==='d'?'Earlier':'Recent',timestamp:'10:30',dateTime:'2026-09-08T10:30:00+05:30',content:<input aria-label={'Edit '+id} defaultValue={id}/>}))} initialVisible={p.all?undefined:2} pageSize={2}/><MilestonePath ref={n=>window.pathNode=n} aria-label="Project path" presentation={p.presentation} items={p.empty?[]:[{id:'a',title:'A complete checkpoint',state:p.mixed?'upcoming':'complete'},{id:'b',title:'A current checkpoint with a long label that wraps',description:'Keep meaningful descriptions visible in every layout.',state:p.done||p.next?'complete':'current',disabled:p.disabled},{id:'c',title:'A future checkpoint',state:p.mixed?'complete':p.next?'current':'upcoming'}]} onMilestoneSelect={p.readonly?undefined:id=>window.selections.push(id)}/></>));window.render({});`,
   },
   bundle: true,
   write: false,
@@ -137,39 +137,29 @@ try {
   await path.getByText("No milestones yet", { exact: true }).waitFor();
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.evaluate(() => window.render({ presentation: "journey" }));
-  const marker = path.locator(
-    '[data-state="current"] .v-milestone-path__marker',
+  await path.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(150);
+  const future = path.getByText("A future checkpoint", { exact: true });
+  const still = await future.boundingBox();
+  await page.evaluate(() =>
+    window.render({ presentation: "journey", next: true }),
   );
-  await marker.scrollIntoViewIfNeeded();
-  await marker.locator("[data-morph-body]").waitFor({ state: "attached" });
-  const moving = await marker.evaluate(async (el) => {
-    const box = el.getBoundingClientRect();
-    el.dispatchEvent(
-      new PointerEvent("pointerenter", {
-        bubbles: true,
-        clientX: box.x + box.width - 1,
-        clientY: box.y + box.height / 2,
-        pointerType: "mouse",
-      }),
-    );
-    document.dispatchEvent(
-      new PointerEvent("pointermove", {
-        bubbles: true,
-        clientX: box.x + box.width - 1,
-        clientY: box.y + box.height / 2,
-        pointerType: "mouse",
-      }),
-    );
-    const paths = [];
-    for (let i = 0; i < 20; i++) {
+  await path.locator("[data-travel-owned]").first().waitFor({ state: "attached" });
+  const travelling = await page.evaluate(async () => {
+    const layer = window.pathNode.querySelector(".v-milestone-path__organism");
+    const frames = [];
+    for (let i = 0; i < 12; i++) {
       await new Promise(requestAnimationFrame);
-      paths.push(el.querySelector("[data-morph-body]").getAttribute("d"));
+      frames.push(layer.innerHTML);
     }
-    return new Set(paths).size;
+    return new Set(frames).size;
   });
-  assert.ok(
-    moving > 2,
-    "The current marker has an actual shared contour response",
+  assert.ok(travelling > 2, "The working mark travels on its decorative layer");
+  assert.deepEqual(await future.boundingBox(), still, "Text never moves while a mark travels");
+  await page.waitForFunction(
+    () => !document.querySelector("[data-travel-owned]"),
+    null,
+    { timeout: 4000 },
   );
   for (const kind of ["motion", "flow"]) {
     await page.evaluate(
@@ -190,7 +180,7 @@ try {
     );
   }
   console.log(
-    "PASS activity/milestone native: retained nodes/edits, pagination/focus/time/empty, state authority,44px stationary targets, disabled/readonly/ref, owned sequence scrolling and contour/quiet",
+    "PASS activity/milestone native: retained nodes/edits, pagination/focus/time/empty, state authority,44px stationary targets, disabled/readonly/ref, owned sequence scrolling, travel without layout shift and quiet",
   );
 } finally {
   await browser.close();
