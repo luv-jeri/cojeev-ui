@@ -85,13 +85,13 @@ test("work_with_me_canonical_remains_about", () => {
 test("sitemap_contains_only_canonical_public_routes", () => {
   // The existing baseline uses installable public catalog entries, including aliases.
   const baselineRoutes = ["/", "/docs/", "/getting-started/", "/about/", "/privacy/", "/requests/",
-    ...registry.items.filter(entry => entry.type === "registry:ui" && !entry.meta?.source.reviewOnly).map(entry => `/docs/${entry.name}/`),
+    ...registry.items.filter(entry => entry.type === "registry:ui" && !entry.meta?.source?.reviewOnly).map(entry => `/docs/${entry.name}/`),
   ];
   const urls = sitemap().map(entry => entry.url);
   assert.deepEqual(urls.toSorted(), baselineRoutes.map(route => `https://cojeev.com/ui${route}`).toSorted());
   assert.equal(new Set(urls).size, urls.length);
   for (const url of urls) assert.doesNotMatch(url, /\/(?:track|feedback-admin|workspace)\//);
-  for (const entry of registry.items.filter(entry => entry.type === "registry:ui" && entry.meta?.source.reviewOnly)) {
+  for (const entry of registry.items.filter(entry => entry.type === "registry:ui" && entry.meta?.source?.reviewOnly)) {
     assert.ok(!urls.includes(`https://cojeev.com/ui/docs/${entry.name}/`));
   }
 });
