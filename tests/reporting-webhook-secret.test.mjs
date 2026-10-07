@@ -44,9 +44,10 @@ test('admin_token_override_short_value_fails_without_printing_it',()=>{
 // other_keys_still_refuse_overlap: proved by 'a conflicting webhook secret stops deployment...' above
 // and by operations.test.mjs 'deployment ships the composed bundle and refuses an overlapping key...'.
 test('rollback_workflow_passes_admin_token_override',()=>{
-  for(const file of ['verify.yml','rollback.yml']) {
-    const steps=readFileSync(new URL(`../.github/workflows/${file}`,import.meta.url),'utf8').split(/^ {6}- /m).filter(step=>/^ +REPORTING_SECRETS_JSON:/m.test(step));
-    assert.ok(steps.length>0,`${file} has no deploy step`);
-    for(const step of steps) assert.match(step,/^ +REPORTING_ADMIN_TOKEN: \$\{\{ secrets\.REPORTING_ADMIN_TOKEN \}\}$/m,`${file} step lacks REPORTING_ADMIN_TOKEN`);
-  }
+  // promote.yml is the only deploy path (plan I3); rollback.yml reuses it and must hand its secrets over.
+  const read=file=>readFileSync(new URL(`../.github/workflows/${file}`,import.meta.url),'utf8');
+  const steps=read('promote.yml').split(/^ {6}- /m).filter(step=>/^ +REPORTING_SECRETS_JSON:/m.test(step));
+  assert.ok(steps.length>0,'promote.yml has no deploy step');
+  for(const step of steps) assert.match(step,/^ +REPORTING_ADMIN_TOKEN: \$\{\{ secrets\.REPORTING_ADMIN_TOKEN \}\}$/m,'promote.yml step lacks REPORTING_ADMIN_TOKEN');
+  assert.match(read('rollback.yml'),/^ {4}uses: \.\/\.github\/workflows\/promote\.yml\n(?: {6}.*\n| {4}with:\n)*? {4}secrets: inherit$/m,'rollback.yml must reuse promote.yml with secrets: inherit');
 });

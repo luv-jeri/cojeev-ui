@@ -36,7 +36,7 @@ function edge({health=website,uiHealth=health,uiRelease={...health,analyticsEnab
     if(url.endsWith('/index.txt')) return new Response('RSC',{headers:{...headers,'content-type':'text/plain'}});
     if(url===`${site}/_next/chunk.js`) return new Response('chunk',{headers});
     if(url===`${site}/`||url===`${site}/docs/button/`) return new Response('old page',{headers:{...headers,'content-type':'text/html'}});
-    if(url.includes('__cojeev_missing')) return new Response('missing',{status:404,headers});
+    if(url.includes('__cojeev_missing')||url.endsWith('/r/cojeev-missing-probe.json')) return new Response('missing',{status:404,headers});
     if(url===`${site}/ui/track/`||url===`${site}/ui/feedback-admin/`) return new Response('<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">',{headers:{...headers,'content-type':'text/html'}});
     if(url.startsWith(site+'/ui/')) {
       const path=new URL(url).pathname.replace('/ui',''),own=path==='/docs/aspect-ratio/'?'/docs/bento-grid/':path==='/work-with-me/'?'/about/':path,canonical=site+'/ui';
@@ -201,7 +201,7 @@ test('live_and_health_clis_resolve_baselines_and_print_only_fixed_results',async
     if(url.endsWith('/release.json')) return Response.json({environment:'beta',release:'${commit}',analyticsEnabled:false},{headers});
     if(url.endsWith('/r/button.json')) return options.method==='HEAD'?new Response(null,{headers}):Response.json({name:'button'},{headers});
     if(url==='${site}/'||url==='${site}/docs/button/') return new Response('old',{headers:{...headers,'content-type':'text/html'}});
-    if(url.endsWith('/r/__cojeev_missing__.json')||url.endsWith('/__cojeev_missing__.txt')) return new Response('missing',{status:404,headers});
+    if(url.endsWith('/r/cojeev-missing-probe.json')||url.endsWith('/__cojeev_missing__.txt')) return new Response('missing',{status:404,headers});
     if(url.endsWith('/__cojeev_missing_release_probe__/')) return new Response('missing',{status:404,headers});
     throw new Error('unexpected request');
   };`);

@@ -20,7 +20,7 @@ function edge({release=commit,analyticsEnabled=false,unreachable=false,contract=
     if(url===`${site}/release.json`) return Response.json({environment:'beta',release,analyticsEnabled},{headers:contract?{}:headers});
     if(url===`${site}/r/button.json`) return options.method==='HEAD'?new Response(null,{headers}):Response.json({name:'button'},{headers:contract?{}:headers});
     if(url===`${site}/`||url===`${site}/docs/button/`) return new Response('legacy page',{headers:{...headers,'content-type':'text/html'}});
-    if(url===`${site}/r/__cojeev_missing__.json`||url===`${site}/__cojeev_missing__.txt`) return new Response('missing',{status:404,headers});
+    if(url===`${site}/r/cojeev-missing-probe.json`||url===`${site}/__cojeev_missing__.txt`) return new Response('missing',{status:404,headers});
     if(url===`${site}/__cojeev_missing_release_probe__/`) return new Response('not found',{status:404,headers});
     throw new Error(`unexpected live request: ${url}`);
   };
