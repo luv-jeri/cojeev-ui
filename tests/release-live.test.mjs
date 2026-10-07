@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,releaseMetadata,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
 
 const commit='a'.repeat(40),token='t'.repeat(40);
+const expectedIdentities={website:{kind:'baseline',commit,versionId:'website-version'},api:{kind:'baseline',commit,versionId:'api-version'}};
 const site='https://beta.000h.cojeev.com',api='https://feedback-beta.cojeev.com';
 const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex, nofollow'};
 // A live release is a service expected to deliver, so this stands for one that declares
@@ -45,7 +46,7 @@ function unavailable(after,status=503) {
 test('a site that answers 503 everywhere is a propagation failure, not a contract failure',async()=>{
   const waited=[];
   await assert.rejects(
-    checkLiveRelease('beta',commit,{token,fetcher:unavailable(Infinity),sleep:async ms=>waited.push(ms),log:()=>{}}),
+    checkLiveRelease('beta',expectedIdentities,{token,fetcher:unavailable(Infinity),sleep:async ms=>waited.push(ms),log:()=>{}}),
     error=>{
       // The route contract belongs to whatever release is being served. While
       // public health says this release is not ready, that is not this release,
@@ -59,7 +60,7 @@ test('a site that answers 503 everywhere is a propagation failure, not a contrac
 
 test('a fully propagated release passes on the first read with no waiting',async()=>{
   const waited=[];
-  const problems=await checkLiveRelease('beta',commit,{token,fetcher:edge(),sleep:async ms=>waited.push(ms),log:()=>{}});
+  const problems=await checkLiveRelease('beta',expectedIdentities,{token,fetcher:edge(),sleep:async ms=>waited.push(ms),log:()=>{}});
   assert.deepEqual(problems,[]);
   assert.deepEqual(waited,[]);
 });
@@ -70,8 +71,8 @@ test('release metadata and the live check prove the deployed analytics intent',a
     NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN:'phc_public_test_token',
   }),{environment:'beta',release:commit,analyticsEnabled:true});
   assert.equal(releaseMetadata('beta',commit,{NEXT_PUBLIC_ANALYTICS_ENABLED:'true'}).analyticsEnabled,false);
-  assert.deepEqual(await liveProblems('beta',commit,{token,expectedAnalyticsEnabled:true,fetcher:edge({analyticsEnabled:true})}),[]);
-  assert.deepEqual(await liveProblems('beta',commit,{token,expectedAnalyticsEnabled:true,fetcher:edge()}),['analytics-config-mismatch']);
+  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,expectedAnalyticsEnabled:true,fetcher:edge({analyticsEnabled:true})})).problems,[]);
+  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,expectedAnalyticsEnabled:true,fetcher:edge()})).problems,['analytics-config-mismatch']);
   // A same-SHA redeploy can briefly serve the previous artifact, so the
   // mismatch gets the bounded propagation budget before it fails the release.
   assert.ok(TRANSIENT_LIVE_PROBLEMS.has('analytics-config-mismatch'));
@@ -80,7 +81,7 @@ test('release metadata and the live check prove the deployed analytics intent',a
 test('propagation lag is retried within the bounded window and passes once the edge catches up',async()=>{
   const waited=[],lines=[],requested=[];
   const stale=propagating(2);
-  await checkLiveRelease('beta',commit,{token,sleep:async ms=>waited.push(ms),log:line=>lines.push(line),
+  await checkLiveRelease('beta',expectedIdentities,{token,sleep:async ms=>waited.push(ms),log:line=>lines.push(line),
     fetcher:async(url,options)=>{requested.push(url);return stale(url,options);}});
   assert.deepEqual(waited,LIVE_RETRY_WAITS.slice(0,2));
   assert.equal(lines.length,2);
@@ -98,7 +99,7 @@ test('propagation lag is retried within the bounded window and passes once the e
 test('an unreachable site is treated as propagation and retried, not reported as a defect',async()=>{
   const waited=[];
   await assert.rejects(
-    checkLiveRelease('beta',commit,{token,fetcher:edge({unreachable:true}),sleep:async ms=>waited.push(ms),log:()=>{}}),
+    checkLiveRelease('beta',expectedIdentities,{token,fetcher:edge({unreachable:true}),sleep:async ms=>waited.push(ms),log:()=>{}}),
     /Live checks failed after 5 attempts within the 60s propagation budget: http-health/);
   assert.deepEqual(waited,LIVE_RETRY_WAITS);
 });
@@ -110,7 +111,7 @@ test('the budget is wall-clock time including the reads, not only the sleeping',
   const waited=[],clock=()=>now;
   const slow=async url=>{now+=18000;return edge({release:'b'.repeat(40)})(url);};
   await assert.rejects(
-    checkLiveRelease('beta',commit,{token,fetcher:slow,clock,sleep:async ms=>{waited.push(ms);now+=ms;},log:()=>{}}),
+    checkLiveRelease('beta',expectedIdentities,{token,fetcher:slow,clock,sleep:async ms=>{waited.push(ms);now+=ms;},log:()=>{}}),
     /within the 60s propagation budget/);
   assert.ok(waited.length<LIVE_RETRY_WAITS.length,`stopped after ${waited.length} waits`);
   assert.ok(now<=LIVE_BUDGET_MS+18000,`total ${now}ms stayed inside the budget plus one in-flight read`);
@@ -140,7 +141,7 @@ test('the deadline actually fires: a read that never answers is aborted, not wai
   });
   const started=Date.now();
   await assert.rejects(
-    checkLiveRelease('beta',commit,{token,fetcher:hanging,budgetMs:50,log:()=>{}}),
+    checkLiveRelease('beta',expectedIdentities,{token,fetcher:hanging,budgetMs:50,log:()=>{}}),
     /Live checks failed after 1 attempt within the 0.05s propagation budget/);
   const elapsed=Date.now()-started;
   assert.ok(elapsed<2000,`the deadline fired after ${elapsed}ms, not the 15s request timeout`);
@@ -157,7 +158,7 @@ test('a permanent failure is reported on the first read and is never retried',as
   ];
   for(const {options,expected} of cases) {
     const waited=[];
-    await assert.rejects(checkLiveRelease('beta',commit,{...options,sleep:async ms=>waited.push(ms),log:()=>{}}),error=>{
+    await assert.rejects(checkLiveRelease('beta',expectedIdentities,{...options,sleep:async ms=>waited.push(ms),log:()=>{}}),error=>{
       assert.match(error.message,/^Live checks failed after 1 attempt: /);
       assert.match(error.message,expected);
       return true;
@@ -172,23 +173,23 @@ test('a permanent code alongside a propagation code stops immediately',async()=>
     ? Response.json({...delivery,usage:{daily:95,monthly:1}},{headers})
     : edge({release:'b'.repeat(40)})(url);
   await assert.rejects(
-    checkLiveRelease('beta',commit,{token,fetcher,sleep:async ms=>waited.push(ms),log:()=>{}}),
+    checkLiveRelease('beta',expectedIdentities,{token,fetcher,sleep:async ms=>waited.push(ms),log:()=>{}}),
     /after 1 attempt: email-quota, release-mismatch/);
   assert.deepEqual(waited,[]);
 });
 
 test('the transient set stays narrow and every site probe code is accounted for',async()=>{
-  assert.deepEqual([...TRANSIENT_LIVE_PROBLEMS].sort(),['analytics-config-mismatch','http-health','release-mismatch','site-release-mismatch','site-unreachable']);
+  assert.deepEqual([...TRANSIENT_LIVE_PROBLEMS].sort(),['analytics-config-mismatch','http-health','release-mismatch','site-release-mismatch','site-unreachable','stale-identity']);
   assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('site-contract'));
-  assert.deepEqual(await liveProblems('beta',commit,{token,fetcher:edge()}),[]);
-  assert.deepEqual(await liveProblems('beta',commit,{token,fetcher:edge({contract:true})}),['site-contract']);
+  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:edge()})).problems,[]);
+  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:edge({contract:true})})).problems,['site-contract']);
 });
 
 test('the site recovers after a 503 or a 404 health outage and then passes on the real routes',async()=>{
   for(const status of [503,404]) {
     const waited=[],requested=[];
     const recovering=unavailable(2,status);
-    const problems=await checkLiveRelease('beta',commit,{token,sleep:async ms=>waited.push(ms),log:()=>{},
+    const problems=await checkLiveRelease('beta',expectedIdentities,{token,sleep:async ms=>waited.push(ms),log:()=>{},
       fetcher:async(url,options)=>{requested.push(url);return recovering(url,options);}});
     assert.deepEqual(problems,[],`status ${status}`);
     assert.deepEqual(waited,LIVE_RETRY_WAITS.slice(0,2),`status ${status}`);
@@ -205,7 +206,7 @@ test('after readiness the route contract is authoritative again and fails perman
     : edge()(url);
   for(const [fetcher,expected] of [[edge({contract:true}),/site-contract/],[broken,/site-contract/]]) {
     const waited=[];
-    await assert.rejects(checkLiveRelease('beta',commit,{token,fetcher,sleep:async ms=>waited.push(ms),log:()=>{}}),error=>{
+    await assert.rejects(checkLiveRelease('beta',expectedIdentities,{token,fetcher,sleep:async ms=>waited.push(ms),log:()=>{}}),error=>{
       assert.match(error.message,/^Live checks failed after 1 attempt: /);
       assert.match(error.message,expected);
       assert.ok(!/http-health|release-mismatch/.test(error.message),error.message);
@@ -215,7 +216,7 @@ test('after readiness the route contract is authoritative again and fails perman
   }
   // The same wrong status is reported by one read of liveProblems too, so the
   // guard never turns a real status defect into a skipped check.
-  assert.deepEqual(await liveProblems('beta',commit,{token,fetcher:broken}),['site-contract']);
+  assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:broken})).problems,['site-contract']);
 });
 
 test('a permanent delivery or configuration failure survives a transient public outage',async()=>{
@@ -226,14 +227,14 @@ test('a permanent delivery or configuration failure survives a transient public 
     ? edge({stalled:true})(url,options)
     : new Response('unavailable',{status:503,headers});
   await assert.rejects(
-    checkLiveRelease('beta',commit,{token,fetcher:outage,sleep:async ms=>waited.push(ms),log:()=>{}}),
+    checkLiveRelease('beta',expectedIdentities,{token,fetcher:outage,sleep:async ms=>waited.push(ms),log:()=>{}}),
     /after 1 attempt: delivery-stalled, http-health/);
   assert.deepEqual(waited,[]);
   // And a missing token stays permanent during an outage: the filter that folds
   // invalid-delivery-health into one outage applies only when a token was given.
   const noToken=[];
   await assert.rejects(
-    checkLiveRelease('beta',commit,{fetcher:unavailable(Infinity),sleep:async ms=>noToken.push(ms),log:()=>{}}),
+    checkLiveRelease('beta',expectedIdentities,{fetcher:unavailable(Infinity),sleep:async ms=>noToken.push(ms),log:()=>{}}),
     /after 1 attempt: http-health, invalid-delivery-health/);
   assert.deepEqual(noToken,[]);
 });
@@ -243,7 +244,7 @@ test('an unready read can never be mistaken for a clean one',async()=>{
   // every unready read already carries http-health or release-mismatch, so
   // liveProblems cannot return an empty list without having probed the routes.
   for(const fetcher of [unavailable(Infinity),unavailable(Infinity,404),edge({release:'b'.repeat(40)}),edge({unreachable:true})]) {
-    const problems=await liveProblems('beta',commit,{token,fetcher});
+    const problems=(await liveProblems('beta',{...expectedIdentities,token,fetcher})).problems;
     assert.ok(problems.length>0);
     assert.ok(problems.includes('http-health')||problems.includes('release-mismatch'),problems.join(', '));
     // And every code it did report is one a later read can resolve, so it retries.
@@ -261,14 +262,41 @@ test('a deployed release is not live while its declared delivery readiness is in
     {...delivery,activationCutoff:null},
   ]) {
     const unready=edge({health});
-    assert.deepEqual(await liveProblems('beta',commit,{token,fetcher:unready}),['provider-unconfigured']);
+    assert.deepEqual((await liveProblems('beta',{...expectedIdentities,token,fetcher:unready})).problems,['provider-unconfigured']);
     // A configuration gap is not a propagation delay: no later read resolves it, so the
     // release stops on the first attempt instead of spending the propagation budget.
     const waited=[];
     await assert.rejects(
-      checkLiveRelease('beta',commit,{token,fetcher:unready,sleep:async ms=>waited.push(ms),log:()=>{}}),
+      checkLiveRelease('beta',expectedIdentities,{token,fetcher:unready,sleep:async ms=>waited.push(ms),log:()=>{}}),
       /after 1 attempt: provider-unconfigured/);
     assert.deepEqual(waited,[]);
   }
   assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('provider-unconfigured'),'an unconfigured provider must never be retried as propagation lag');
+});
+
+// Removing any fixed alert code, redaction, or the missing-token gate breaks this invariant.
+test('health_recovery_and_diagnostics_keep_existing_protections',async()=>{
+  const {checkHealth,updateAlert}=await import('../scripts/operations-health.mjs');
+  const codes=['http-health','identity-malformed','website-identity-split','unlisted-pair','expected-identity-mismatch','legacy-registry','legacy-health'];
+  const writes=[];
+  await updateAlert('beta',[...codes,'private response sentinel'],async(endpoint,options)=>{
+    if(!options?.method) return [{number:7,body:'<!-- cojeev-health:beta -->'}];
+    writes.push(options.body);return {};
+  });
+  for(const code of codes) assert.ok(writes[0].body.includes(code),code);
+  assert.ok(!writes[0].body.includes('private response sentinel'));
+  assert.deepEqual((await checkHealth('beta',{fetcher:edge()})).problems,['invalid-delivery-health']);
+  const lines=[];
+  await assert.rejects(checkLiveRelease('beta',expectedIdentities,{fetcher:edge(),sleep:async()=>{throw new Error('must not wait');},log:line=>lines.push(line)}),/after 1 attempt: invalid-delivery-health/);
+  assert.deepEqual(lines,[]);
+  const waited=[];
+  const malformedAdminOutage=async url=>url.endsWith('/v1/admin/health')?Response.json({}):new Response('unavailable',{status:503});
+  await assert.rejects(checkLiveRelease('beta',expectedIdentities,{token,fetcher:malformedAdminOutage,sleep:async ms=>waited.push(ms),log:()=>{}}),/after 5 attempts.*: http-health$/);
+  assert.deepEqual(waited,LIVE_RETRY_WAITS);
+  const recovered=[];
+  await updateAlert('beta',[],async(endpoint,options)=>{
+    if(!options?.method) return [{number:7,body:'<!-- cojeev-health:beta -->'}];
+    recovered.push(options.body);return {};
+  });
+  assert.equal(recovered[0].state,'closed');
 });

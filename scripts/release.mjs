@@ -8,7 +8,8 @@ import {build} from 'esbuild';
 import {buildEnvironment,environmentConfig} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
 import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
-import {checkHealth} from './operations-health.mjs';
+import {assessHealth} from './operations-health.mjs';
+import {readBaselineRecord,WEBSITE_PHASES,API_PHASES} from './release-phases.mjs';
 import {siteHeaders} from '../workers/registry-host/src/headers.mjs';
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
@@ -122,18 +123,108 @@ export async function deployRelease(directory,environment,commit,digest,{rollbac
   run(['deploy','--config',path.join(directory,'website/wrangler.jsonc'),'--no-bundle']);
   return {environment,commit,manifestDigest:digest,rollback};
 }
-// Cloudflare acknowledges a deploy before every edge serves the new Worker and
-// asset version, so the first live read can legitimately still answer with the
-// previous release. Retry only the codes a later read can resolve. A missing
-// health token, a stalled or failed delivery queue, email quota, an unconfigured
-// provider and a broken header/404 contract are real defects that no amount of
-// further waiting repairs, so they fail on the first attempt; a run that carries
-// any one of them never retries, even alongside a propagation code.
-export const TRANSIENT_LIVE_PROBLEMS=new Set(['analytics-config-mismatch','http-health','release-mismatch','site-unreachable','site-release-mismatch']);
+/** Resolve only verified migration artifacts or the pinned baseline identity. */
+export async function expectedFrom(environment,side,argument) {
+  environmentConfig(environment);
+  if(!['website','api'].includes(side)) throw new Error('Invalid expected side');
+  if(argument==='baseline') {
+    const record=await readBaselineRecord(environment);
+    return {kind:'baseline',commit:record.commit,versionId:record[`${side}VersionId`]};
+  }
+  if(typeof argument!=='string'||!/^.+:[a-f0-9]{64}$/.test(argument)) throw new Error('Expected DIR:DIGEST or baseline');
+  const separator=argument.lastIndexOf(':');
+  const directory=argument.slice(0,separator),digest=argument.slice(separator+1);
+  const manifest=await json(path.join(directory,'manifest.json'));
+  await verifyManifest(directory,manifest,{environment,commit:manifest.commit,digest,schema:2});
+  if(manifest.side!==side) throw new Error('Expected artifact side mismatch');
+  return {kind:'variant',manifest};
+}
+export function expectedId(expected) {
+  return expected.kind==='variant'?expected.manifest.deploymentId:`baseline:${expected.versionId}`;
+}
+
+// Keep each endpoint's identity separate: an agreeing peer must never repair a
+// malformed or stale response. Absent deployment metadata denotes a baseline.
+async function readIdentity(url,side,{fetcher,releaseFile=false,onDeploymentId}) {
+  let response;
+  try {response=await fetcher(url,{redirect:'manual',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
+  catch {return {ok:false,reason:'http-0'};}
+  if(!response.ok||response.headers.get('location')) return {ok:false,reason:`http-${response.status}`};
+  let value;
+  try {value=await response.json();} catch {return {ok:false,reason:'not-json'};}
+  const missing=field=>({ok:false,reason:`missing-${field}`});
+  if(!value||typeof value!=='object'||Array.isArray(value)) return missing('environment');
+  if(Object.hasOwn(value,'deploymentId')) onDeploymentId?.();
+  if(typeof value.environment!=='string'||!value.environment.trim()) return missing('environment');
+  if(typeof value.release!=='string'||!/^[a-f0-9]{40}$/.test(value.release)) return missing('release');
+  const observation={ok:true,environment:value.environment,release:value.release,deploymentId:null,phase:null};
+  const variant=Object.hasOwn(value,'deploymentId')||Object.hasOwn(value,'phase');
+  if(variant) {
+    const phases=side==='website'?WEBSITE_PHASES:API_PHASES;
+    if(typeof value.deploymentId!=='string'||!new RegExp(`^${side}-(?:${Object.keys(phases).join('|')})-[a-f0-9]{12}-[a-f0-9]{8}$`).test(value.deploymentId)) return missing('deploymentId');
+    if(typeof value.phase!=='string'||!Object.hasOwn(phases,value.phase)) return missing('phase');
+    observation.deploymentId=value.deploymentId;observation.phase=value.phase;
+    for(const [field,allowed] of side==='website'
+      ? [['migrationStage',['additive','redirect']],['registryGraph',['baseline','canonical']]]
+      : [['reportingBase',null]]) {
+      if(allowed?!allowed.includes(value[field]):typeof value[field]!=='string'||!value[field].trim()) return missing(field);
+      observation[field]=value[field];
+    }
+    if(releaseFile&&typeof value.analyticsEnabled!=='boolean') return missing('analyticsEnabled');
+  }
+  // Preserve only identity fields actually supplied by this endpoint.
+  for(const field of ['migrationStage','registryGraph','reportingBase','analyticsEnabled'])
+    if(Object.hasOwn(value,field)) observation[field]=value[field];
+  return observation;
+}
+export async function readIdentities(environment,{fetcher=fetch}={}) {
+  const target=environmentConfig(environment);
+  let hasDeploymentId=false;
+  const health=await readIdentity(`${target.legacySite}/health`,'website',{fetcher,onDeploymentId:()=>{hasDeploymentId=true;}});
+  let uiHealth=null,uiRelease=null;
+  if(hasDeploymentId) {
+    uiHealth=await readIdentity(`${target.canonicalSite}/health`,'website',{fetcher});
+    uiRelease=await readIdentity(`${target.canonicalSite}/release.json`,'website',{fetcher,releaseFile:true});
+  }
+  const apiHealth=await readIdentity(`${target.api}/health`,'api',{fetcher});
+  return {website:{health,uiHealth,uiRelease},api:{health:apiHealth}};
+}
+export function identityProblems(environment,{website,api},observed) {
+  const problems=[];
+  const compare=(expected,observation,side)=>{
+    if(!observation) {problems.push('identity-malformed');return;}
+    if(!observation.ok) {
+      problems.push(observation.reason.startsWith('http-')?'http-health':'identity-malformed');return;
+    }
+    if(observation.environment!==environment) {problems.push('identity-malformed');return;}
+    const commit=expected.kind==='variant'?expected.manifest.commit:expected.commit;
+    if(observation.release!==commit) problems.push('release-mismatch');
+    if(expected.kind==='baseline') {
+      if(observation.deploymentId!==null) problems.push('stale-identity');
+      return;
+    }
+    if(observation.deploymentId===null||observation.phase===null) {problems.push('identity-malformed');return;}
+    const fields=side==='website'?['deploymentId','phase','migrationStage','registryGraph']:['deploymentId','phase','reportingBase'];
+    if(fields.some(field=>observation[field]!==expected.manifest[field])) problems.push('stale-identity');
+  };
+  compare(website,observed.website.health,'website');
+  if(website.kind==='variant'&&observed.website.health.ok&&observed.website.health.deploymentId!==null) {
+    compare(website,observed.website.uiHealth,'website');compare(website,observed.website.uiRelease,'website');
+  }
+  compare(api,observed.api.health,'api');
+  const fields=['environment','release','deploymentId','phase','migrationStage','registryGraph'];
+  for(const value of [observed.website.uiHealth,observed.website.uiRelease]) {
+    if(!value) continue;
+    if(!value.ok) problems.push(value.reason.startsWith('http-')?'http-health':'identity-malformed');
+    else if(value.environment!==environment) problems.push('identity-malformed');
+    else if(observed.website.health.ok&&observed.website.health.environment===environment&&fields.some(field=>value[field]!==observed.website.health[field])) problems.push('stale-identity');
+  }
+  return [...new Set(problems)].sort();
+}
+// Retry propagation and HTTP outages only. A malformed identity, missing token,
+// failed delivery queue or contract defect cannot be repaired by waiting.
+export const TRANSIENT_LIVE_PROBLEMS=new Set(['analytics-config-mismatch','http-health','release-mismatch','stale-identity','site-unreachable','site-release-mismatch']);
 export const LIVE_RETRY_WAITS=[4000,8000,12000,16000];
-// One real wall-clock budget for the whole check, reads included. Every request
-// is aborted at the deadline and every wait is truncated to what is left, so the
-// deploy job cannot be held open by slow reads rather than by sleeping.
 export const LIVE_BUDGET_MS=60000;
 const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   const remaining=deadline-clock();
@@ -141,28 +232,27 @@ const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   const signals=[options.signal,AbortSignal.timeout(remaining)].filter(Boolean);
   return fetcher(url,{...options,signal:AbortSignal.any(signals)});
 };
-/** Sanitized fixed codes for one live read of the deployed site and API. */
-export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch}={}) {
-  let problems=await checkHealth(environment,{token,commit,fetcher}).then(result=>result.problems);
-  // checkHealth reports a missing token and an admin endpoint that did not answer
-  // usefully under one code. A token was supplied here, and the public endpoints
-  // are unreachable too, so that is one outage rather than a second, permanent
-  // configuration defect. If the outage clears while the admin answer is still
-  // unusable, the code reappears on the next read and stops the run at once.
-  if(token&&problems.includes('http-health')) problems=problems.filter(code=>code!=='invalid-delivery-health');
-  // Public health gates the route contract. Until it confirms this release on
-  // this environment, whatever the site is serving belongs to the PREVIOUS
-  // release, or to nothing at all: its headers, its status codes and its 404
-  // behaviour are that release's, not this one's. Judging them here turned an
-  // ordinary propagation window — every endpoint answering 503 or 404 mid-deploy
-  // — into a permanent `site-contract` failure that stopped after one read.
-  // The routes are checked, and stay fully authoritative, from the first read
-  // that reports this release ready; a broken header then is still permanent.
-  // No extra code is reported for the skip. The read already carries `http-health`
-  // or `release-mismatch`, which is both why success is impossible here and why
-  // the run retries, so an unready read can never be mistaken for a clean one.
-  if(problems.includes('http-health')||problems.includes('release-mismatch')) return [...new Set(problems)].sort();
+/** Sanitized fixed codes and independent observations for one live read. */
+export async function liveProblems(environment,{website,api,token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch}) {
+  const observed=await readIdentities(environment,{fetcher});
+  const identities=identityProblems(environment,{website,api},observed);
+  let problems=[...identities];
   const target=environmentConfig(environment);
+  if(!token) problems.push('invalid-delivery-health');
+  else try {
+    const response=await fetcher(`${target.api}/v1/admin/health`,{headers:{Authorization:`Bearer ${token}`},redirect:'error',signal:AbortSignal.timeout(15000)});
+    if(!response.ok) throw new Error('HTTP check failed');
+    problems.push(...assessHealth(await response.json()));
+  } catch {
+    // Preserve the token-present outage rule without hiding an admin body that
+    // answered and reported a real permanent delivery defect.
+    if(!identities.includes('http-health')) problems.push('invalid-delivery-health');
+  }
+  if(token&&identities.includes('http-health')) problems=problems.filter(code=>code!=='invalid-delivery-health');
+  const result=()=>({problems:[...new Set(problems)].sort(),observed});
+  if(identities.length) return result();
+  if(website.kind==='variant'&&expectedAnalyticsEnabled!==undefined&&observed.website.uiRelease.analyticsEnabled!==expectedAnalyticsEnabled) problems.push('analytics-config-mismatch');
+  const commit=website.kind==='variant'?website.manifest.commit:website.commit;
   for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
     let response;
     try {response=await fetcher(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
@@ -172,19 +262,19 @@ export async function liveProblems(environment,commit,{token=process.env.HEALTH_
     let value;
     try {value=await response.json();} catch {problems.push('site-contract');continue;}
     if(value.release!==commit||value.environment!==environment) problems.push('site-release-mismatch');
-    else if(expectedAnalyticsEnabled!==undefined&&value.analyticsEnabled!==expectedAnalyticsEnabled) problems.push('analytics-config-mismatch');
+    else if(website.kind==='baseline'&&expectedAnalyticsEnabled!==undefined&&value.analyticsEnabled!==expectedAnalyticsEnabled) problems.push('analytics-config-mismatch');
   }
-  return [...new Set(problems)].sort();
+  return result();
 }
 /** Bounded propagation retries: at most five reads inside one wall-clock budget. */
-export async function checkLiveRelease(environment,commit,{
+export async function checkLiveRelease(environment,expected,{
   waits=LIVE_RETRY_WAITS,budgetMs=LIVE_BUDGET_MS,clock=Date.now,
   sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),log=console.log,fetcher=fetch,...options
 }={}) {
   const deadline=clock()+budgetMs;
   const bounded=boundedFetcher(fetcher,deadline,clock);
   for(let attempt=0;;attempt++) {
-    const problems=await liveProblems(environment,commit,{...options,fetcher:bounded});
+    const {problems}=await liveProblems(environment,{...expected,...options,fetcher:bounded});
     if(!problems.length) return problems;
     const transient=problems.every(code=>TRANSIENT_LIVE_PROBLEMS.has(code));
     // Another attempt must be permitted, and must still fit in the budget.
@@ -220,9 +310,13 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
     else if(command==='live') {
       const expected=process.env.EXPECTED_ANALYTICS_ENABLED;
       if(expected!==undefined&&!['true','false'].includes(expected)) throw new Error('Invalid expected analytics setting');
-      await checkLiveRelease(environment,commit,{expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
-      console.log('Live release checks passed');
+      const arguments_=process.argv.slice(4);
+      if(arguments_.length!==2||arguments_.filter(value=>value.startsWith('--website=')).length!==1||arguments_.filter(value=>value.startsWith('--api=')).length!==1) throw new Error('Use live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
+      const identities={};
+      for(const side of ['website','api']) identities[side]=await expectedFrom(environment,side,arguments_.find(value=>value.startsWith(`--${side}=`)).slice(side.length+3));
+      await checkLiveRelease(environment,identities,{expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
+      console.log(`live ok website=${expectedId(identities.website)} api=${expectedId(identities.api)}`);
     }
-    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
+    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }
