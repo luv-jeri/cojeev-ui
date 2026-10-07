@@ -51,10 +51,19 @@ test('manifest_schema_2_validates_identity_fields',async()=>{
   } finally {await fs.rm(dir,{recursive:true,force:true});}
 });
 
-test('unknown and opposite environment settings fail closed',()=>{
+test('release_environment_sets_ui_bases_consistently',()=>{
   assert.throws(()=>environmentConfig('preview'),/environment/i);
   assert.equal(environmentConfig('beta').databaseId,'e2adf4c4-5ab0-434d-b90f-96ea451e3be7');
-  assert.equal(buildEnvironment('production','a'.repeat(40),{}).COJEEV_BASE_PATH,'');
+  for(const environment of ['beta','production']) {
+    const target=environmentConfig(environment);
+    const env=buildEnvironment(environment,'a'.repeat(40));
+    assert.equal(target.canonicalSite,target.origin+target.basePath);
+    assert.equal(env.COJEEV_BASE_PATH,'/ui');
+    for(const key of ['NEXT_PUBLIC_SITE_URL','NEXT_PUBLIC_REGISTRY_URL','COJEEV_REGISTRY_URL']) assert.equal(env[key],target.canonicalSite);
+    assert.equal(env.NEXT_PUBLIC_REPORTING_API_URL,target.api);
+    for(const [key,value] of [['COJEEV_BASE_PATH',''],['NEXT_PUBLIC_SITE_URL',target.legacySite]])
+      assert.throws(()=>buildEnvironment(environment,'a'.repeat(40),{[key]:value}),/Environment URL\/config mismatch/);
+  }
   assert.throws(()=>buildEnvironment('beta','a'.repeat(40),{NEXT_PUBLIC_SITE_URL:'https://000h.cojeev.com'}),/environment|URL/i);
 });
 test('manifest verification detects edits, extra private files, missing files, and wrong identity',async()=>{

@@ -22,7 +22,7 @@ export function environmentConfig(environment) {
 export function buildEnvironment(environment, commit, supplied = {}) {
   const target = environmentConfig(environment);
   if(!/^[a-f0-9]{40}$/.test(commit)) throw new Error('Invalid release commit');
-  const fixed = {COJEEV_BASE_PATH:'',NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT:environment,NEXT_PUBLIC_RELEASE_SHA:commit,NEXT_PUBLIC_SITE_URL:target.site,NEXT_PUBLIC_REGISTRY_URL:target.site,COJEEV_REGISTRY_URL:target.site,NEXT_PUBLIC_REPORTING_API_URL:target.api,NEXT_PUBLIC_POSTHOG_HOST:'https://eu.i.posthog.com'};
+  const fixed = {COJEEV_BASE_PATH:'/ui',NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT:environment,NEXT_PUBLIC_RELEASE_SHA:commit,NEXT_PUBLIC_SITE_URL:target.canonicalSite,NEXT_PUBLIC_REGISTRY_URL:target.canonicalSite,COJEEV_REGISTRY_URL:target.canonicalSite,NEXT_PUBLIC_REPORTING_API_URL:target.api,NEXT_PUBLIC_POSTHOG_HOST:'https://eu.i.posthog.com'};
   for(const [key,value] of Object.entries(fixed)) if(supplied[key] !== undefined && supplied[key] !== value) throw new Error(`Environment URL/config mismatch: ${key}`);
   const allowed=['NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN','NEXT_PUBLIC_ANALYTICS_ENABLED','NEXT_PUBLIC_CONTACT_ENABLED'];
   for(const key of ['NEXT_PUBLIC_ANALYTICS_ENABLED','NEXT_PUBLIC_CONTACT_ENABLED']) if(supplied[key] !== undefined && !['true','false'].includes(supplied[key])) throw new Error(`Invalid boolean: ${key}`);

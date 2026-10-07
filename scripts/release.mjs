@@ -6,11 +6,12 @@ import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 import {buildEnvironment,environmentConfig} from './release-config.mjs';
-import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
+import {assertCleanSource,copyCommittedSource,verifyManifest} from './release-manifest.mjs';
 import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {assessHealth} from './operations-health.mjs';
 import {readBaselineRecord,WEBSITE_PHASES,API_PHASES} from './release-phases.mjs';
-import {siteHeaders} from '../workers/registry-host/src/headers.mjs';
+import {readBaseline,packageEnvironment,readVariant} from './release-variants.mjs';
+export {readVariant};
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
 export function releaseMetadata(environment,commit,publicEnv) {
@@ -20,44 +21,50 @@ export function releaseMetadata(environment,commit,publicEnv) {
     analyticsEnabled:publicEnv.NEXT_PUBLIC_ANALYTICS_ENABLED==='true'&&Boolean(publicEnv.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN?.trim()),
   };
 }
-export async function buildRelease(root,environment,commit,destination,settings={}) {
+export async function buildVariants(root,commit,destination,settings={}) {
   if(process.versions.node!=='22.22.0') throw new Error('Release build requires Node 22.22.0');
   assertCleanSource(root,commit);
-  const publicEnv=buildEnvironment(environment,commit,settings);
   if(JSON.parse(await fs.readFile(path.join(root,'node_modules/wrangler/package.json'),'utf8')).version!=='4.130.0') throw new Error('Locked Wrangler 4.130.0 required');
-  // Verify each tracked file's Git blob identity without hydrating archived Git
-  // objects from a potentially cloud-backed .git directory.
-  const scratch=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-release-source-'));
+  // Verify both pinned artifacts before even building beta. Never rebuild a
+  // baseline from today's source or publish a partial environment on failure.
+  const baselines={};
+  for(const environment of ['beta','production']) baselines[environment]=await readBaseline(environment,{record:path.join(root,'scripts/release-baseline.json')});
   try {
-    await copyCommittedSource(root,commit,scratch);
-    // Turbopack refuses node_modules symlinks outside its filesystem root.
-    // Copy the already lock-installed dependencies, not project/private state.
-    await fs.cp(await fs.realpath(path.join(root,'node_modules')),path.join(scratch,'node_modules'),{recursive:true,verbatimSymlinks:true});
-    const buildEnv={PATH:process.env.PATH,HOME:process.env.HOME,TMPDIR:process.env.TMPDIR,CI:'true',NEXT_TELEMETRY_DISABLED:'1',...publicEnv};
-    execFileSync('npm',['run','build'],{cwd:scratch,env:buildEnv,stdio:'inherit'});
-    // Refuse to merge into an older release directory.
-    await fs.mkdir(destination,{recursive:false});
-    await fs.cp(path.join(scratch,'out'),path.join(destination,'site'),{recursive:true});
-    await fs.writeFile(path.join(destination,'site/release.json'),JSON.stringify(releaseMetadata(environment,commit,publicEnv))+'\n');
-    await fs.writeFile(path.join(destination,'site/_headers'),siteHeaders(environment));
-    for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
-      const directory=path.join(destination,kind);await fs.mkdir(directory);
-      const source=await json(path.join(scratch,`workers/${worker}/wrangler.jsonc`));
-      const config={...source,...source.env[environment],services:source.env[environment].services,vars:{...source.env[environment].vars,RELEASE:commit},main:'./index.js'};
-      delete config.env;delete config.$schema;
-      if(kind==='website') config.assets={...config.assets,directory:'../site'};
-      else {
-        config.d1_databases=config.d1_databases.map(binding=>({...binding,migrations_dir:'./migrations'}));
-        await fs.cp(path.join(scratch,'workers/reporting/migrations'),path.join(directory,'migrations'),{recursive:true});
+    if((await fs.readdir(destination)).length) throw new Error('Variant destination must be empty');
+  } catch(error) {if(error.code!=='ENOENT') throw error;}
+  const scratch=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-release-variants-'));
+  try {
+    const result={};
+    for(const environment of ['beta','production']) {
+      const publicEnv=buildEnvironment(environment,commit,settings[environment]??{});
+      const sourceRoot=path.join(scratch,environment);await fs.mkdir(sourceRoot);
+      // Verify every tracked Git blob, preserving the clean source boundary.
+      await copyCommittedSource(root,commit,sourceRoot);
+      // Turbopack refuses node_modules symlinks outside its filesystem root.
+      await fs.cp(await fs.realpath(path.join(root,'node_modules')),path.join(sourceRoot,'node_modules'),{recursive:true,verbatimSymlinks:true});
+      const buildEnv={PATH:process.env.PATH,HOME:process.env.HOME,TMPDIR:process.env.TMPDIR,CI:'true',NEXT_TELEMETRY_DISABLED:'1',...publicEnv};
+      execFileSync('npm',['run','build'],{cwd:sourceRoot,env:buildEnv,stdio:'inherit'});
+      const workers={};
+      for(const [side,worker] of [['api','reporting'],['website','registry-host']]) {
+        const source=await json(path.join(sourceRoot,`workers/${worker}/wrangler.jsonc`));
+        const config={...source,...source.env[environment],services:source.env[environment].services,
+          vars:{...source.env[environment].vars},main:'./index.js'};
+        delete config.env;delete config.$schema;
+        if(side==='api') config.d1_databases=config.d1_databases.map(binding=>({...binding,migrations_dir:'./migrations'}));
+        const bundle=path.join(sourceRoot,'bundles',`${side}.js`);
+        await build({entryPoints:[path.join(sourceRoot,`workers/${worker}/${source.main}`)],outfile:bundle,bundle:true,format:'esm',platform:'browser',target:'es2022',logLevel:'silent'});
+        workers[side]={config,bundle,...(side==='api'?{migrations:path.join(sourceRoot,'workers/reporting/migrations')}:{})};
       }
-      validateDeploymentConfig(environment,config,kind,{source:true});
-      await build({entryPoints:[path.join(scratch,`workers/${worker}/${source.main}`)],outfile:path.join(directory,'index.js'),bundle:true,format:'esm',platform:'browser',target:'es2022',logLevel:'silent'});
-      await fs.writeFile(path.join(directory,'wrangler.jsonc'),JSON.stringify(config,null,2)+'\n');
+      result[environment]=await packageEnvironment(path.join(sourceRoot,'out'),environment,commit,path.join(scratch,'variants',environment),{
+        baseline:baselines[environment],publicMetadata:releaseMetadata(environment,commit,publicEnv),workers,
+      });
     }
-    const manifest=await createManifest(destination,environment,commit);
-    await fs.writeFile(path.join(destination,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
     assertCleanSource(root,commit);
-    return manifestDigest(manifest);
+    await fs.mkdir(destination,{recursive:true});
+    await fs.cp(path.join(scratch,'variants'),destination,{recursive:true,errorOnExist:true,force:false});
+    for(const [environment,variants] of Object.entries(result)) for(const [variant,artifact] of Object.entries(variants))
+      artifact.directory=path.join(destination,environment,variant);
+    return result;
   } finally {await fs.rm(scratch,{recursive:true,force:true});}
 }
 export async function readArtifact(directory,environment,commit,digest) {
@@ -292,20 +299,24 @@ export async function checkLiveRelease(environment,expected,{
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     const [command,environment,commit,directory,digest]=process.argv.slice(2);
-    if(command==='build-pair') {
+    if(command==='build-variants') {
       const source=process.cwd(),sha=environment,base=path.resolve(commit);
-      assertCleanSource(source,sha);await fs.mkdir(base,{recursive:true});
+      const settings={};
       for(const name of ['beta','production']) {
         const prefix=name.toUpperCase();
-        const hash=await buildRelease(source,name,sha,path.join(base,name),{
+        settings[name]={
           NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN:process.env[`${prefix}_POSTHOG_PROJECT_TOKEN`]??'',
           NEXT_PUBLIC_ANALYTICS_ENABLED:process.env[`${prefix}_ANALYTICS_ENABLED`]??'false',
           NEXT_PUBLIC_CONTACT_ENABLED:process.env.PUBLIC_CONTACT_ENABLED??'false',
-        });
-        console.log(`${name} ${sha} ${hash}`);
-        if(process.env.GITHUB_OUTPUT) await fs.appendFile(process.env.GITHUB_OUTPUT,`${name}_digest=${hash}\n`);
+        };
       }
-    } else if(command==='verify') {await readArtifact(path.resolve(directory),environment,commit,digest);console.log('Artifact verified');}
+      const artifacts=await buildVariants(source,sha,base,settings);
+      for(const [name,variants] of Object.entries(artifacts)) for(const [variant,{digest,deploymentId}] of Object.entries(variants)) {
+        const key=`${name}_${variant.replaceAll('-','_')}`;
+        console.log(`${name} ${variant} ${sha} ${digest} ${deploymentId}`);
+        if(process.env.GITHUB_OUTPUT) await fs.appendFile(process.env.GITHUB_OUTPUT,`${key}_digest=${digest}\n${key}_id=${deploymentId}\n`);
+      }
+    } else if(command==='verify') {await readVariant(path.resolve(directory),environment,commit,digest);console.log('Artifact verified');}
     else if(command==='deploy'||command==='rollback') console.log(JSON.stringify(await deployRelease(path.resolve(directory),environment,commit,digest,{rollback:command==='rollback'})));
     else if(command==='live') {
       const expected=process.env.EXPECTED_ANALYTICS_ENABLED;
@@ -317,6 +328,6 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
       await checkLiveRelease(environment,identities,{expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
       console.log(`live ok website=${expectedId(identities.website)} api=${expectedId(identities.api)}`);
     }
-    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
+    else throw new Error('Use build-variants SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }
