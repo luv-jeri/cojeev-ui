@@ -1,7 +1,9 @@
 import {pathToFileURL} from 'node:url';
 import {environmentConfig} from './release-config.mjs';
+import {readIdentities,expectedId} from './release.mjs';
+import {pairOf,readBaselineRecord} from './release-phases.mjs';
 
-const codes=new Set(['http-health','release-mismatch','invalid-delivery-health','delivery-stalled','delivery-review','email-quota','provider-unconfigured','deployment-failed','recovery-failed']);
+const codes=new Set(['http-health','release-mismatch','identity-malformed','website-identity-split','unlisted-pair','expected-identity-mismatch','legacy-registry','legacy-health','invalid-delivery-health','delivery-stalled','delivery-review','email-quota','provider-unconfigured','deployment-failed','recovery-failed']);
 export function assessHealth(data) {
   if(!Array.isArray(data?.queue)||!data?.usage||!data?.limits||!data?.providers) return ['invalid-delivery-health'];
   const problems=new Set();
@@ -20,20 +22,52 @@ export function assessHealth(data) {
   if((data.deploymentIntent==='active'||data.activationCutoff)&&!ready) problems.add('provider-unconfigured');
   return [...problems].sort();
 }
-export async function checkHealth(environment,{token,commit,fetcher=fetch}={}) {
+export async function checkHealth(environment,{token,expected={},fetcher=fetch}={}) {
   const target=environmentConfig(environment),problems=[];
+  const observed=await readIdentities(environment,{fetcher});
+  const {health,uiHealth,uiRelease}=observed.website,api=observed.api.health;
+  for(const value of [health,uiHealth,uiRelease,api].filter(value=>value!==null)) {
+    if(!value.ok) problems.push(value.reason.startsWith('http-')?'http-health':'identity-malformed');
+    else if(value.environment!==environment) problems.push('identity-malformed');
+  }
+  if(!health.ok&&/^http-3\d\d$/.test(health.reason)) problems.push('legacy-health');
+  if(health.ok&&health.deploymentId!==null) {
+    const fields=['environment','release','deploymentId','phase','migrationStage','registryGraph'];
+    for(const value of [uiHealth,uiRelease]) {
+      if(!value) problems.push('identity-malformed');
+      else if(value.ok&&fields.some(field=>value[field]!==health[field])) problems.push('website-identity-split');
+    }
+  }
+  if(health.ok&&api.ok) {
+    const websitePhase=health.deploymentId===null?'baseline':health.phase;
+    const apiPhase=api.deploymentId===null?'baseline':api.phase;
+    if(!pairOf(websitePhase,apiPhase)&&!(websitePhase==='baseline'&&apiPhase==='baseline')) problems.push('unlisted-pair');
+  }
+  for(const [side,value] of [['website',health],['api',api]]) {
+    const wanted=expected[`${side}Id`];
+    if(wanted===undefined) continue;
+    let id=value.ok?value.deploymentId:null;
+    if(value.ok&&id===null) {
+      try {
+        const baseline=await readBaselineRecord(environment);
+        if(value.release===baseline.commit) id=expectedId({kind:'baseline',versionId:baseline[`${side}VersionId`]});
+      } catch { /* An unpinned baseline cannot satisfy an expected ID. */ }
+    }
+    if(id!==wanted) problems.push('expected-identity-mismatch');
+  }
   const get=async(url,headers={})=>{
     const response=await fetcher(url,{headers,redirect:'error',signal:AbortSignal.timeout(15000)});
     if(!response.ok) throw new Error('HTTP check failed');
     return response.json();
   };
-  let site,api;
-  try {
-    site=await get(`${target.site}/health`);api=await get(`${target.api}/health`);
-    if([site,api].some(value=>value.status!=='ok'||value.environment!==environment||!/^[a-f0-9]{40}$/.test(value.release))||site.release!==api.release||(commit&&site.release!==commit)) problems.push('release-mismatch');
-  } catch {problems.push('http-health');}
   if(!token) problems.push('invalid-delivery-health');
   else try {problems.push(...assessHealth(await get(`${target.api}/v1/admin/health`,{Authorization:`Bearer ${token}`})));} catch {problems.push('invalid-delivery-health');}
+  try {
+    const response=await fetcher(`${target.legacySite}/r/button.json`,{redirect:'manual',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});
+    if(response.status!==200||response.headers.get('location')) throw new Error('Legacy registry not direct');
+    const registry=await response.json();
+    if(!registry||typeof registry!=='object'||Array.isArray(registry)) throw new Error('Legacy registry not JSON object');
+  } catch {problems.push('legacy-registry');}
   return {environment,problems:[...new Set(problems)].sort()};
 }
 export async function github(endpoint,options={}) {
@@ -70,10 +104,10 @@ export async function updateAlert(environment,problems,client=github) {
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
-    const [environment,commit]=process.argv.slice(2);
+    const [environment]=process.argv.slice(2);
     const result=process.env.OPERATIONS_FAILURE
       ? {environment,problems:[process.env.OPERATIONS_FAILURE]}
-      : await checkHealth(environment,{token:process.env.HEALTH_TOKEN,commit});
+      : await checkHealth(environment,{token:process.env.HEALTH_TOKEN,expected:{websiteId:process.env.EXPECTED_WEBSITE_ID,apiId:process.env.EXPECTED_API_ID}});
     if(process.env.UPDATE_ALERT==='true') await updateAlert(environment,result.problems);
     console.log(JSON.stringify(result));
     if(result.problems.length) process.exitCode=1;
