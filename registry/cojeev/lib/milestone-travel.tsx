@@ -127,8 +127,8 @@ function stopLoop() {
   raf = 0;
 }
 function tick(t: number) {
-  const dt =
-    previous === null ? 0 : Math.min(0.05, Math.max(0, (t - previous) / 1000));
+  // Real elapsed time: the shared spring caps one step at 0.1 s, so slow machines keep pace with the clock.
+  const dt = previous === null ? 0 : Math.max(0, (t - previous) / 1000);
   previous = t;
   let active = false;
   scenes.forEach((s) => {
@@ -485,7 +485,9 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   function frame(dt: number) {
     if (!painting) return false;
     for (const s of springs()) if (!rest(s)) spring(s, dt);
-    hook?.();
+    // Turns are in degrees: the shared 0.0008 snap would hold an invisible creep for about a second.
+    for (const b of [body, ...marks])
+      if (Math.abs(b.rot.to - b.rot.x) < 0.1 && Math.abs(b.rot.v) < 1) set(b.rot, b.rot.to);    hook?.();
     draw();
     for (const w of waits.slice()) if (w.g !== gen || w.when?.()) done(w);
     const active =
