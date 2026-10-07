@@ -59,10 +59,10 @@ export function wrangler(args,input) {
   // Wrangler emits --json results through its normal log channel. Capture that
   // channel for machine-readable commands; never forward raw stdout/stderr.
   const operation=args.slice(0,args[0]==='deploy'?1:2).join(' ');
-  recordDeploymentEvent({operation,status:'started'});
+  recordDeploymentEvent({operation,status:'started'},args);
   try {
     const result=execFileSync(process.execPath,[canonical,...args],{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false',WRANGLER_LOG:args.includes('--json')?'log':'error',WRANGLER_LOG_PATH:sink,WRANGLER_LOG_SANITIZE:'true'}});
-    recordDeploymentEvent({operation,status:'succeeded'});
+    recordDeploymentEvent({operation,status:'succeeded'},args);
     return result;
   }
   catch(error) {
@@ -145,7 +145,7 @@ export function validateRestore(environment,receipt,target=RESTORE_DATABASE,date
 }
 export async function backup(environment,configPath,{run=wrangler,cf=cloudflare,date=new Date()}={}) {
   const target=environmentConfig(environment);
-  const config=JSON.parse(await fs.readFile(configPath,'utf8'));validateDeploymentConfig(environment,config,'api',{source:true});
+  const config=JSON.parse(await fs.readFile(configPath,'utf8'));validateDeploymentConfig(environment,config,'api');
   await recoveryPolicy(cf);
   const temp=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-private-backup-'));
   await fs.chmod(temp,0o700);
@@ -170,7 +170,7 @@ export async function backup(environment,configPath,{run=wrangler,cf=cloudflare,
 export async function prepareDatabaseRecovery(environment,configPath,{run=wrangler}={}) {
   const target=environmentConfig(environment);
   const config=JSON.parse(await fs.readFile(configPath,'utf8'));
-  validateDeploymentConfig(environment,config,'api',{source:true});
+  validateDeploymentConfig(environment,config,'api');
   const result=JSON.parse(run(['d1','time-travel','info',target.database,'--config',configPath,'--json']));
   if(typeof result.bookmark!=='string'||!/^[a-f0-9-]{16,128}$/i.test(result.bookmark)) throw new Error('D1 recovery bookmark unavailable');
   // A bookmark is recovery metadata, not report contents or an access token.

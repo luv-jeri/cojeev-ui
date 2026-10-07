@@ -7,7 +7,7 @@ import path from 'node:path';
 import { assessHealth, checkHealth, updateAlert } from '../scripts/operations-health.mjs';
 import { backupKey, assertRecoveryPolicy, composeSecretBundles, validateDeploymentConfig, validateRestore, validateSecrets,backup,restore } from '../scripts/operations.mjs';
 import {createManifest,manifestDigest} from '../scripts/release-manifest.mjs';
-import {deployRelease} from '../scripts/release.mjs';
+import * as releases from '../scripts/release.mjs';
 import {verifyRollbackRun} from '../scripts/release-rollback-run.mjs';
 
 const healthy={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850},providers:{email:true,github:true,resendWebhook:true,ownerNotification:true},activationCutoff:1,deploymentIntent:'active'};
@@ -239,29 +239,44 @@ test('a supplemental bundle completes the protected base without overwriting it,
   assert.deepEqual(validateSecrets(composeSecretBundles(base,'{}'),'production'),{RESEND_API_KEY:dummyResend});
 });
 const sourceRoot=new URL('../',import.meta.url);
-async function fixture(environment='beta',{headers=true}={}) {
-  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-deploy-test-'));
-  for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
-    await fs.mkdir(path.join(dir,kind));
-    const source=JSON.parse(await fs.readFile(new URL(`workers/${worker}/wrangler.jsonc`,sourceRoot),'utf8'));
-    const config={...source,...source.env[environment],services:source.env[environment].services,main:'./index.js',vars:{...source.env[environment].vars,RELEASE:'a'.repeat(40)}};delete config.env;
-    if(kind==='website')config.assets.directory='../site';
-    await fs.writeFile(path.join(dir,kind,'wrangler.jsonc'),JSON.stringify(config));
-    await fs.writeFile(path.join(dir,kind,'index.js'),'export default {}');
-  }
-  await fs.mkdir(path.join(dir,'site'));
-  await fs.writeFile(path.join(dir,'site/index.html'),'<html>public</html>');
-  await fs.writeFile(path.join(dir,'site/release.json'),JSON.stringify({environment,release:'a'.repeat(40)}));
-  if(headers) await fs.writeFile(path.join(dir,'site/_headers'),'/*\n  x-content-type-options: nosniff\n');
-  await fs.mkdir(path.join(dir,'api/migrations'));
+async function fixture(environment='beta') {
+  const root=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-promote-test-'));
+  const dir=path.join(root,'target');
+  const config=deploymentConfig(environment,'api','linked');
+  Object.assign(config,{main:'./index.js'});config.vars.RELEASE='a'.repeat(40);
+  config.vars.DEPLOYMENT_ID='api-linked-aaaaaaaaaaaa-bbbbbbbb';
+  await fs.mkdir(path.join(dir,'api/migrations'),{recursive:true});
+  await fs.writeFile(path.join(dir,'api/wrangler.jsonc'),JSON.stringify(config));
+  await fs.writeFile(path.join(dir,'api/index.js'),'export default {}');
   await fs.writeFile(path.join(dir,'api/migrations/0002_safe_delivery.sql'),'-- fixture');
-  const manifest=await createManifest(dir,environment,'a'.repeat(40));
+  const identity={side:'api',phase:'linked',deploymentId:config.vars.DEPLOYMENT_ID,reportingBase:'canonical'};
+  const manifest=await createManifest(dir,environment,'a'.repeat(40),identity);
   await fs.writeFile(path.join(dir,'manifest.json'),JSON.stringify(manifest));
-  return {dir,manifest};
+  const peer=path.join(root,'peer');await fs.mkdir(path.join(peer,'website'),{recursive:true});
+  const website=deploymentConfig(environment,'website','mounted');
+  website.main='./index.js';website.vars.RELEASE='a'.repeat(40);
+  await fs.writeFile(path.join(peer,'website/wrangler.jsonc'),JSON.stringify(website));
+  await fs.writeFile(path.join(peer,'website/index.js'),'export default {}');
+  await fs.mkdir(path.join(peer,'site/ui'),{recursive:true});await fs.mkdir(path.join(peer,'site/r'));
+  await fs.writeFile(path.join(peer,'site/ui/index.html'),'<html>ui</html>');
+  await fs.writeFile(path.join(peer,'site/r/button.json'),'{}');
+  await fs.writeFile(path.join(peer,'site/_headers'),'/*\n  x-content-type-options: nosniff\n');
+  const webIdentity={side:'website',phase:'mounted',deploymentId:website.vars.DEPLOYMENT_ID,migrationStage:'additive',registryGraph:'baseline'};
+  await fs.writeFile(path.join(peer,'site/ui/release.json'),JSON.stringify({environment,release:'a'.repeat(40),phase:'mounted',deploymentId:webIdentity.deploymentId,migrationStage:'additive',registryGraph:'baseline',analyticsEnabled:false}));
+  const webManifest=await createManifest(peer,environment,'a'.repeat(40),webIdentity);
+  await fs.writeFile(path.join(peer,'manifest.json'),JSON.stringify(webManifest));
+  const fetcher=async url=>Response.json(url.startsWith(deploymentTargets[environment].canonicalSite)||url.startsWith(deploymentTargets[environment].legacySite)
+    ? {environment,release:'a'.repeat(40),phase:'mounted',deploymentId:webIdentity.deploymentId,migrationStage:'additive',registryGraph:'baseline',analyticsEnabled:false}
+    : {environment,release:'a'.repeat(40),phase:'linked',deploymentId:identity.deploymentId,reportingBase:'canonical'});
+  return {dir,root,manifest,identity,webManifest,options:{peer:{directory:peer,digest:manifestDigest(webManifest)},fetcher,cf:async endpoint=>endpoint.endsWith('/versions')?{items:[]}:[]},expected:webIdentity.deploymentId};
 }
+const promote=async(fixture,options={})=>{
+  assert.equal(typeof releases.promoteApi,'function','targeted API promotion must exist');
+  return releases.promoteApi(fixture.dir,fixture.manifest.environment,'a'.repeat(40),manifestDigest(fixture.manifest),fixture.expected,{...fixture.options,...options});
+};
 const policyAPI=async endpoint=>endpoint.endsWith('/managed')?{enabled:false}:endpoint.endsWith('/custom')?{domains:[]}:{rules:[{enabled:true,conditions:{prefix:''},deleteObjectsTransition:{condition:{type:'Age',maxAge:604800}}}]};
 test('backup is privately uploaded and verified before return; temporary report files are removed',async()=>{
-  const {dir}=await fixture(),objects=new Map(),local=[];
+  const {dir,root}=await fixture(),objects=new Map(),local=[];
   const run=args=>{
     if(args[0]==='d1') {const file=args[args.indexOf('--output')+1];local.push(file);writeFileSync(file,'CREATE TABLE reports(id);');}
     else if(args[2]==='put') objects.set(args[3],existsSync(args[args.indexOf('--file')+1]));
@@ -272,62 +287,67 @@ test('backup is privately uploaded and verified before return; temporary report 
     assert.equal(result.key,'beta/day-6.sql');
     assert.deepEqual([...objects.keys()],['cojeev-ui-private-recovery/beta/day-6.sql','cojeev-ui-private-recovery/beta/day-6.sql.json']);
     assert.ok(local.every(file=>!existsSync(file)));
-  } finally {await fs.rm(dir,{recursive:true,force:true});}
+  } finally {await fs.rm(root,{recursive:true,force:true});}
 });
 test('tampered artifacts and failed backup stop deployment before any migration or deploy command',async()=>{
-  const {dir,manifest}=await fixture(),original=process.env.REPORTING_SECRETS_JSON,calls=[];
+  const artifact=await fixture(),{dir,root}=artifact,original=process.env.REPORTING_SECRETS_JSON,calls=[];
   process.env.REPORTING_SECRETS_JSON=JSON.stringify({ADMIN_TOKEN:'a'.repeat(40),HEALTH_TOKEN:'h'.repeat(40),IP_HASH_SECRET:'b'.repeat(40),TURNSTILE_SECRET:'s'.repeat(40),TURNSTILE_SITE_KEY:'0x'+'a'.repeat(24)});
   try {
     const options={run:args=>calls.push(args),backupDatabase:async()=>{throw new Error('Backup readback mismatch');}};
-    await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),options),/Backup/);
+    await assert.rejects(promote(artifact,options),/Backup/);
     assert.deepEqual(calls,[]);
-    await fs.writeFile(path.join(dir,'website/index.js'),'changed');
-    await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),options),/integrity/);
+    await fs.writeFile(path.join(dir,'api/index.js'),'changed');
+    await assert.rejects(promote(artifact,options),/integrity/);
     assert.deepEqual(calls,[]);
-  } finally {if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(dir,{recursive:true,force:true});}
+  } finally {if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(root,{recursive:true,force:true});}
 });
 test('an artifact that lets static files skip the Worker is refused without their _headers file',async()=>{
-  const {dir,manifest}=await fixture('beta',{headers:false}),calls=[];
+  const artifact=await fixture(),calls=[],peer=artifact.options.peer;
   try {
-    await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),{run:args=>calls.push(args),backupDatabase:async()=>({})}),/_headers/);
+    await fs.rm(path.join(peer.directory,'site/_headers'));
+    const manifest=await createManifest(peer.directory,'beta','a'.repeat(40),artifact.webManifest);
+    await fs.writeFile(path.join(peer.directory,'manifest.json'),JSON.stringify(manifest));
+    await assert.rejects(releases.promoteWebsite(peer.directory,'beta','a'.repeat(40),manifestDigest(manifest),artifact.identity.deploymentId,{
+      ...artifact.options,peer:{directory:artifact.dir,digest:manifestDigest(artifact.manifest)},run:args=>calls.push(args),
+    }),/_headers/);
     assert.deepEqual(calls,[]);
-  } finally {await fs.rm(dir,{recursive:true,force:true});}
+  } finally {await fs.rm(artifact.root,{recursive:true,force:true});}
 });
 test('production promotion preflights existing secret names and preserves the configured Turnstile site key',async()=>{
-  const {dir,manifest}=await fixture('production'),original=process.env.REPORTING_SECRETS_JSON;
+  const artifact=await fixture('production'),{dir,root}=artifact,original=process.env.REPORTING_SECRETS_JSON;
   const provisioned=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET'];
   const commit='a'.repeat(40),endpoints=[],calls=[];
-  const options=names=>({run:(args,input)=>calls.push({args,input}),backupDatabase:async()=>({}),cf:async endpoint=>{endpoints.push(endpoint);return names.map(name=>({name}));}});
+  const options=names=>({run:(args,input)=>calls.push({args,input}),backupDatabase:async()=>({}),cf:async endpoint=>{endpoints.push(endpoint);return endpoint.endsWith('/secrets')?names.map(name=>({name})):{items:[]};}});
   process.env.REPORTING_SECRETS_JSON='{}';
   try {
-    await deployRelease(dir,'production',commit,manifestDigest(manifest),options(provisioned));
-    assert.deepEqual(endpoints,['workers/scripts/cojeev-ui-reporting/secrets']);
+    await promote(artifact,options(provisioned));
+    assert.ok(endpoints.includes('workers/scripts/cojeev-ui-reporting/secrets'));
     assert.deepEqual(calls[0].args.slice(0,3),['d1','migrations','apply']);
     const deploys=calls.filter(call=>call.args[0]==='deploy');
-    assert.equal(deploys.length,2);
+    assert.equal(deploys.length,1);
     assert.equal(deploys[0].input,'{}');
-    await assert.rejects(deployRelease(dir,'production',commit,manifestDigest(manifest),options(provisioned.filter(name=>name!=='HEALTH_TOKEN'))),/provisioned/);
+    await assert.rejects(promote(artifact,options(provisioned.filter(name=>name!=='HEALTH_TOKEN'))),/provisioned/);
     const config=path.join(dir,'api/wrangler.jsonc');
     const parsed=JSON.parse(await fs.readFile(config,'utf8'));delete parsed.vars.TURNSTILE_SITE_KEY;
     await fs.writeFile(config,JSON.stringify(parsed));
-    const updated=await createManifest(dir,'production',commit);
+    const updated=await createManifest(dir,'production',commit,artifact.identity);
     await fs.writeFile(path.join(dir,'manifest.json'),JSON.stringify(updated));
-    await assert.rejects(deployRelease(dir,'production',commit,manifestDigest(updated),options(provisioned)),/Turnstile/);
-  } finally {if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(dir,{recursive:true,force:true});}
+    artifact.manifest=updated;await assert.rejects(promote(artifact,options(provisioned)),/Turnstile/);
+  } finally {if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(root,{recursive:true,force:true});}
 });
 test('deployment ships the composed bundle and refuses an overlapping key before any command runs',async()=>{
-  const {dir,manifest}=await fixture(),base=process.env.REPORTING_SECRETS_JSON,extra=process.env.REPORTING_ADDITIONAL_SECRETS_JSON,calls=[];
+  const artifact=await fixture(),{root}=artifact,base=process.env.REPORTING_SECRETS_JSON,extra=process.env.REPORTING_ADDITIONAL_SECRETS_JSON,calls=[];
   process.env.REPORTING_SECRETS_JSON=JSON.stringify({RESEND_API_KEY:dummyResend});
   process.env.REPORTING_ADDITIONAL_SECRETS_JSON=JSON.stringify(dummyBootstrap);
   try {
     const options={run:(args,input)=>calls.push({args,input}),backupDatabase:async()=>({})};
-    await deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),options);
+    await promote(artifact,options);
     const deployed=JSON.parse(calls.find(call=>call.args[0]==='deploy').input);
     assert.deepEqual(Object.keys(deployed).sort(),['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','RESEND_API_KEY','TURNSTILE_SECRET','TURNSTILE_SITE_KEY']);
     assert.equal(deployed.RESEND_API_KEY,dummyResend);
     calls.length=0;
     process.env.REPORTING_ADDITIONAL_SECRETS_JSON=JSON.stringify({...dummyBootstrap,RESEND_API_KEY:'re_leaky_'+'x'.repeat(24)});
-    await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),options),error=>{
+    await assert.rejects(promote(artifact,options),error=>{
       assert.match(error.message,/Duplicate reporting secret/);
       assert.ok(!/dummy|leaky/.test(error.message),error.message);
       return true;
@@ -335,18 +355,18 @@ test('deployment ships the composed bundle and refuses an overlapping key before
     assert.deepEqual(calls,[]);
   } finally {
     for(const [name,value] of [['REPORTING_SECRETS_JSON',base],['REPORTING_ADDITIONAL_SECRETS_JSON',extra]]) if(value===undefined) delete process.env[name]; else process.env[name]=value;
-    await fs.rm(dir,{recursive:true,force:true});
+    await fs.rm(root,{recursive:true,force:true});
   }
 });
 test('rollback rejects any artifact beyond reviewed migration boundary',async()=>{
-  const {dir}=await fixture(),original=process.env.REPORTING_SECRETS_JSON;
+  const artifact=await fixture(),{dir,root}=artifact,original=process.env.REPORTING_SECRETS_JSON;
   process.env.REPORTING_SECRETS_JSON=JSON.stringify({ADMIN_TOKEN:'a'.repeat(40),HEALTH_TOKEN:'h'.repeat(40),IP_HASH_SECRET:'b'.repeat(40),TURNSTILE_SECRET:'s'.repeat(40),TURNSTILE_SITE_KEY:'0x'+'a'.repeat(24)});
   process.env.ROLLBACK_SCHEMA_ACK='0002_safe_delivery.sql';
   try {
     await fs.writeFile(path.join(dir,'api/migrations/0003_future.sql'),'-- incompatible');
-    const manifest=await createManifest(dir,'beta','a'.repeat(40));await fs.writeFile(path.join(dir,'manifest.json'),JSON.stringify(manifest));
-    await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),{rollback:true,run:()=>{}}),/schema|migration/);
-  } finally {delete process.env.ROLLBACK_SCHEMA_ACK;if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(dir,{recursive:true,force:true});}
+    const manifest=await createManifest(dir,'beta','a'.repeat(40),artifact.identity);await fs.writeFile(path.join(dir,'manifest.json'),JSON.stringify(manifest));
+    artifact.manifest=manifest;await assert.rejects(promote(artifact,{rollback:true,run:()=>{}}),/schema|migration/);
+  } finally {delete process.env.ROLLBACK_SCHEMA_ACK;if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(root,{recursive:true,force:true});}
 });
 test('rollback run provenance rejects fork or failed runs before artifact download',async()=>{
   const trusted={conclusion:'success',head_branch:'main',head_sha:'a'.repeat(40),event:'push',path:'.github/workflows/verify.yml',head_repository:{full_name:'luv-jeri/cojeev-ui'}};

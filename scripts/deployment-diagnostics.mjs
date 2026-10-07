@@ -2,6 +2,13 @@
 // execFileSync errors contain command arguments, stdout, stderr and sometimes input.
 import {appendFileSync} from 'node:fs';
 
+function deploymentIdentity(args) {
+  const index=args.indexOf('--message');
+  const match=index>=0 && args[index+1]?.match(/^cojeev-migration side=(api|website) phase=(prepared|linked|mounted|regenerated|redirect) id=((?:api|website)-[a-z]+-[a-f0-9]{12}-[a-f0-9]{8})$/);
+  if(!match || !match[3].startsWith(`${match[1]}-${match[2]}-`)) return {};
+  return {side:match[1],phase:match[2],deploymentId:match[3]};
+}
+
 function secretValues(input, env) {
   const values=[];
   const collect=value=>{
@@ -41,14 +48,15 @@ export function deploymentDiagnostic(error,args,input,env=process.env) {
   }
   return {
     operation,status:'failed',
+    ...deploymentIdentity(args),
     exitCode:Number.isInteger(error.status)?error.status:null,
     ...(apiCode?{apiCode}:{}),...(systemCode?{systemCode}:{}),
     explanation:explanation||'No safe error headline was available; raw output was not published. Inspect the uploader configuration and credential scope privately.',
   };
 }
 
-export function recordDeploymentEvent(event) {
-  const line=JSON.stringify({time:new Date().toISOString(),...event});
+export function recordDeploymentEvent(event,args=[]) {
+  const line=JSON.stringify({time:new Date().toISOString(),...event,...deploymentIdentity(args)});
   console.error(line);
   if(process.env.GITHUB_STEP_SUMMARY) {
     // HTML-escape diagnostic text before writing it into a public job summary.

@@ -7,12 +7,14 @@ import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 import {buildEnvironment,environmentConfig} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,verifyManifest} from './release-manifest.mjs';
-import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
+import {composeSecretBundles,validateSecrets} from './operations.mjs';
 import {assessHealth} from './operations-health.mjs';
 import {readBaselineRecord,WEBSITE_PHASES,API_PHASES} from './release-phases.mjs';
 import {readBaseline,packageEnvironment,readVariant} from './release-variants.mjs';
 import {livePairCli} from './release-pair.mjs';
 import {contractProblems} from './live-contracts.mjs';
+import {promoteApi,promoteWebsite} from './release-promote.mjs';
+export {promoteApi,promoteWebsite};
 export {readVariant};
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
@@ -69,20 +71,6 @@ export async function buildVariants(root,commit,destination,settings={}) {
     return result;
   } finally {await fs.rm(scratch,{recursive:true,force:true});}
 }
-export async function readArtifact(directory,environment,commit,digest) {
-  const manifest=await json(path.join(directory,'manifest.json'));
-  await verifyManifest(directory,manifest,{environment,commit,digest});
-  for(const kind of ['api','website']) {
-    const config=await json(path.join(directory,kind,'wrangler.jsonc'));
-    validateDeploymentConfig(environment,config,kind,{source:true});
-    if(config.vars.RELEASE!==commit||config.main!=='./index.js') throw new Error('Artifact release/config mismatch');
-    // Files that skip the Worker get their security headers only from site/_headers.
-    if(kind==='website'&&config.assets.run_worker_first!==true) await fs.access(path.join(directory,'site/_headers')).catch(()=>{throw new Error('Artifact lets static files skip the Worker without site/_headers');});
-  }
-  const release=await json(path.join(directory,'site/release.json'));
-  if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');
-  return manifest;
-}
 export function deploymentSecrets(environment,env=process.env,log=console.error) {
   const bundles=composeSecretBundles(env.REPORTING_SECRETS_JSON,env.REPORTING_ADDITIONAL_SECRETS_JSON);
   // Provision webhook signing separately without rewriting either protected
@@ -96,41 +84,6 @@ export function deploymentSecrets(environment,env=process.env,log=console.error)
   if(typeof rotated!=='string'||!rotated.trim()||/\s/.test(rotated)||rotated.length<32) throw new Error('REPORTING_ADMIN_TOKEN must be a non-blank value of at least 32 characters');
   log('ADMIN_TOKEN: rotated value from REPORTING_ADMIN_TOKEN');
   return {...composed,ADMIN_TOKEN:rotated};
-}
-export async function deployRelease(directory,environment,commit,digest,{rollback=false,run=wrangler,backupDatabase=prepareDatabaseRecovery,cf=cloudflare}={}) {
-  const manifest=await readArtifact(directory,environment,commit,digest);
-  const target=environmentConfig(environment);
-  const secrets=deploymentSecrets(environment);
-  const config=path.join(directory,'api/wrangler.jsonc');
-  if(environment==='production') {
-    const existing=await cf(`workers/scripts/${target.worker}/secrets`);
-    for(const name of ['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET']) if(!secrets[name]&&!existing.some(item=>item.name===name)) throw new Error('Required production secret is not provisioned');
-    if(!/^0x[A-Za-z0-9_-]{20,}$/.test(secrets.TURNSTILE_SITE_KEY??(await json(config)).vars.TURNSTILE_SITE_KEY??'')) throw new Error('Production Turnstile site key missing');
-  }
-  // The current additive schema is the only reviewed code rollback boundary.
-  // Any future migration requires an explicit compatibility review in this tool.
-  if(rollback && (process.env.ROLLBACK_SCHEMA_ACK!=='0002_safe_delivery.sql'||!manifest.files['api/migrations/0002_safe_delivery.sql']||Object.keys(manifest.files).some(file=>file.startsWith('api/migrations/')&&!/^api\/migrations\/000[12]_/.test(file)))) throw new Error('Code rollback requires reviewed compatible schema 0002');
-  if(!rollback) {
-    await backupDatabase(environment,config);
-    run(['d1','migrations','apply',target.database,'--remote','--config',config]);
-  }
-  // Wrangler opens --secrets-file by pathname. Node subprocess stdin is a socket
-  // on Linux, so /dev/stdin fails with ENXIO even though it works on macOS.
-  // Use the supported file interface outside the immutable artifact/workspace.
-  const secretDirectory=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-deploy-secrets-'));
-  try {
-    await fs.chmod(secretDirectory,0o700);
-    const secretsFile=path.join(secretDirectory,'secrets.json');
-    const serializedSecrets=JSON.stringify(secrets);
-    await fs.writeFile(secretsFile,serializedSecrets,{mode:0o600,flag:'wx'});
-    // Keep the in-memory bundle available to the wrapper's error redactor too.
-    // No secret value is placed in argv or in the packaged release.
-    run(['deploy','--config',config,'--no-bundle','--secrets-file',secretsFile],serializedSecrets);
-  } finally {
-    await fs.rm(secretDirectory,{recursive:true,force:true});
-  }
-  run(['deploy','--config',path.join(directory,'website/wrangler.jsonc'),'--no-bundle']);
-  return {environment,commit,manifestDigest:digest,rollback};
 }
 /** Resolve only verified migration artifacts or the pinned baseline identity. */
 export async function expectedFrom(environment,side,argument) {
@@ -310,7 +263,14 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
     } else if(command==='live-pair') {
       await livePairCli(process.argv.slice(3));
     } else if(command==='verify') {await readVariant(path.resolve(directory),environment,commit,digest);console.log('Artifact verified');}
-    else if(command==='deploy'||command==='rollback') console.log(JSON.stringify(await deployRelease(path.resolve(directory),environment,commit,digest,{rollback:command==='rollback'})));
+    else if(command==='deploy'||command==='rollback') throw new Error('Untargeted deploy is retired: use promote-api or promote-website');
+    else if(command==='promote-api'||command==='promote-website') {
+      const args=process.argv.slice(3);
+      if(!(args.length===5||args.length===6&&args[5]==='--rollback')) throw new Error('Use promote-api/promote-website ENV SHA DIRECTORY DIGEST EXPECTED_PEER_ID [--rollback]');
+      const expected=args[4],fn=command==='promote-api'?promoteApi:promoteWebsite;
+      const peer={directory:process.env.PEER_DIRECTORY,digest:process.env.PEER_DIGEST};
+      console.log(JSON.stringify(await fn(path.resolve(directory),environment,commit,digest,expected,{rollback:args[5]==='--rollback',evidence:process.env.PROMOTION_EVIDENCE,peer})));
+    }
     else if(command==='live') {
       const expected=process.env.EXPECTED_ANALYTICS_ENABLED;
       if(expected!==undefined&&!['true','false'].includes(expected)) throw new Error('Invalid expected analytics setting');
@@ -324,6 +284,6 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
       await checkLiveRelease(environment,identities,{baseline,robotsBefore,expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
       console.log(`live ok website=${expectedId(identities.website)} api=${expectedId(identities.api)}`);
     }
-    else throw new Error('Use build-variants SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
+    else throw new Error('Use build-variants SHA DIRECTORY | verify ENV SHA DIRECTORY DIGEST | promote-api/promote-website ENV SHA DIRECTORY DIGEST EXPECTED_PEER_ID [--rollback] | live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }
