@@ -1,0 +1,11 @@
+{
+  "schema": 2,
+  "environment": "beta",
+  "commit": "2222222222222222222222222222222222222222",
+  "side": "website",
+  "phase": "redirect",
+  "deploymentId": "website-redirect-222222222222-22222222",
+  "migrationStage": "redirect",
+  "registryGraph": "canonical",
+  "files": {}
+}

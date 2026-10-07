@@ -1,6 +1,9 @@
 import {test, before, after} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile, readdir} from 'node:fs/promises';
+import {readFile, readdir, mkdtemp, mkdir, writeFile, rm} from 'node:fs/promises';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import * as harness from '../../../scripts/asset-router-harness.mjs';
 import {startAssetRouter, followChain, chainProblems} from '../../../scripts/asset-router-harness.mjs';
 import {CODE_PROBES, retainedTextInventory, workerFirstList, ruleMatches} from '../../../scripts/worker-first.mjs';
 import {CANONICAL_BASE} from '../src/routing.mjs';
@@ -15,6 +18,84 @@ before(async () => {
 after(async () => {await router?.dispose();});
 const bytes = async response => Buffer.from(await response.arrayBuffer());
 const fixture = path => readFile(`${site}${path.slice(1)}`);
+
+test('packaged_mode_runs_the_variant_bundle_with_its_vars', async () => {
+  assert.equal(typeof harness.materializeVariant, 'function', 'materializeVariant must bundle a fresh fixture copy');
+  const scratch = await mkdtemp(join(tmpdir(), 'cojeev-packaged-test-'));
+  const variants = [];
+  try {
+    const markerEntry = join(scratch, 'marker.mjs');
+    await writeFile(markerEntry, `import worker from ${JSON.stringify(new URL('../src/index.mjs', import.meta.url).pathname)};
+export default {fetch(request, env, ctx) {
+  if (new URL(request.url).pathname === '/ui/health') return new Response('packaged-health-marker');
+  return worker.fetch(request, env, ctx);
+}};\n`);
+    for (const environment of ['production', 'beta']) {
+      const fixtureDirectory = new URL(`./fixtures/browser-variants/${environment}/`, import.meta.url).pathname;
+      const directory = await harness.materializeVariant(fixtureDirectory);
+      variants.push(directory);
+      const config = JSON.parse(await readFile(join(directory, 'website/wrangler.jsonc'), 'utf8'));
+      assert.deepEqual(config.assets.run_worker_first, workerFirstList(await retainedTextInventory(join(directory, 'site'))));
+      const manifest = JSON.parse(await readFile(join(directory, 'manifest.json'), 'utf8'));
+      const identity = JSON.parse(await readFile(join(directory, 'site/ui/release.json'), 'utf8'));
+      const expected = {environment, release: manifest.commit, deploymentId: manifest.deploymentId,
+        phase: manifest.phase, migrationStage: manifest.migrationStage, registryGraph: manifest.registryGraph};
+      assert.deepEqual(identity, expected);
+      // Temporary assets prove the packaged router bypasses code only for its exclusions.
+      await mkdir(join(directory, 'site/ui/_next/static/chunks'), {recursive: true});
+      await writeFile(join(directory, 'site/ui/_next/static/chunks/new.js'), 'packaged-chunk');
+      await writeFile(join(directory, 'site/ui/index.html'), '<h1>Packaged UI</h1>');
+      const origin = environment === 'production' ? 'https://cojeev.com' : 'https://beta.000h.cojeev.com';
+      const packaged = await startAssetRouter({worker: {kind: 'packaged', directory}, homepage});
+      try {
+        const response = await packaged.fetch(`${origin}/ui/health`);
+        assert.equal(response.status, 200);
+        const health = await response.json();
+        assert.deepEqual(health, {status: 'ok', ...expected});
+        assert.equal(health.deploymentId, config.vars.DEPLOYMENT_ID);
+        assert.equal(health.phase, config.vars.PHASE);
+        assert.equal(health.migrationStage, config.vars.MIGRATION_STAGE);
+        packaged.reset();
+        assert.equal(await (await packaged.fetch(`${origin}/ui/_next/static/chunks/new.js`)).text(), 'packaged-chunk');
+        assert.deepEqual(packaged.workerRuns(), []);
+        assert.equal((await packaged.fetch(`${origin}/ui/`)).status, 200);
+        assert.deepEqual(packaged.workerRuns(), ['/ui/']);
+        const {hops, final} = await followChain(packaged, `${origin}/ui/docs/button?x=1`);
+        assert.deepEqual(chainProblems(hops, {mount: 'canonical', query: '?x=1', canonicalBase: CANONICAL_BASE[environment]}), []);
+        assert.ok(hops.some(hop => hop.location === '/ui/docs/button/?x=1'));
+        assert.equal(final.status, 200);
+        assert.match(await final.text(), /<h1>Button<\/h1>/);
+        const missing = await packaged.fetch(`${origin}/ui/missing/`);
+        assert.equal(missing.status, 404);
+        assert.match(await missing.text(), /<h1>Page not found<\/h1>/);
+      } finally {await packaged.dispose();}
+      const markedDirectory = await harness.materializeVariant(fixtureDirectory, {entry: markerEntry});
+      variants.push(markedDirectory);
+      assert.notEqual(markedDirectory, directory);
+      const markedConfigPath = join(markedDirectory, 'website/wrangler.jsonc');
+      const markedConfig = JSON.parse(await readFile(markedConfigPath, 'utf8'));
+      markedConfig.assets.html_handling = 'none';
+      markedConfig.assets.not_found_handling = 'none';
+      markedConfig.assets.run_worker_first.push('!/ui/docs/button/*');
+      await writeFile(markedConfigPath, JSON.stringify(markedConfig));
+      const marked = await startAssetRouter({worker: {kind: 'packaged', directory: markedDirectory}, homepage});
+      try {
+        const response = await marked.fetch(`${origin}/ui/health`);
+        assert.equal(response.status, 200);
+        assert.equal(await response.text(), 'packaged-health-marker');
+        assert.deepEqual(marked.workerRuns(), ['/ui/health']);
+        marked.reset();
+        const html = await marked.fetch(`${origin}/ui/docs/button/index.html`, {redirect: 'manual'});
+        assert.equal(html.status, 200, 'packaged html_handling none preserves the .html path');
+        assert.match(await html.text(), /<h1>Button<\/h1>/);
+        assert.deepEqual(marked.workerRuns(), [], 'packaged exclusions control the actual router');
+        const missing = await marked.fetch(`${origin}/ui/missing/`);
+        assert.equal(missing.status, 404);
+        assert.doesNotMatch(await missing.text(), /<h1>Page not found<\/h1>/, 'packaged not_found_handling none skips 404.html');
+      } finally {await marked.dispose();}
+    }
+  } finally {await Promise.all([...variants, scratch].map(directory => rm(directory, {recursive: true, force: true})));}
+});
 
 test('missing_ui_text_siblings_delegate_through_real_asset_router_with_body_header_parity', async () => {
   for (const method of ['GET', 'HEAD']) for (const path of ['/uikit.txt?x=1', '/ui-other.txt', '/uix.txt?y=2']) {

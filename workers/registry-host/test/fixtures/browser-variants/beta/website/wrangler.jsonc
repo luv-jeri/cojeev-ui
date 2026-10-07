@@ -1,0 +1,29 @@
+{
+  "name": "cojeev-ui-registry-beta",
+  "main": "./index.js",
+  "compatibility_date": "2026-09-10",
+  "assets": {
+    "directory": "../site",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/*",
+      "!/_next/*",
+      "!/ui/_next/*",
+      "!/ui/*.txt",
+      "!/ui/brand/*",
+      "!/ui/icon.png",
+      "!/ui/opengraph-image.png",
+      "!/ui/twitter-image.png"
+    ],
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "vars": {
+    "ENVIRONMENT": "beta",
+    "RELEASE": "2222222222222222222222222222222222222222",
+    "PHASE": "redirect",
+    "DEPLOYMENT_ID": "website-redirect-222222222222-22222222",
+    "MIGRATION_STAGE": "redirect",
+    "REGISTRY_GRAPH": "canonical"
+  }
+}

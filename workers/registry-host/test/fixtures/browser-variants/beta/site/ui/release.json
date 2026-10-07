@@ -1,0 +1,8 @@
+{
+  "environment": "beta",
+  "release": "2222222222222222222222222222222222222222",
+  "deploymentId": "website-redirect-222222222222-22222222",
+  "phase": "redirect",
+  "migrationStage": "redirect",
+  "registryGraph": "canonical"
+}

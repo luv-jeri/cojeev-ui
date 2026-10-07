@@ -1,0 +1,18 @@
+/*
+  x-content-type-options: nosniff
+  referrer-policy: strict-origin-when-cross-origin
+  x-frame-options: DENY
+  permissions-policy: camera=(), microphone=(), geolocation=()
+  content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://eu-assets.i.posthog.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://feedback.cojeev.com https://eu.i.posthog.com https://eu-assets.i.posthog.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+/admin/*
+  x-robots-tag: noindex, nofollow, noarchive
+
+/feedback-admin/*
+  x-robots-tag: noindex, nofollow, noarchive
+
+/ui/admin/*
+  x-robots-tag: noindex, nofollow, noarchive
+
+/ui/feedback-admin/*
+  x-robots-tag: noindex, nofollow, noarchive
