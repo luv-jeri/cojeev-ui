@@ -1,20 +1,9 @@
-.v-milestone-path__marker {
-  transition:
-    background var(--t-element) var(--enter),
-    box-shadow var(--t-element) var(--enter),
-    color var(--t-element);
-}
-.v-milestone-path__marker .v-icon {
-  width: 17px;
-  height: 17px;
-}
 .v-milestone-path__title {
   transition: color var(--t-element);
 }
 .v-milestone-path__item.-on .v-milestone-path__title {
   letter-spacing: -0.005em;
 }
-.v-milestone-path [data-motion="off"] .v-milestone-path__marker,
 .v-milestone-path [data-motion="off"] .v-milestone-path__title {
   transition: none;
 }
@@ -58,57 +47,179 @@
 .v-milestone-path[data-slot] .v-milestone-path__marker {
   position: relative;
   z-index: 1;
-  display: grid;
-  place-items: center;
+  display: block;
   inline-size: 36px;
   block-size: 36px;
-  border-radius: 45% 55% 51% 49% / 50% 46% 54% 50%;
-  background: var(--card);
-  box-shadow: inset 0 0 0 1.5px var(--v-edge);
-  color: var(--v-text-2);
-  font-size: var(--fs-small);
-  font-weight: var(--fw-semibold);
-  font-variant-numeric: tabular-nums;
 }
-.v-milestone-path[data-slot]
-  .v-milestone-path__item[data-state="complete"]
-  .v-milestone-path__marker {
-  background: var(--v-olive);
-  color: var(--v-on-accent);
-  box-shadow: none;
+/* The travel layer paints this marker and connection while a beat plays. */
+.v-milestone-path__marker[data-travel-owned],
+.v-milestone-path__connection[data-travel-owned] {
+  visibility: hidden;
 }
-.v-milestone-path[data-slot]
-  .v-milestone-path__item[data-state="current"]
-  .v-milestone-path__marker {
-  background: var(--v-pink);
-  color: var(--v-on-accent);
-  box-shadow: 0 0 0 5px color-mix(in oklab, var(--v-pink) 18%, transparent);
+/* At rest the shared contour body is the halo: same paint, scaled from the
+   36 px marker to the 22.5 px halo radius the travel layer settles on. */
+.v-milestone-path__marker[data-morph="fill"] {
+  --mfill: color-mix(in srgb, var(--v-pink) 22%, transparent);
+}
+.v-milestone-path__marker > svg.v-morph {
+  transform: scale(1.25);
+}
+.v-milestone-path__marker:has(> svg.v-morph) .v-milestone-path__halo {
+  display: none;
+}
+.v-milestone-path__mark {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+/* The travel layer may leave a mark at rest on a turn; the static paint keeps it. */
+.v-milestone-path__turn {
+  transform: rotate(var(--mp-turn, 0deg));
+}
+.v-milestone-path__shape[data-fill="pink"] {
+  fill: var(--v-pink);
+}
+.v-milestone-path__shape[data-fill="olive"] {
+  fill: var(--v-olive);
+}
+.v-milestone-path__shape[data-fill="danger"] {
+  fill: var(--v-danger-fill);
+}
+.v-milestone-path__ring {
+  fill: var(--card);
+  stroke: var(--v-edge);
+  stroke-width: 1.5;
+}
+.v-milestone-path__halo {
+  fill: var(--v-pink);
+  fill-opacity: 0.22;
+}
+.v-milestone-path__halo[data-tone="danger"] {
+  fill: var(--v-danger);
+}
+.v-milestone-path__core {
+  fill: var(--v-on-accent);
+}
+.v-milestone-path__check {
+  fill: none;
+  stroke: var(--v-on-accent);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.v-milestone-path__bang path {
+  fill: none;
+  stroke: var(--destructive-foreground);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.v-milestone-path__bang circle {
+  fill: var(--destructive-foreground);
+}
+/* Only the working body breathes. Done marks never move once settled. */
+.v-milestone-path__shape[data-breathe] {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: v-milestone-breathe var(--breath) ease-in-out infinite;
+}
+@keyframes v-milestone-breathe {
+  50% {
+    transform: scale(1.015);
+  }
 }
 .v-milestone-path__connection {
   position: absolute;
   pointer-events: none;
   inset-inline-start: 0;
-  inset-block-start: 24px;
+  inset-block-start: 18px;
   inline-size: 36px;
-  block-size: calc(100% - 13px);
+  block-size: 100%;
   overflow: visible;
 }
-.v-milestone-path__connection path {
-  stroke-width: 2;
-  stroke-linecap: round;
-}
 .v-milestone-path__track {
+  fill: none;
   stroke: var(--v-edge);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
 }
 .v-milestone-path__progress {
+  fill: none;
   stroke: var(--v-olive);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+/* The travel layer: decorative paint over the static marks, never a hit target. */
+.v-milestone-path__travel {
+  position: relative;
+}
+.v-milestone-path__organism {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.v-milestone-path__organism .v-milestone-path__shape {
+  transition: fill 240ms var(--enter);
+}
+.v-milestone-path__glyph > * {
+  opacity: 0;
+}
+.v-milestone-path__glyph .v-milestone-path__core {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  transition:
+    transform 180ms var(--exit),
+    opacity 0s 180ms;
+}
+.v-milestone-path__glyph[data-glyph="core"] .v-milestone-path__core {
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 260ms var(--enter);
+}
+.v-milestone-path__glyph .v-milestone-path__check {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.05;
+}
+.v-milestone-path__glyph[data-glyph="check"] .v-milestone-path__check {
+  opacity: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 320ms var(--enter) 90ms;
+}
+.v-milestone-path__glyph[data-glyph="bang"] .v-milestone-path__bang {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-milestone-path__shape[data-breathe] {
+    animation: none;
+  }
+}
+.v-milestone-path[data-motion-quiet] .v-milestone-path__shape {
+  animation: none;
 }
 .v-milestone-path__content {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-content: start;
-  gap: var(--s-2);
+  align-items: center;
+  gap: var(--s-2) var(--s-4);
   min-width: 0;
   padding-block-start: var(--s-1);
+}
+/* Summary on the left; duration and the one action on the right; the rest full width. */
+.v-milestone-path__content > * {
+  grid-column: 1 / -1;
+}
+.v-milestone-path__content > :is(.v-milestone-path__heading, .v-milestone-path__description) {
+  grid-column: 1;
+}
+.v-milestone-path__content > :is(.v-milestone-path__duration, .v-milestone-path__action) {
+  grid-column: 2;
+  justify-self: end;
 }
 .v-milestone-path__heading {
   display: flex;
@@ -148,6 +259,19 @@
   white-space: normal;
   line-height: 1.2;
 }
+.v-milestone-path__duration {
+  font-size: var(--fs-small);
+  color: var(--v-text-2);
+  white-space: nowrap;
+}
+/* DM Sans tabular figures widen ":" too, so only the digit runs are tabular. */
+.v-milestone-path__duration b {
+  font-weight: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.v-milestone-path__action[data-slot] {
+  white-space: nowrap;
+}
 .v-milestone-path__description[data-slot] {
   max-width: 62ch;
   overflow-wrap: anywhere;
@@ -162,43 +286,71 @@
 .v-milestone-path__description :last-child {
   margin-block-end: 0;
 }
+.v-milestone-path__details summary {
+  inline-size: fit-content;
+  padding-block: var(--s-1);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  color: var(--v-text-2);
+  cursor: pointer;
+}
+.v-milestone-path__detail {
+  padding-block-end: var(--s-1);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--v-text-2);
+  overflow-wrap: anywhere;
+}
+.v-milestone-path__steps {
+  margin-block-start: var(--s-3);
+}
+.v-milestone-path[data-slot] .v-milestone-path__steps .v-milestone-path__item {
+  padding-block-end: var(--s-5);
+}
+@media (max-width: 560px) {
+  .v-milestone-path[data-slot] .v-milestone-path__item {
+    column-gap: var(--s-4);
+  }
+  .v-milestone-path__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v-milestone-path__content > :is(.v-milestone-path__duration, .v-milestone-path__action) {
+    grid-column: 1;
+    justify-self: start;
+  }
+}
 @media (max-width: 480px) {
   .v-milestone-path[data-slot] .v-milestone-path__item {
     column-gap: var(--s-3);
     padding-block-end: var(--s-7);
-  }
-  .v-milestone-path__heading {
-    gap: var(--s-2) var(--s-3);
   }
 }
 .v-milestone-path[data-slot] .v-milestone-path__item:last-child {
   padding-block-end: 0;
 }
 
-.v-milestone-path[data-presentation] .v-milestone-path__marker {
-  --mfill: var(--v-pink);
-  box-shadow: none;
-}
-.v-milestone-path[data-presentation]
-  .v-milestone-path__marker:has(> svg.v-morph) {
-  background: transparent;
-}
-.v-milestone-path[data-presentation="journey"] .v-milestone-path__content {
+/* journey: top-level steps sit in cards; nested steps stay compact */
+.v-milestone-path[data-presentation="journey"] [data-root] > ol > li > .v-milestone-path__content {
   padding: var(--s-4) var(--s-5);
   border: 1px solid transparent;
   border-radius: var(--r-xs) var(--r-card) var(--r-card) var(--r-card);
 }
 .v-milestone-path[data-presentation="journey"]
-  .v-milestone-path__item[data-state="current"]
-  .v-milestone-path__content {
+  [data-root]
+  > ol
+  > li:is([data-state="current"], [data-state="needs"])
+  > .v-milestone-path__content {
   border-color: color-mix(in srgb, var(--v-pink) 50%, var(--v-border));
   background: var(--v-paper);
 }
-.v-milestone-path[data-presentation="journey"] .v-milestone-path__marker {
+.v-milestone-path[data-presentation="journey"] [data-root] > ol > li[data-state="needs"] > .v-milestone-path__content {
+  border-color: color-mix(in srgb, var(--v-danger) 50%, var(--v-border));
+}
+.v-milestone-path[data-presentation="journey"] [data-root] > ol > li > .v-milestone-path__marker {
   margin-top: var(--s-5);
 }
-.v-milestone-path[data-presentation="journey"] .v-milestone-path__connection {
-  top: 42px;
+.v-milestone-path[data-presentation="journey"] [data-root] > ol > li > .v-milestone-path__connection {
+  inset-block-start: calc(18px + var(--s-5));
 }
 .v-milestone-path[data-slot] .v-milestone-path__scroll {
   --h: none;
@@ -208,40 +360,51 @@
   border-radius: 0;
   padding: 0;
 }
-.v-milestone-path[data-presentation="sequence"] .v-milestone-path__list {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 220px;
+/* sequence: top-level steps run in a row of cards; nested steps run down inside each card */
+.v-milestone-path[data-presentation="sequence"] [data-root] {
   width: max-content;
   min-width: 100%;
+}
+.v-milestone-path[data-presentation="sequence"] [data-root] > .v-milestone-path__list {
+  grid-auto-flow: column;
+  grid-auto-columns: 220px;
   gap: var(--s-5);
   padding: var(--s-2) var(--s-1) var(--s-7);
 }
-.v-milestone-path[data-presentation="sequence"] .v-milestone-path__item {
+.v-milestone-path[data-presentation="sequence"] [data-root] > ol > li {
   grid-template-columns: 1fr;
+  grid-template-rows: 36px minmax(0, 1fr);
   gap: var(--s-6);
   padding: 0;
   align-content: start;
 }
-.v-milestone-path[data-presentation="sequence"] .v-milestone-path__connection {
-  left: 28px;
-  right: auto;
-  top: 0;
-  width: calc(100% - 12px);
-  height: 36px;
+.v-milestone-path[data-presentation="sequence"] [data-root] > ol > li > .v-milestone-path__connection {
+  inset-inline-start: 18px;
+  inset-block-start: 0;
+  inline-size: calc(100% + var(--s-5));
+  block-size: 36px;
 }
-.v-milestone-path[data-presentation="sequence"] .v-milestone-path__content {
+.v-milestone-path[data-presentation="sequence"] [data-root] > ol > li > .v-milestone-path__content {
   background: var(--v-paper);
   border: 1px solid var(--v-border);
   border-radius: var(--r-card) var(--r-card) var(--r-xs) var(--r-card);
   padding: var(--s-4);
   min-height: 228px;
 }
-.v-milestone-path[data-presentation="sequence"]
-  .v-milestone-path__item[data-state="current"]
-  .v-milestone-path__content {
+.v-milestone-path[data-presentation="sequence"] [data-root] > ol > li[data-state="current"] > .v-milestone-path__content {
   border-top: 3px solid var(--v-pink);
-  padding-top: var(--s-4);
+}
+.v-milestone-path[data-presentation="sequence"] [data-root] > ol > li[data-state="needs"] > .v-milestone-path__content {
+  border-top: 3px solid var(--v-danger);
+}
+.v-milestone-path[data-presentation="sequence"] .v-milestone-path__content {
+  grid-template-columns: minmax(0, 1fr);
+}
+.v-milestone-path[data-presentation="sequence"]
+  .v-milestone-path__content
+  > :is(.v-milestone-path__duration, .v-milestone-path__action) {
+  grid-column: 1;
+  justify-self: start;
 }
 .v-milestone-path[data-presentation="sequence"] .v-milestone-path__heading {
   display: grid;
@@ -252,14 +415,12 @@
   grid-column: 1/-1;
   width: 100%;
 }
-.v-milestone-path[data-presentation="sequence"] .v-milestone-path__item {
-  grid-template-rows: 36px minmax(0, 1fr);
-}
 .v-milestone-path__scroll-note[data-slot] {
   margin-top: var(--s-3);
   font-size: var(--fs-meta);
 }
-.v-milestone-path[data-presentation="review"] .v-milestone-path__list {
+/* review: compact rows in one card; changes land instantly */
+.v-milestone-path[data-presentation="review"] [data-root] > .v-milestone-path__list {
   background: var(--v-paper);
   border: 1px solid var(--v-border);
   border-radius: var(--r-card);
@@ -271,26 +432,22 @@
   gap: var(--s-4);
   align-items: center;
 }
-.v-milestone-path[data-presentation="review"]
-  .v-milestone-path__item:last-child {
+.v-milestone-path[data-presentation="review"] .v-milestone-path__item:last-child {
   padding-block-end: var(--s-4);
 }
-.v-milestone-path[data-presentation="review"]
-  .v-milestone-path__item
-  + .v-milestone-path__item {
+.v-milestone-path[data-presentation="review"] .v-milestone-path__item + .v-milestone-path__item {
   border-top: 1px solid var(--v-border);
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__connection {
   display: none;
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__marker {
-  width: 28px;
-  height: 28px;
-  font-size: var(--fs-caps);
+  inline-size: 28px;
+  block-size: 28px;
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__content {
   padding: 0;
-  gap: var(--s-1);
+  gap: var(--s-1) var(--s-4);
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__description {
   font-size: var(--fs-meta);

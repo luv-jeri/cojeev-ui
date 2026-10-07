@@ -12728,23 +12728,25 @@
       "name": "milestone-path",
       "type": "registry:ui",
       "title": "Milestone path",
-      "description": "Follow caller-owned progress as a connected Journey, a scrollable Sequence or a compact checkpoint Review.",
+      "description": "Follow caller-owned progress or a running workflow as a connected Journey, a scrollable Sequence or a compact checkpoint Review, with durations, details, nested steps and the one action a stalled step needs.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
         "https://luv-jeri.github.io/cojeev-ui/r/badge.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
         "https://luv-jeri.github.io/cojeev-ui/r/empty.json",
         "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
         "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": [],
       "files": [
         {
           "path": "registry/cojeev/ui/milestone-path.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/milestone-travel.tsx",
+          "type": "registry:lib",
+          "target": "lib/cojeev/milestone-travel.tsx"
         },
         {
           "path": "registry/cojeev/styles/milestone-path.css",
@@ -12769,6 +12771,7 @@
           "states": [
             "complete",
             "current",
+            "needs",
             "upcoming",
             "disabled",
             "empty",
@@ -12783,7 +12786,7 @@
                 "name": "items",
                 "type": "readonly Milestone[]",
                 "required": true,
-                "description": "Ordered journey. Supply at most one current milestone."
+                "description": "Ordered journey. Supply at most one current or needs milestone per list."
               },
               {
                 "name": "title",
@@ -12820,6 +12823,12 @@
                 "type": "\"journey\" | \"sequence\" | \"review\"",
                 "required": false,
                 "description": "Omit for the original vertical composition."
+              },
+              {
+                "name": "travel",
+                "type": "MilestoneTravel",
+                "required": false,
+                "description": "How the working mark moves to the next step when the caller completes one.\nDecorative only; review, reduced motion and Motion off change instantly."
               }
             ]
           }

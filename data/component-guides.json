@@ -2268,17 +2268,21 @@
     ]
   },
   "milestone-path": {
-    "description": "Follow caller-owned progress as a connected Journey, a scrollable Sequence or a compact checkpoint Review.",
+    "description": "Follow caller-owned progress or a running workflow as a connected Journey, a scrollable Sequence or a compact checkpoint Review, with durations, details, nested steps and the one action a stalled step needs.",
     "category": "Data display",
     "usage": [
-      "Pass stable IDs and explicit complete, current or upcoming states. Supply title, description and metadata for context.",
+      "Pass stable IDs and explicit complete, current, upcoming or needs states. Supply title, description and metadata for context. A needs step must carry action: { label, onAction }; without one the row is left out and a console error names it.",
+      "Add duration to show active time: { kind: \"running\", startedAt, elapsedMs } on a current step ticks once a second while the page is visible; { kind: \"frozen\", elapsedMs } on a complete or needs step stays put. Upcoming steps have none. Time spent waiting on a needs action is not counted: pass the active total so far as elapsedMs when the step resumes.",
+      "Put supporting text in details; it opens behind a native Details disclosure. Pass steps for nested work. Nested steps are always visible and each list marks only its own current step.",
       "Set presentation to journey, sequence or review; omit it to keep the original vertical composition. Sequence uses the shared organic horizontal scrollbar and native keyboard/pointer scrolling. Every presentation keeps descriptions and explicit status text.",
-      "The example retains progress and selected detail across layout changes. Selecting a title opens local detail; only the separate completion action advances the sample. Current-marker contour motion stays off the native44px title target.",
+      "Set travel to seed, droplet or division to choose how the working mark moves on when a step completes. Seed (the default) hardens into a four-point star and buds a new seed that rolls on; droplet pulls along the path and snaps; division pinches in two. Travel plays only when a step with the same ID hands off to the next; mounting, reordering and switching presentation re-anchor instantly. Review, reduced motion and Motion off always change instantly.",
+      "The example retains progress and selected detail across layout changes. Selecting a title opens local detail; only the separate completion action advances the sample. Fail this step shows the needs state and its Try again action.",
       "Provide onMilestoneSelect only when a milestone has a real action. Noninteractive milestones remain ordinary content.",
-      "MilestonePath keeps its list and marker parts private. The caller owns explicit states; it does not invent a separate selected-row model."
+      "MilestonePath keeps its list and marker parts private. The caller owns explicit states and timings; it never invents completion, an action or elapsed time."
     ],
     "accessibility": [
-      "Progress state is named in text as well as color. Buttons retain native keyboard and disabled behavior.",
+      "Progress state is named in text as well as colour and shape. Buttons and the Details disclosure keep native keyboard and disabled behaviour; each Details control is named with its step title.",
+      "Durations carry an Elapsed time label and update as plain text without live-region announcements. Markers, connections and the travel layer are decorative and hidden from assistive technology; text and controls never move while a mark travels.",
       "The ordered sequence remains meaningful with motion disabled or without an interactive action."
     ],
     "related": [

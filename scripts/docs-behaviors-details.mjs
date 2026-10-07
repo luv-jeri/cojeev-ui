@@ -149,24 +149,34 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
     },
     "milestone-path": async ({ page, root }) => {
       const path = root.locator('[data-slot="milestone-path"]');
-      await attribute(path.locator('[aria-current="step"]'), "data-milestone-id", "milestone-1");
+      const steps = path.locator("[data-root] > ol > [data-milestone-id]");
+      const current = path.locator('[data-root] > ol > [aria-current="step"]');
+      await attribute(current, "data-milestone-id", "milestone-1");
       await root.getByRole("button", { name: "Complete this milestone", exact: true }).click();
       await text(root.getByRole("status"), "2 of 4 completed");
-      await attribute(path.locator('[aria-current="step"]'), "data-milestone-id", "milestone-2");
+      await attribute(current, "data-milestone-id", "milestone-2");
+      // The working mark travels on its own layer, then hands the marker back to static paint.
+      await eventually(async () => await path.locator("[data-travel-owned]").count() === 0, "Travel settles back to static paint");
+      await root.getByRole("button", { name: "Fail this step", exact: true }).click();
+      await attribute(current, "data-state", "needs");
+      await text(current.locator(".v-milestone-path__status"), "Needs one action");
+      await key(path.getByRole("button", { name: "Try again", exact: true }), "Enter");
+      await attribute(current, "data-state", "current");
       await key(path.getByRole("button", { name: "Bring it into the day", exact: true }), "Enter");
       await text(root.getByRole("status"), "Selected: Bring it into the day");
-      assert.equal(await path.locator('[data-state="complete"][data-milestone-id]').count(), 2);
+      assert.equal(await steps.and(path.locator('[data-state="complete"]')).count(), 2);
       await reduced(page, async () => {
         await root.getByRole("button", { name: "Complete this milestone", exact: true }).click();
+        assert.equal(await path.locator("[data-travel-owned]").count(), 0, "Reduced motion changes instantly");
         await root.getByRole("button", { name: "Complete this milestone", exact: true }).click();
         await text(root.getByRole("status"), "4 of 4 completed");
-        assert.equal(await path.locator('[aria-current="step"]').count(), 0);
-        assert.equal(await path.locator('[data-state="complete"][data-milestone-id]').count(), 4);
+        assert.equal(await current.count(), 0);
+        assert.equal(await steps.and(path.locator('[data-state="complete"]')).count(), 4);
         await key(root.getByRole("button", { name: "Start again", exact: true }), "Enter");
-        await attribute(path.locator('[aria-current="step"]'), "data-milestone-id", "milestone-0");
+        await attribute(current, "data-milestone-id", "milestone-0");
         await text(root.getByRole("status"), "0 of 4 completed");
       });
-      return "Caller-owned progress completes and restarts without a false current step; keyboard title selection preserves progress";
+      return "Completing travels and settles; a failed step offers one action and resumes; reduced motion changes instantly; selection never changes progress";
     },
     "reading-trail": async ({ page, root }) => {
       const trail = root.getByRole("navigation", { name: "In this note", exact: true });

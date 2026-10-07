@@ -18,3 +18,10 @@ test("Everyday names find the component that does the job", async () => {
     assert.ok((await search.search(query)).some(result => result.url === "/docs/activity-feed/"), query);
   }
 });
+
+test("Run and workflow names find Milestone path", async () => {
+  const search = createDocsSearch();
+  for (const query of ["timeline", "workflow", "run trace", "execution trace", "nested steps", "milestones", "user flow", "event sequence"]) {
+    assert.ok((await search.search(query)).some(result => result.url === "/docs/milestone-path/"), query);
+  }
+});

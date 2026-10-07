@@ -79,7 +79,7 @@ try {
           .click();
         assert.equal(
           await root
-            .locator('[data-milestone-id][data-state="complete"]')
+            .locator('[data-root] > ol > [data-milestone-id][data-state="complete"]')
             .count(),
           2,
         );

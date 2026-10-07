@@ -14,7 +14,7 @@ const bundle = await build({
   stdin: {
     loader: "tsx",
     resolveDir: process.cwd(),
-    contents: `import React from'react';import{createRoot}from'react-dom/client';import{flushSync}from'react-dom';import{ActivityFeed}from'./registry/cojeev/ui/activity-feed';import{MilestonePath}from'./registry/cojeev/ui/milestone-path';import{setMotionMode,setFlowSettings}from'./registry/cojeev/motion/settings';window.mode=setMotionMode;window.flow=setFlowSettings;const root=createRoot(document.getElementById('root'));window.selections=[];window.render=p=>flushSync(()=>root.render(<><ActivityFeed ref={n=>window.feedNode=n} aria-label="History" entries={(p.ids??['a','b','c','d']).map(id=>({id,title:'Update '+id,group:id==='d'?'Earlier':'Recent',timestamp:'10:30',dateTime:'2026-09-08T10:30:00+05:30',content:<input aria-label={'Edit '+id} defaultValue={id}/>}))} initialVisible={p.all?undefined:2} pageSize={2}/><MilestonePath ref={n=>window.pathNode=n} aria-label="Project path" presentation={p.presentation} items={p.empty?[]:[{id:'a',title:'A complete checkpoint',state:p.mixed?'upcoming':'complete'},{id:'b',title:'A current checkpoint with a long label that wraps',description:'Keep meaningful descriptions visible in every layout.',state:p.done?'complete':'current',disabled:p.disabled},{id:'c',title:'A future checkpoint',state:p.mixed?'complete':'upcoming'}]} onMilestoneSelect={p.readonly?undefined:id=>window.selections.push(id)}/></>));window.render({});`,
+    contents: `import React from'react';import{createRoot}from'react-dom/client';import{flushSync}from'react-dom';import{ActivityFeed}from'./registry/cojeev/ui/activity-feed';import{MilestonePath}from'./registry/cojeev/ui/milestone-path';import{setMotionMode,setFlowSettings}from'./registry/cojeev/motion/settings';import{motionClock}from'./registry/cojeev/motion/clock';window.clock=motionClock;const st=(p,i,d)=>p.at==null?d:i<p.at?'complete':i===p.at?'current':'upcoming';const order=(p,xs)=>p.order?p.order.map(id=>xs.find(x=>x.id===id)):xs;window.mode=setMotionMode;window.flow=setFlowSettings;const root=createRoot(document.getElementById('root'));window.selections=[];window.render=p=>flushSync(()=>root.render(<><ActivityFeed ref={n=>window.feedNode=n} aria-label="History" entries={(p.ids??['a','b','c','d']).map(id=>({id,title:'Update '+id,group:id==='d'?'Earlier':'Recent',timestamp:'10:30',dateTime:'2026-09-08T10:30:00+05:30',content:<input aria-label={'Edit '+id} defaultValue={id}/>}))} initialVisible={p.all?undefined:2} pageSize={2}/><MilestonePath ref={n=>window.pathNode=n} aria-label="Project path" presentation={p.presentation} travel={p.travel} items={p.empty?[]:order(p,[{id:'a',title:'A complete checkpoint',state:st(p,0,p.mixed?'upcoming':'complete')},{id:'b',title:'A current checkpoint with a long label that wraps',description:'Keep meaningful descriptions visible in every layout.',state:st(p,1,p.done||p.next?'complete':'current'),disabled:p.disabled},{id:'c',title:'A future checkpoint',state:st(p,2,p.mixed?'complete':p.next?'current':'upcoming')}])} onMilestoneSelect={p.readonly?undefined:id=>window.selections.push(id)}/></>));window.render({});`,
   },
   bundle: true,
   write: false,
@@ -171,6 +171,100 @@ try {
     moving > 2,
     "The current marker has an actual shared contour response",
   );
+  await path.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(150);
+  const future = path.getByText("A future checkpoint", { exact: true });
+  const still = await future.boundingBox();
+  await page.evaluate(() =>
+    window.render({ presentation: "journey", next: true }),
+  );
+  await path.locator("[data-travel-owned]").first().waitFor({ state: "attached" });
+  const travelling = await page.evaluate(async () => {
+    const layer = window.pathNode.querySelector(".v-milestone-path__organism");
+    const frames = [];
+    for (let i = 0; i < 12; i++) {
+      await new Promise(requestAnimationFrame);
+      frames.push(layer.innerHTML);
+    }
+    return new Set(frames).size;
+  });
+  assert.ok(travelling > 2, "The working mark travels on its decorative layer");
+  const moved = await future.boundingBox();
+  // The current title may change weight; its position must not.
+  assert.deepEqual([moved.x, moved.y], [still.x, still.y], "Text never moves while a mark travels");
+  await page.waitForFunction(
+    () => !document.querySelector("[data-travel-owned]"),
+    null,
+    { timeout: 4000 },
+  );
+  // Drive the shared motion clock frame by frame and read where the traveller is drawn.
+  const centre = (id) =>
+    path
+      .locator(`[data-root] > ol > [data-milestone-id="${id}"] > .v-milestone-path__marker`)
+      .evaluate((el) => {
+        const host = el.closest("[data-root]").getBoundingClientRect(),
+          box = el.getBoundingClientRect();
+        return box.top + box.height / 2 - host.top;
+      });
+  const step = (frames, until) =>
+    page.evaluate(
+      async ({ frames, until }) => {
+        const body = window.pathNode.querySelector("[data-root] > .v-milestone-path__organism [data-traveler]");
+        const ys = [];
+        for (let i = 0; i < frames; i++) {
+          window.clock((window.clockAt += 1000 / 60));
+          await new Promise((resolve) => setTimeout(resolve)); // let phase continuations run
+          const at = /translate\(([-\d.]+) ([-\d.]+)\)/.exec(body.getAttribute("transform") ?? "");
+          const y = body.getAttribute("display") === "none" || !at ? null : Number(at[2]);
+          ys.push(y);
+          if (until === "owned-cleared" && !document.querySelector("[data-travel-owned]")) break;
+          if (typeof until === "number" && y !== null && y > until) break;
+        }
+        return ys;
+      },
+      { frames, until },
+    );
+  const reset = async (travel) => {
+    await page.evaluate((travel) => {
+      window.clock(null);
+      window.render({ presentation: "journey", travel, at: 0 });
+    }, travel);
+    await page.waitForFunction(() => !document.querySelector("[data-travel-owned]"), null, { timeout: 4000 });
+    await page.evaluate(() => window.clock((window.clockAt = performance.now())));
+  };
+  for (const travel of ["seed", "droplet", "division"]) {
+    await reset(travel);
+    const [a, b, c] = [await centre("a"), await centre("b"), await centre("c")];
+    await page.evaluate((travel) => window.render({ presentation: "journey", travel, at: 1 }), travel);
+    const toB = await step(240, a + (b - a) * 0.4);
+    // Retarget mid-travel: the same traveller continues from where it is.
+    await page.evaluate((travel) => window.render({ presentation: "journey", travel, at: 2 }), travel);
+    const toC = await step(400, "owned-cleared");
+    const seen = [...toB, ...toC].filter((y) => y !== null);
+    assert.ok(Math.abs(seen[0] - a) < 14, `${travel}: the traveller leaves from the finished mark (${seen[0]} vs ${a})`);
+    assert.ok(Math.abs(seen.at(-1) - c) < 1.5, `${travel}: the traveller lands on the retargeted mark (${seen.at(-1)} vs ${c})`);
+    for (const [from, to] of [[a, b], [b, c]])
+      assert.ok(
+        new Set(seen.filter((y) => y > from + 4 && y < to - 4).map(Math.round)).size >= 3,
+        `${travel}: drawn at several points between ${Math.round(from)} and ${Math.round(to)}`,
+      );
+    const jump = Math.max(...seen.slice(1).map((y, i) => Math.abs(y - seen[i])));
+    assert.ok(jump < (c - a) / 4, `${travel}: no teleport, largest step ${jump.toFixed(1)}px`);
+    assert.equal(await path.locator("[data-travel-owned]").count(), 0, `${travel}: every mark is handed back`);
+    // Interrupt with a reorder mid-travel: every hidden mark comes back, whichever row it moved to.
+    await reset(travel);
+    await page.evaluate((travel) => window.render({ presentation: "journey", travel, at: 1 }), travel);
+    await step(240, a + (b - a) * 0.4);
+    assert.ok((await path.locator("[data-travel-owned]").count()) > 0);
+    await page.evaluate((travel) => window.render({ presentation: "journey", travel, at: 1, order: ["c", "a", "b"] }), travel);
+    assert.equal(await path.locator("[data-travel-owned]").count(), 0, `${travel}: a reorder releases the marks it hid`);
+    for (const id of ["a", "b", "c"])
+      assert.equal(
+        await path.locator(`[data-milestone-id="${id}"] > .v-milestone-path__marker`).evaluate((el) => getComputedStyle(el).visibility),
+        "visible",
+      );
+    await page.evaluate(() => window.clock(null));
+  }
   for (const kind of ["motion", "flow"]) {
     await page.evaluate(
       (kind) =>
@@ -190,7 +284,7 @@ try {
     );
   }
   console.log(
-    "PASS activity/milestone native: retained nodes/edits, pagination/focus/time/empty, state authority,44px stationary targets, disabled/readonly/ref, owned sequence scrolling and contour/quiet",
+    "PASS activity/milestone native: retained nodes/edits, pagination/focus/time/empty, state authority,44px stationary targets, disabled/readonly/ref, owned sequence scrolling, travel without layout shift, continuous seed/droplet/division travel with retarget and reorder release, and quiet",
   );
 } finally {
   await browser.close();
