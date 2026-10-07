@@ -17,7 +17,7 @@ on:
         type: string
         required: true
       schema_ack:
-        description: Confirm API rollback compatibility with 0002_safe_delivery.sql
+        description: Confirm API rollback compatibility with 0004_status_key.sql
         type: boolean
         required: false
         default: false

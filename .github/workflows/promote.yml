@@ -22,7 +22,7 @@ on:
         required: false
         default: false
       schema_ack:
-        description: Confirm API rollback compatibility with 0002_safe_delivery.sql
+        description: Confirm API rollback compatibility with 0004_status_key.sql
         type: boolean
         required: false
         default: false
@@ -95,7 +95,7 @@ on:
         required: false
         default: false
       schema_ack:
-        description: Confirm API rollback compatibility with 0002_safe_delivery.sql
+        description: Confirm API rollback compatibility with 0004_status_key.sql
         type: boolean
         required: false
         default: false
@@ -390,7 +390,7 @@ jobs:
           PEER_ID: ${{ steps.verify.outputs.peer_id }}
           PEER_DIRECTORY: ${{ steps.verify.outputs.peer_directory }}
           PEER_DIGEST: ${{ inputs.peer_digest }}
-          ROLLBACK_SCHEMA_ACK: ${{ inputs.side == 'api' && inputs.rollback && '0002_safe_delivery.sql' || '' }}
+          ROLLBACK_SCHEMA_ACK: ${{ inputs.side == 'api' && inputs.rollback && '0004_status_key.sql' || '' }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
           REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}

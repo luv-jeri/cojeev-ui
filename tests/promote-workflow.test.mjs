@@ -177,7 +177,12 @@ fs.appendFileSync(process.env.GITHUB_OUTPUT, 'website_id=' + process.env.LIVE_WE
   const promote = get(steps, 'promote');
   assert.match(promote.run, /node scripts\/release\.mjs "promote-\$SIDE" "\$TARGET" "\$COMMIT" "artifacts\/candidate\/\$TARGET\/\$SIDE-\$TARGET_PHASE" "\$DIGEST" "\$PEER_ID"/);
   for (const key of ['PEER_DIRECTORY', 'PEER_DIGEST']) assert.ok(promote.env[key]);
-  assert.equal(promote.env.ROLLBACK_SCHEMA_ACK, "${{ inputs.side == 'api' && inputs.rollback && '0002_safe_delivery.sql' || '' }}");
+  // The reviewed ack must name the newest migration (R-A22-1): adding 0005 fails here until a PR re-confirms rollback safety.
+  const newest = fs.readdirSync(path.join(root, 'workers/reporting/migrations')).filter(name => name.endsWith('.sql')).sort().at(-1);
+  assert.equal(promote.env.ROLLBACK_SCHEMA_ACK, `\${{ inputs.side == 'api' && inputs.rollback && '${newest}' || '' }}`);
+  for (const name of ['promote.yml', 'rollback.yml'])
+    for (const [named] of fs.readFileSync(path.join(root, '.github/workflows', name), 'utf8').matchAll(/\b\d{4}_[a-z_]+\.sql\b/g))
+      assert.equal(named, newest, `${name} names ${named}`);
   assert.match(get(steps, 'post-live').run, /node scripts\/release\.mjs live/);
   assert.equal(get(steps, 'post-component').if, "steps.plan.outputs.result_pair == 'Linked' || steps.plan.outputs.result_pair == 'Redirect'");
   for (const id of ['component-head', 'post-component']) {
