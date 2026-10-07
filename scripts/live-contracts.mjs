@@ -151,10 +151,10 @@ export async function contractProblems(environment,{website},{fetcher=fetch,base
         if(response.headers.get('content-security-policy')===securityHeaders('production')['content-security-policy']||response.headers.has('x-robots-tag')) return false;
         if(pathname==='/robots.txt') {
           const body=await response.text(),before=probe.robots==='absent'?'':robotsBefore;
-          return response.status===probe.status&&response.headers.get('content-type')===probe.contentType&&(probe.robots==='absent'||body===before)||
+          return response.status===probe.status&&media(response)===probe.contentType&&(probe.robots==='absent'||body===before)||
             response.status===200&&media(response)==='text/plain'&&robotsProblems(before,body).length===0;
         }
-        return response.status===probe.status&&response.headers.get('content-type')===probe.contentType&&(!probe.sha256||hash(Buffer.from(await response.arrayBuffer()))===probe.sha256);
+        return response.status===probe.status&&media(response)===probe.contentType&&(!probe.sha256||hash(Buffer.from(await response.arrayBuffer()))===probe.sha256);
       });
     }
   }

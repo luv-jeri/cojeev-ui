@@ -148,7 +148,7 @@ export async function readBaselineRecord(environment, file = 'scripts/release-ba
       const field = `apexProbes.${pathname}`;
       requireField(field, object(probe));
       requireField(`${field}.status`, Number.isInteger(probe.status) && probe.status >= 100 && probe.status <= 599);
-      requireField(`${field}.contentType`, nonEmpty(probe.contentType));
+      requireField(`${field}.contentType`, typeof probe.contentType === 'string');
       if (pathname === '/robots.txt') {
         requireField(`${field}.sha256`, !Object.hasOwn(probe, 'sha256'));
         requireField(`${field}.robots`, probe.robots === 'present' || probe.robots === 'absent');

@@ -44,7 +44,9 @@ function observe(context) {
       const resource = request.resourceType();
       const rscPrefetch = ["fetch", "xhr"].includes(resource) && headers.rsc === "1" &&
         (headers["next-router-prefetch"] === "1" || headers["next-router-segment-prefetch"] !== undefined);
-      if (request.failure()?.errorText === "net::ERR_ABORTED" && url.origin === pageOrigin && url.pathname.startsWith("/ui/") && rscPrefetch) {
+      // R-FW1-1: Next static-export route discovery uses unmarked HEAD fetches.
+      const routeDiscovery = resource === "fetch" && request.method() === "HEAD";
+      if (request.failure()?.errorText === "net::ERR_ABORTED" && url.origin === pageOrigin && url.pathname.startsWith("/ui/") && (rscPrefetch || routeDiscovery)) {
         ignoredCancellations.push(url.pathname);
         return;
       }

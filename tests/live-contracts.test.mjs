@@ -235,6 +235,28 @@ test('live_rsc_chains_stay_under_their_own_prefix',async()=>{
   const g=fixture();g.put(g.legacy+'/docs/button/__next.tree.txt','',301,{location:'/docs/button/__next.final.txt'});g.put(g.legacy+'/docs/button/__next.final.txt','legacy RSC',200,{'content-type':'text/x-component'});assert.deepEqual(await problems(g),[]);
 });
 
+// Absent headers and charset parameters must preserve the recorded media type.
+test('apex_probe_compares_media_type_and_absent_header',async t=>{
+  for(const pathname of ['/robots.txt','/uikit?x=1']) {
+    for(const [name,status,recorded,header,passes] of [
+      ['absent header',404,'',null,true],
+      ['parameterized media type',200,'text/html','text/html; charset=utf-8',true],
+      ['wrong media type',200,'text/html','text/plain',false],
+    ]) await t.test(pathname+' '+name,async()=>{
+      const f=fixture(),response=f.responses.get('GET '+f.origin+pathname);
+      const body='apex page';
+      f.baseline.apexProbes[pathname]={status,contentType:recorded,
+        ...(pathname==='/robots.txt'?{robots:'absent'}:{sha256:hash(body)})};
+      // A string Response body adds text/plain automatically; bytes preserve no header.
+      response.status=status;response.body=Buffer.from(body);
+      if(header===null) delete response.headers['content-type'];
+      else response.headers['content-type']=header;
+      const code=pathname==='/robots.txt'?'apex-robots':'apex-probe:'+pathname;
+      assert.deepEqual(await problems(f),passes?[]:[code]);
+    });
+  }
+});
+
 // Admitting arbitrary robots edits or leaking UI security headers onto siblings breaks these checks.
 test('apex_robots_transition_is_accepted_only_as_reviewed',async()=>{
   const f=fixture();assert.deepEqual(await problems(f),[]);

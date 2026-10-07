@@ -296,6 +296,28 @@ test('rollback_requires_boolean_true', async t => {
   assert.deepEqual(assertTransition({...input, rollback: true, target: 'mounted'}), accept('Linked'));
 });
 
+test('baseline_record_accepts_absent_content_type_as_empty_string', async t => {
+  const {readBaselineRecord} = await phases();
+  const record = JSON.parse(await fs.readFile(fixture, 'utf8'));
+  for (const probe of Object.values(record.production.apexProbes)) {
+    probe.status = 404;
+    probe.contentType = '';
+  }
+  record.production.apexProbes['/robots.txt'].robots = 'absent';
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'release-phases-content-type-'));
+  t.after(() => fs.rm(dir, {recursive: true, force: true}));
+  const file = path.join(dir, 'record.json');
+  await fs.writeFile(file, JSON.stringify(record));
+  assert.deepEqual(await readBaselineRecord('production', file), record.production);
+  for (const contentType of [null, 0, false, {}, [], undefined]) {
+    const invalid = structuredClone(record);
+    invalid.production.apexProbes['/robots.txt'].contentType = contentType;
+    await fs.writeFile(file, JSON.stringify(invalid));
+    await assert.rejects(readBaselineRecord('production', file),
+      {message: 'Invalid baseline record: production.apexProbes./robots.txt.contentType'});
+  }
+});
+
 test('baseline_record_shape_is_enforced', async t => {
   const {readBaselineRecord} = await phases();
   const record = JSON.parse(await fs.readFile(fixture, 'utf8'));
