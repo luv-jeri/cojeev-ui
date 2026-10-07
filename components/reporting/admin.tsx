@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 const subscribeHydration = () => () => {};
 import Link from "next/link";
+import { ExploreCojeevLink } from "@/components/explore-cojeev-link";
 import { Button } from "@/registry/cojeev/ui/button";
 import { Input } from "@/registry/cojeev/ui/input";
 import { REPORTING_API, reportingFetch } from "@/lib/reporting/client";
@@ -58,5 +59,6 @@ export function ReportingAdmin() {
           <section><h3>Delivery history</h3>{!detail.deliveries.length && <p>No delivery jobs.</p>}{detail.deliveries.map(job => <div key={job.id} className="admin-delivery"><div><strong>{job.kind}</strong><span>{job.state} · {job.attempts} attempts</span>{job.last_error && <p>{job.last_error}</p>}</div>{job.state !== "sent" && job.state !== "done" && <Button size="sm" variant="outline" disabled={!!busy} onClick={() => action(`/deliveries/${job.id}/retry`, { method: "POST" }, "Delivery retry queued.")}>Retry delivery</Button>}</div>)}<p className="admin-help">If an email delivery is uncertain, reconcile it with the provider before retrying to avoid sending a duplicate.</p></section></>}
         </section></div>
     </>}
+    <ExploreCojeevLink />
   </main>;
 }

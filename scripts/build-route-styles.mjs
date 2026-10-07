@@ -120,7 +120,8 @@ for (const route of [...routes].sort((a, b) => a.ids.size - b.ids.size || a.name
 // Every tier sheet declares the whole order, so it holds whichever tier sheet loads first.
 const declaration = `@layer ${tiers.map((_, tier) => tierLayer(tier)).join(", ")};\n`;
 const files = {
-  [`${out}/shell.css`]: sheet("Components the root layout renders on every page: tier 0.", tiers[0], shell, tierLayer(0), declaration),
+  [`${out}/shell.css`]: sheet("Components the root layout renders on every page: tier 0.", tiers[0], shell, tierLayer(0), declaration)
+    + ".explore-cojeev:focus-visible, .cojeev-attribution:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }\n",
 };
 files[`${out}/docs.css`] = sheet("Every component, for the docs, above every tier.", new Set(componentStyles), "app/docs/layout.tsx", "cojeev-states");
 for (const route of routes) {

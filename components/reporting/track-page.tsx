@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/registry/cojeev/ui/button";
+import { ExploreCojeevLink } from "@/components/explore-cojeev-link";
 import { fetchStatus, ReportingError } from "@/lib/reporting/client";
 import type { PublicStage, PublicStatus } from "@/lib/reporting/public-status";
 import { isHttps, parseTrackFragment } from "@/lib/reporting/track";
@@ -64,6 +65,7 @@ export function TrackPage() {
         {view.phase === "failed" && <><p>We couldn’t check this report right now. Try again in a moment.</p><Button type="button" onClick={retry}>Try again</Button></>}
         {status && <Found status={status} />}
       </div>
+      <ExploreCojeevLink />
     </main>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { ExploreCojeevLink } from "@/components/explore-cojeev-link";
 import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
 import { ShapeArtwork } from "@/registry/cojeev/ui/shape-artwork";
 import { Button } from "@/registry/cojeev/ui/button";
@@ -329,6 +330,7 @@ export function RequestBoard() {
           </Link>
         </Button>
       </footer>
+      <ExploreCojeevLink />
     </main>
   );
 }

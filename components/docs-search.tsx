@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { searchTarget } from "@/lib/docs-search";
 import { useDocsSearch } from "fumadocs-core/search/client";
 import { staticClient } from "fumadocs-core/search/client/orama-static";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/registry/cojeev/ui/dialog";
@@ -38,10 +39,11 @@ export function DocsSearch({ open, onOpenChange, searchUrl, onNavigate, onCloseA
   const input = React.useRef<HTMLInputElement>(null);
   const results = Array.isArray(query.data) ? query.data : [];
   const navigate = (url: string) => {
-    if (!url.startsWith("/docs/")) return;
+    const target = searchTarget(url);
+    if (target === null) return;
     onNavigate();
     onOpenChange(false);
-    router.push(url);
+    router.push(target);
   };
   return <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="docs-search-dialog" data-morph="none" onCloseAutoFocus={onCloseAutoFocus} onOpenAutoFocus={event => { event.preventDefault(); input.current?.focus(); }}>

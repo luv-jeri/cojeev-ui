@@ -15,6 +15,7 @@ import { site } from "@/lib/site-config";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { BetaStamp } from "@/components/brand/beta-stamp";
 import { ShareButton } from "@/components/share-button";
+import { ExploreCojeevLink } from "@/components/explore-cojeev-link";
 
 export const sourceUrl = site.sourceUrl;
 export const creatorUrl = site.creatorUrl;
@@ -47,7 +48,10 @@ export function MarketingHeader() {
     <DocsThemeSync />
     <a className="story-skip" href="#story-main">Skip to content</a>
     <header className="story-header">
-      <Link className="story-brand" href="/"><span className="sr-only">000h by Cojeev, home</span><span className="launch-wordmark" aria-hidden="true"><BrandMark className="launch-wordmark__seed" /><span>00h</span></span><span className="story-brand-ui" aria-hidden="true">by Cojeev</span></Link>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--s-3)" }}>
+        <Link className="story-brand" href="/"><span className="sr-only">000h, home</span><span className="launch-wordmark" aria-hidden="true"><BrandMark className="launch-wordmark__seed" /><span>00h</span></span></Link>
+        <a className="story-brand-ui cojeev-attribution" href="https://cojeev.com/">by Cojeev</a>
+      </div>
       <BetaStamp />
       <nav className="story-nav" aria-label="Main navigation">
         <MarketingLink href="/docs/">Components</MarketingLink>
@@ -78,5 +82,6 @@ export function MarketingFooter({ compact = false }: { compact?: boolean }) {
     <div className="story-footer-row"><Meta>000h by Cojeev · Made by Sanjay Kumar · MIT licensed</Meta>
       <div className="story-footer-links"><MarketingLink href="/about/">About the maker</MarketingLink><MarketingLink href="/privacy/">Privacy</MarketingLink><MarketingLink href="/requests/">Suggest a component</MarketingLink><MarketingLink href={sourceUrl}><AnimatedIcon name="github" /> Source</MarketingLink><DocsMotion className="story-motion-control" /></div>
     </div>
+    <ExploreCojeevLink />
   </footer>;
 }

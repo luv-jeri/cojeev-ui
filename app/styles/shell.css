@@ -21,3 +21,4 @@
 @import "../../registry/cojeev/styles/item-adornment.css" layer(cojeev-states.tier-0);
 @import "../../registry/cojeev/styles/appearance.css" layer(cojeev-states.tier-0);
 @import "../../registry/cojeev/styles/control-appearance.css" layer(cojeev-states.tier-0);
+.explore-cojeev:focus-visible, .cojeev-attribution:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }

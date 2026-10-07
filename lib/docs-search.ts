@@ -8,6 +8,10 @@ const ALIASES: Record<string, string> = {
   "activity-feed": "timeline history event-log audit-trail",
 };
 
+export function searchTarget(url: string): string | null {
+  return url.startsWith("/docs/") ? url : null;
+}
+
 /** Public documentation only. Queries run locally against Fumadocs' static index. */
 export function createDocsSearch() {
   return createSearchAPI("simple", {
