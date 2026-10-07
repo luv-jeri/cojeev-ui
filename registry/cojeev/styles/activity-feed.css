@@ -21,64 +21,76 @@
   flex-wrap: wrap;
   gap: var(--s-3);
 }
-.v-activity-feed__list {
+.v-activity-feed__body {
+  position: relative;
+}
+.v-activity-feed__list,
+.v-activity-feed__clusters,
+.v-activity-feed__rows {
   display: grid;
   list-style: none;
   margin: 0;
   padding: 0;
-}
-.v-activity-feed__entry {
-  position: relative;
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr);
-  gap: var(--s-4);
   min-width: 0;
-  padding-block: var(--s-5);
-  outline-offset: 5px;
 }
-.v-activity-feed__entry::marker {
+/* Rows, runs and days carry no padding of their own, so each can close to nothing. */
+.v-activity-feed__entry,
+.v-activity-feed__cluster,
+.v-activity-feed__day {
+  position: relative;
+  min-width: 0;
+}
+.v-activity-feed :is(.v-activity-feed__entry, .v-activity-feed__cluster, .v-activity-feed__day)::marker {
   content: none;
 }
-.v-activity-feed__entry + .v-activity-feed__entry {
-  border-block-start: 0;
+.v-activity-feed__entry {
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
 }
 .v-activity-feed__entry:focus-visible {
   outline: 2px solid var(--v-blue);
+}
+.v-activity-feed__inner {
+  position: relative;
+  min-width: 0;
+}
+/* Only while a box springs open or closed: paint stays inside it. */
+.v-activity-feed [data-moving] {
+  overflow: clip;
 }
 .v-activity-feed__portrait {
   position: relative;
   display: flex;
   justify-content: center;
-  padding-block-start: 2px;
 }
-.v-activity-feed__portrait::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  width: 1px;
-  background: var(--v-border);
-  top: 42px;
-  bottom: -24px;
-  left: 50%;
+.v-activity-feed__mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  isolation: isolate;
 }
-.v-activity-feed__entry:last-child .v-activity-feed__portrait::after {
-  display: none;
-}
-.v-activity-feed__portrait > [data-slot] {
+.v-activity-feed__mark > [data-slot] {
   position: relative;
   z-index: 1;
 }
+.v-activity-feed [data-mark="hidden"] .v-activity-feed__mark {
+  opacity: 0;
+}
 .v-activity-feed__group {
-  grid-column: 1/-1;
+  margin: 0;
   color: var(--v-text-2);
   font-size: var(--fs-caps);
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-caps, 0.08em);
   text-transform: uppercase;
-  background: var(--v-paper);
   position: relative;
   z-index: 1;
-  padding: 0 0 var(--s-3);
+  padding: var(--s-4) 0 var(--s-1);
+}
+.v-activity-feed__list > :first-child > .v-activity-feed__group {
+  padding-block-start: 0;
 }
 .v-activity-feed__header
   .v-activity-feed__heading
@@ -86,18 +98,39 @@
   font-size: var(--fs-title);
   letter-spacing: -0.035em;
 }
-.v-activity-feed__marker {
-  display: grid;
-  place-items: center;
-  inline-size: 28px;
-  block-size: 28px;
-  border-radius: 43% 57% 50% 50% / 55% 44% 56% 45%;
-  background: var(--v-beige);
-  color: var(--v-text);
+/* The product's own entries carry the four-point brand star. */
+.v-activity-feed__marker svg {
+  display: block;
+  inline-size: 30px;
+  block-size: 30px;
+  margin: -1px;
+  overflow: visible;
+  flex: none;
+}
+.v-activity-feed__marker path {
+  fill: var(--v-olive);
 }
 .v-activity-feed__content[data-slot] {
-  gap: var(--s-2);
+  position: relative;
+  z-index: 1;
+  row-gap: 2px;
   min-width: 0;
+  align-content: start;
+  transition:
+    opacity var(--t-max) var(--enter),
+    translate var(--t-max) var(--enter);
+}
+.v-activity-feed [data-arriving] .v-activity-feed__content {
+  opacity: 0;
+}
+.v-activity-feed [data-slide] .v-activity-feed__content {
+  opacity: 0;
+  translate: 0 -8px;
+}
+/* A removed row fades inside its own closing height. */
+.v-activity-feed [data-leaving] > * {
+  opacity: 0;
+  transition: opacity var(--t-element) var(--exit);
 }
 .v-activity-feed__entry-heading {
   display: flex;
@@ -139,9 +172,30 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--s-2);
+  gap: 0 var(--s-2);
   color: var(--v-text-2);
   min-width: 0;
+}
+/* The one breathing thing in the ledger and bursts: the newest entry while it is fresh. */
+.v-activity-feed__live {
+  display: none;
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background: var(--v-pink-deep);
+  flex: none;
+}
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  [data-breath]
+  .v-activity-feed__live {
+  display: inline-block;
+  animation: v-activity-dot var(--breath) ease-in-out infinite;
+}
+@keyframes v-activity-dot {
+  50% {
+    opacity: 0.4;
+    transform: scale(0.7);
+  }
 }
 .v-activity-feed__meta :is(time, span) {
   overflow-wrap: anywhere;
@@ -166,10 +220,264 @@
   min-height: 44px;
   width: auto;
 }
+/* ---------- thread: one row per entry on a living thread ---------- */
+.v-activity-feed[data-variant="thread"] .v-activity-feed__group {
+  padding-inline-start: calc(36px + var(--s-4));
+}
+.v-activity-feed[data-variant="thread"] .v-activity-feed__inner {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  column-gap: var(--s-4);
+  padding-block: var(--s-3) var(--s-4);
+}
+.v-activity-feed[data-variant="thread"] [data-breath] .v-activity-feed__mark::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  z-index: -1;
+  border-radius: 43% 57% 49% 51% / 55% 44% 56% 45%;
+  background: var(--v-pink);
+  opacity: 0.2;
+  animation: v-activity-halo var(--breath) ease-in-out infinite;
+}
+@keyframes v-activity-halo {
+  50% {
+    opacity: 0.36;
+    transform: scale(1.1);
+  }
+}
+/* Paint only, never a hit target: the spine and the blooming seed. */
+.v-activity-feed__thread {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 3;
+}
+.v-activity-feed__spine {
+  fill: none;
+  stroke: var(--v-border);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.v-activity-feed__seed {
+  transition: fill 240ms var(--enter);
+}
+.v-activity-feed__seed[data-fill="pink"] {
+  fill: var(--v-pink);
+}
+.v-activity-feed__seed[data-fill="olive"] {
+  fill: var(--v-olive);
+}
+
+/* ---------- ledger and bursts share the compact row ---------- */
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  .v-activity-feed__content[data-slot] {
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s-3);
+}
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  .v-activity-feed__content
+  > * {
+  grid-column: 1 / -1;
+}
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  .v-activity-feed__content
+  > .v-activity-feed__entry-heading {
+  grid-column: 1;
+}
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  .v-activity-feed__content
+  > .v-activity-feed__meta {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: baseline;
+  white-space: nowrap;
+}
+/* The run names the actor once; each row keeps it for assistive technology. */
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  :is(.v-activity-feed__who, .v-activity-feed__sep) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.v-activity-feed:is([data-variant="ledger"], [data-variant="bursts"])
+  .v-activity-feed__title[data-slot] {
+  font-size: var(--fs-control);
+}
+
+/* ---------- ledger: dense runs, pinned day labels ---------- */
+.v-activity-feed[data-variant="ledger"] .v-activity-feed__group {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  padding: var(--s-2) 0;
+  background: var(--v-paper);
+  box-shadow: 0 1px 0 var(--v-border);
+}
+.v-activity-feed[data-variant="ledger"] .v-activity-feed__cluster-inner {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: var(--s-3);
+  padding-block: var(--s-3);
+}
+.v-activity-feed[data-variant="ledger"]
+  .v-activity-feed__cluster
+  + .v-activity-feed__cluster
+  .v-activity-feed__cluster-inner {
+  box-shadow: inset 0 1px 0 var(--v-border);
+}
+.v-activity-feed[data-variant="ledger"] .v-activity-feed__portrait {
+  padding-block-start: 1px;
+}
+.v-activity-feed__cluster-body {
+  min-width: 0;
+}
+.v-activity-feed__cluster-name {
+  margin: 0;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  line-height: 1.5;
+  color: var(--v-text);
+}
+.v-activity-feed[data-variant="ledger"] .v-activity-feed__inner {
+  padding-block: 3px;
+}
+/* The ink wash marks a new line, then fades within one draw. */
+.v-activity-feed__wash {
+  position: absolute;
+  inset: 0 calc(-1 * var(--s-2));
+  z-index: 0;
+  border-radius: var(--r-sm);
+  background: var(--sel-bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-draw) var(--exit);
+}
+.v-activity-feed__wash[data-on] {
+  opacity: 1;
+  transition: none;
+}
+
+/* ---------- bursts: one card per actor's burst of updates ---------- */
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__cluster::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 var(--s-3);
+  border-radius: var(--r-card-sm) var(--r-card-sm) var(--r-card-sm) var(--r-sm);
+  background: var(--v-canvas);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+/* The card's bottom padding and the gap to the next card, kept inside the card's height. */
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__cluster::after {
+  content: "";
+  display: block;
+  block-size: calc(var(--s-3) * 2);
+}
+.v-activity-feed__burst {
+  position: relative;
+}
+.v-activity-feed__card-head {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--s-3);
+  min-height: 28px;
+  padding: var(--s-3) var(--s-4) 0;
+  list-style: none;
+  border-radius: var(--r-card-sm) var(--r-card-sm) var(--r-sm) var(--r-sm);
+}
+.v-activity-feed__card-head::-webkit-details-marker {
+  display: none;
+}
+summary.v-activity-feed__card-head {
+  cursor: pointer;
+}
+summary.v-activity-feed__card-head:focus-visible {
+  outline: 2px solid var(--v-blue);
+  outline-offset: 2px;
+}
+.v-activity-feed__card-who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-2);
+  min-width: 0;
+}
+.v-activity-feed__card-name {
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+.v-activity-feed__card-count {
+  font-size: var(--fs-meta);
+  color: var(--v-text-2);
+  font-variant-numeric: tabular-nums;
+}
+.v-activity-feed__chevron {
+  inline-size: 16px;
+  block-size: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--v-text-2);
+  transition: rotate var(--t-element) var(--enter);
+}
+.v-activity-feed__burst[open]:not([data-closing]) .v-activity-feed__chevron {
+  rotate: 180deg;
+}
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__rows {
+  position: relative;
+  padding: var(--s-1) var(--s-4) 0 calc(var(--s-4) + 28px + var(--s-3));
+}
+.v-activity-feed__cluster:has(> .v-activity-feed__burst:not([open]))
+  > .v-activity-feed__rows {
+  display: none;
+}
+.v-activity-feed[data-variant="bursts"] .v-activity-feed__inner {
+  padding-block: var(--s-2);
+}
+.v-activity-feed[data-variant="bursts"]
+  .v-activity-feed__entry
+  + .v-activity-feed__entry
+  .v-activity-feed__inner {
+  box-shadow: inset 0 1px 0 var(--v-border);
+}
+.v-activity-feed[data-variant="bursts"]
+  .v-activity-feed__entry:last-child
+  .v-activity-feed__inner {
+  padding-block-end: 0;
+}
+
+/* Quiet and reduced motion: instant, nothing loops. */
+.v-activity-feed[data-motion-quiet] *,
+.v-activity-feed[data-motion-quiet] *::before {
+  animation: none;
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-activity-feed *,
+  .v-activity-feed *::before {
+    animation: none;
+    transition: none;
+  }
+}
 @media (max-width: 480px) {
-  .v-activity-feed__entry {
+  .v-activity-feed[data-variant="thread"] .v-activity-feed__inner {
     column-gap: var(--s-3);
-    padding-block: var(--s-5);
+  }
+  .v-activity-feed[data-variant="thread"] .v-activity-feed__group {
+    padding-inline-start: calc(36px + var(--s-3));
   }
   .v-activity-feed__footer {
     justify-content: flex-start;
@@ -179,6 +487,14 @@
 @media (max-width: 600px) {
   .v-activity-feed[data-slot] {
     padding: var(--s-5);
+  }
+}
+@media (max-width: 560px) {
+  .v-activity-feed__card-head {
+    padding-inline: var(--s-3);
+  }
+  .v-activity-feed[data-variant="bursts"] .v-activity-feed__rows {
+    padding-inline: var(--s-3);
   }
 }
 .v-activity-example {

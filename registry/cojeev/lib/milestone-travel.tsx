@@ -38,6 +38,9 @@ type Shape = keyof typeof SHAPES;
 export const MARK_PATHS = Object.fromEntries(
   Object.entries(SHAPES).map(([name, pts]) => [name, outline(pts, true)]),
 ) as Record<Shape, string>;
+/** The same 64 samples as points (viewBox -18..18), for layers that morph between marks. */
+export const MARK_POINTS: Readonly<Record<Shape, readonly (readonly number[])[]>> =
+  SHAPES;
 export const CHECK_PATH = "M-6.4 .2L-2 4.6L6.6-4.6";
 export const BANG_PATH = "M0-6.6V1";
 
