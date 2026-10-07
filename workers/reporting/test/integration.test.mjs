@@ -385,7 +385,8 @@ test('signed Resend events tolerate replay and ordering without treating accepta
 });
 test('Resend webhook rejects bad signatures, stale/future timestamps and invalid signed bodies generically',async()=>{
   const event={type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:'private@example.com'}};
-  for(const options of [{signature:'v1,garbage'},{timestamp:Math.floor(Date.now()/1000)-301},{timestamp:Math.floor(Date.now()/1000)+301}]) {
+  // 310, not 301: the flooring here plus the gap until the Worker reads its clock can pull a +301 timestamp inside the 300 s window.
+  for(const options of [{signature:'v1,garbage'},{timestamp:Math.floor(Date.now()/1000)-310},{timestamp:Math.floor(Date.now()/1000)+310}]) {
     const response=await resendHook(event,options);assert.equal(response.status,401);assert.equal((await response.json()).error,'Webhook not accepted.');
   }
   assert.equal((await resendHook('null')).status,400);
