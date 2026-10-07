@@ -9,6 +9,7 @@ import {
   scheduleMotion,
   type MotionTimer,
 } from "../motion/clock";
+import { createMotionLane } from "../motion/choreography";
 import { MARK_POINTS } from "./milestone-travel";
 
 export type ActivityLayout = "thread" | "ledger" | "bursts";
@@ -17,7 +18,7 @@ type Pair = readonly [number, number];
 
 /* ---------- motion table: every spring is [stiffness, damping ratio] ---------- */
 const SPR = {
-  remove: [300, 1], // a removed row, run, card or day closes to zero
+  remove: [300, 1], // a removed row or label closes to zero
   restore: [260, 0.78], // a removal reversed before it finished
   markIn: [320, 0.6], // a revealed thread marker pops in
   markOut: [380, 0.8], // a removed thread marker folds away
@@ -54,7 +55,11 @@ const MARK_SCALE = 30 / 36; // marks paint their -18..18 outline at 30 px
 const PEBBLE = MARK_POINTS.pebble,
   STAR = MARK_POINTS.star;
 
-/* ---------- one rAF loop for every feed, steppable by the shared motion clock ---------- */
+/*
+ * One frame loop for every feed, steppable by the shared motion clock. It only drives what
+ * must be measured every frame: box heights that chase their live content, and the thread
+ * layer drawn from those boxes. Single values run on the shared motion lanes.
+ */
 type Scene = { frame: (dt: number) => boolean };
 const scenes = new Set<Scene>();
 let clock: number | null = null,
@@ -107,6 +112,16 @@ const tune = (s: Spring, [k, z]: Pair) => {
   return s;
 };
 const rest = (s: Spring) => s.x === s.to && s.v === 0;
+/** A [stiffness, ratio] pair as a shared motion spring. */
+const lane = ([k, z]: Pair, velocity = 0) => ({
+  type: "spring" as const,
+  stiffness: k,
+  damping: 2 * Math.sqrt(k) * z,
+  mass: 1,
+  velocity,
+  restDelta: 0.001,
+  restSpeed: 0.01,
+});
 const lerpPts = (A: Pts, B: Pts, m: number) =>
   A.map((p, i) => [p[0] + (B[i][0] - p[0]) * m, p[1] + (B[i][1] - p[1]) * m]);
 const hash = (s: string) => {
@@ -117,24 +132,58 @@ const hash = (s: string) => {
 /** Natural height of a box the scene is sizing, read without a visible frame. */
 function natural(el: HTMLElement) {
   const was = el.style.height;
+  if (!was) return el.getBoundingClientRect().height;
   el.style.height = "";
   const h = el.getBoundingClientRect().height;
   el.style.height = was;
   return h;
 }
 const ROW = "[data-activity-entry]";
+const LIST = ".v-activity-feed__list";
 const markOf = (row: Element) =>
   row.querySelector<HTMLElement>(".v-activity-feed__mark");
+/** A bursts row's own disclosure: every row sits inside one, so find-in-page can open it. */
+export const foldOf = (row: Element) =>
+  row.querySelector<HTMLDetailsElement>(
+    ":scope > .v-activity-feed__card > details",
+  );
+const leaving = (el: Element) => el.hasAttribute("data-leaving");
+type Side = "previousElementSibling" | "nextElementSibling";
+/** The nearest box on one side that is staying. */
+function beside(el: Element, side: Side) {
+  let n = el[side];
+  while (n && leaving(n)) n = n[side];
+  return n instanceof HTMLElement ? n : null;
+}
+/** The rows of the card or run that holds a row, in order. */
+function groupOf(row: HTMLElement) {
+  let start = row;
+  while (!start.hasAttribute("data-first")) {
+    const up = beside(start, "previousElementSibling");
+    if (!up?.matches(ROW)) break;
+    start = up;
+  }
+  const out: HTMLElement[] = [];
+  for (let r: HTMLElement | null = start; r?.matches(ROW); ) {
+    out.push(r);
+    if (r.hasAttribute("data-last")) break;
+    r = beside(r, "nextElementSibling");
+  }
+  return out;
+}
 
 type Height = {
   s: Spring;
+  start: number;
   to: number | "auto";
   onFrame?: (p: number) => void;
   done?: () => void;
 };
-type Anim = { tick: (dt: number) => boolean; done?: () => void };
-type Wait = { when: () => boolean; run: () => void; left: number };
-type Grow = { s: Spring; dir: "up" | "down" };
+type Owned = { owner?: HTMLElement };
+type Anim = Owned & { tick: (dt: number) => boolean; done?: () => void };
+type Wait = Owned & { when: () => boolean; run: () => void; left: number };
+type Glide = Owned & { finish: () => void; cancel: () => void };
+type Grow = { x: number; dir: "up" | "down" };
 type Blob = {
   row: HTMLElement;
   s: Spring;
@@ -174,30 +223,43 @@ function createScene(host: HTMLElement) {
   const heights = new Map<HTMLElement, Height>();
   const anims = new Set<Anim>();
   const waits = new Set<Wait>();
+  const glides = new Set<Glide>();
   const timers = new Set<MotionTimer>();
   const grow = new Map<string, Grow>();
   const blobs = new Set<Blob>();
   const markScale = new Map<HTMLElement, number>();
+  /** Each box's height at its last rest paint, so a regroup can be absorbed without a jump. */
+  const restHeights = new WeakMap<Element, number>();
   const known = new WeakSet<Element>();
+  /** Boxes that have left: nothing may write to them again. */
+  const gone = new WeakSet<Element>();
   const segments: SVGPathElement[] = [];
 
   const rowOf = (id: string) =>
     host.querySelector<HTMLElement>(
       `[data-activity-entry="${CSS.escape(id)}"]:not([data-leaving])`,
     );
-  const after = (ms: number, fn: () => void) => {
+  const boxes = () => {
+    const list = host.querySelector(LIST);
+    return list
+      ? [...list.children].filter(
+          (el): el is HTMLElement => el instanceof HTMLElement && !leaving(el),
+        )
+      : [];
+  };
+  const after = (ms: number, fn: () => void, owner?: HTMLElement) => {
     const g = gen;
     const timer = scheduleMotion(() => {
       timers.delete(timer);
-      if (g !== gen) return;
+      if (g !== gen || (owner && gone.has(owner))) return;
       fn();
       wake();
     }, ms);
     timers.add(timer);
   };
-  const until = (when: () => boolean, fn: () => void) => {
+  const until = (when: () => boolean, fn: () => void, owner?: HTMLElement) => {
     const g = gen;
-    waits.add({ when, run: () => g === gen && fn(), left: T.waitMax });
+    waits.add({ when, run: () => g === gen && fn(), left: T.waitMax, owner });
     wake();
   };
   const run = (a: Anim) => {
@@ -205,15 +267,41 @@ function createScene(host: HTMLElement) {
     wake();
     return a;
   };
-  const tween = (ss: Spring[], paint?: () => void, done?: () => void) =>
-    run({
-      tick: (dt) => {
-        ss.forEach((s) => spring(s, dt));
-        paint?.();
-        return !ss.every(rest);
-      },
-      done,
+  /** One value on a shared motion lane: interruptible, clock-steppable, finished by settle. */
+  function glide(
+    owner: HTMLElement | undefined,
+    [from, to]: Pair,
+    k: Pair,
+    paint: (x: number) => void,
+    done?: () => void,
+    velocity = 0,
+  ) {
+    const m = createMotionLane(from, (x) => {
+      paint(x);
+      wake();
     });
+    let over = false;
+    const end = (complete: boolean) => {
+      if (over) return;
+      over = true;
+      glides.delete(g);
+      m.dispose();
+      if (!complete) return;
+      paint(to);
+      done?.();
+      wake();
+    };
+    const g: Glide = {
+      owner,
+      finish: () => end(true),
+      cancel: () => end(false),
+    };
+    glides.add(g);
+    paint(from);
+    m.to(to, lane(k, velocity), () => end(true));
+    wake();
+    return g;
+  }
 
   /* one height owner per box: interruptible, keeps velocity on retarget, "auto" chases the content */
   function animHeight(
@@ -230,9 +318,10 @@ function createScene(host: HTMLElement) {
     let a = heights.get(el);
     if (!a) {
       const x = o.from ?? el.getBoundingClientRect().height;
-      a = { s: S(o.k, x), to: "auto" };
+      a = { s: S(o.k, x), start: x, to: "auto" };
       heights.set(el, a);
     } else if (o.from !== undefined) a.s.x = o.from;
+    a.start = a.s.x;
     tune(a.s, o.k).v += o.kick ?? 0;
     a.to = o.to ?? "auto";
     a.onFrame = o.onFrame;
@@ -255,7 +344,9 @@ function createScene(host: HTMLElement) {
       a.s.v = 0;
     }
     el.style.height = `${f2(Math.max(0, a.s.x))}px`;
-    a.onFrame?.(target ? clamp(a.s.x / target) : 1);
+    // progress from where this episode started, so a box opening from a kept head reads 0 → 1
+    const span = target - a.start;
+    a.onFrame?.(Math.abs(span) > 0.5 ? clamp((a.s.x - a.start) / span) : 1);
     if (rest(a.s)) finishHeight(el, a);
   }
   function finishHeight(el: HTMLElement, a: Height) {
@@ -267,6 +358,59 @@ function createScene(host: HTMLElement) {
       el.removeAttribute("data-moving");
     }
     a.done?.();
+  }
+  const release = (el: HTMLElement) => {
+    heights.delete(el);
+    el.style.height = "";
+    el.removeAttribute("data-moving");
+  };
+
+  /* ---------- regrouping: a kept neighbour's change is absorbed by the box that moves ---------- */
+  const restOf = (el: HTMLElement) => {
+    const a = heights.get(el);
+    return a && a.to !== "auto" ? a.to : natural(el);
+  };
+  function record() {
+    for (const el of boxes()) restHeights.set(el, restOf(el));
+  }
+  /**
+   * What a kept box lost (+) or gained (−) since its last rest paint: a run's head, a card's
+   * edge or a day's gap passing to the arriving or leaving box beside it. Read once.
+   */
+  function drift(el: HTMLElement | null) {
+    if (!el) return 0;
+    const was = restHeights.get(el),
+      now = restOf(el);
+    restHeights.set(el, now);
+    return was === undefined || Math.abs(was - now) < 0.5 ? 0 : was - now;
+  }
+  /** New rows with any new group label that arrived above them, in order. */
+  function withLabels(rows: HTMLElement[]) {
+    const out: HTMLElement[] = [];
+    for (const row of rows) {
+      const label = beside(row, "previousElementSibling");
+      if (label && !label.matches(ROW) && !known.has(label) && !out.includes(label))
+        out.push(label);
+      out.push(row);
+    }
+    return out;
+  }
+  /** Where each new box starts: zero, plus whatever its kept neighbours just handed over. */
+  function startsOf(set: HTMLElement[]) {
+    const from = new Map(set.map((el) => [el, 0]));
+    if (!set.length) return from;
+    const first = set[0],
+      last = set[set.length - 1];
+    from.set(
+      first,
+      Math.max(0, drift(beside(first, "previousElementSibling"))),
+    );
+    from.set(
+      last,
+      (from.get(last) ?? 0) +
+        Math.max(0, drift(beside(last, "nextElementSibling"))),
+    );
+    return from;
   }
 
   /* ---------- thread layer: the spine between marks and the blooming seed ---------- */
@@ -304,7 +448,7 @@ function createScene(host: HTMLElement) {
       if (D < 3) continue;
       const key = `${a.key}>${b.key}`,
         gr = grow.get(key),
-        g = gr ? clamp(gr.s.x) : 1;
+        g = gr ? clamp(gr.x) : 1;
       if (g <= 0.001) continue;
       const p =
         segments[n] ??
@@ -351,27 +495,33 @@ function createScene(host: HTMLElement) {
     }
   }
   function holdThread(key: string, dir: Grow["dir"]) {
-    const gr: Grow = { s: S([1, 1], 0), dir };
+    const gr: Grow = { x: 0, dir };
     grow.set(key, gr);
     return gr;
   }
   function releaseThread(key: string, gr: Grow, k: Pair) {
-    tune(gr.s, k).to = 1;
-    tween([gr.s], undefined, () => {
-      if (grow.get(key) === gr) grow.delete(key);
-    });
+    glide(
+      undefined,
+      [gr.x, 1],
+      k,
+      (x) => (gr.x = x),
+      () => {
+        if (grow.get(key) === gr) grow.delete(key);
+      },
+    );
   }
   const scaleMark = (row: HTMLElement, scale: number) => {
     const m = markOf(row);
     if (m) m.style.transform = scale === 1 ? "" : `scale(${scale.toFixed(3)})`;
   };
   const setMark = (row: HTMLElement, scale: number) => {
+    if (gone.has(row)) return;
     markScale.set(row, scale);
     scaleMark(row, scale);
   };
   const showMark = (row: HTMLElement) => {
     row.removeAttribute("data-mark");
-    setMark(row, 1);
+    scaleMark(row, 1);
     markScale.delete(row);
   };
   /** The marker blooms from a seed through the four-point star; brand rows keep the star. */
@@ -397,10 +547,11 @@ function createScene(host: HTMLElement) {
       b.el.remove();
     };
     run({
+      owner: row,
       tick: (dt) => {
         [b.s, b.m, b.rot, av].forEach((s) => spring(s, dt));
         if (av.x || av.v) scaleMark(row, av.x);
-        markScale.set(row, Math.max(av.x, b.s.x * 0.9));
+        setMark(row, Math.max(av.x, b.s.x * 0.9));
         return blobs.has(b) || !rest(av);
       },
       done: () => {
@@ -408,81 +559,80 @@ function createScene(host: HTMLElement) {
         showMark(row);
       },
     });
-    after(T.bloomMorphAt, () => {
-      b.B = STAR;
-      b.fill = "olive";
-      b.m.to = 1;
-      tune(b.s, P.starGrow).to = 1;
-      b.rot.to = 90;
-      until(
-        () => b.m.x > 0.97 && Math.abs(b.s.x - 1) < 0.05,
-        () => {
-          if (isBrand) {
-            until(
-              () => rest(b.s) && rest(b.rot) && rest(b.m),
-              () => {
-                row.removeAttribute("data-mark");
-                av.x = av.to = 1;
-                av.v = 0;
-                drop();
-              },
-            );
-            return;
-          }
-          row.removeAttribute("data-mark");
-          av.x = 0.35;
-          av.to = 1;
-          tune(b.s, P.handoff).to = 0;
-          until(() => b.s.x < 0.02, drop);
-        },
-      );
-    });
+    after(
+      T.bloomMorphAt,
+      () => {
+        b.B = STAR;
+        b.fill = "olive";
+        b.m.to = 1;
+        tune(b.s, P.starGrow).to = 1;
+        b.rot.to = 90;
+        until(
+          () => b.m.x > 0.97 && Math.abs(b.s.x - 1) < 0.05,
+          () => {
+            if (isBrand) {
+              until(
+                () => rest(b.s) && rest(b.rot) && rest(b.m),
+                () => {
+                  row.removeAttribute("data-mark");
+                  av.x = av.to = 1;
+                  av.v = 0;
+                  drop();
+                },
+                row,
+              );
+              return;
+            }
+            row.removeAttribute("data-mark");
+            av.x = 0.35;
+            av.to = 1;
+            tune(b.s, P.handoff).to = 0;
+            until(() => b.s.x < 0.02, drop, row);
+          },
+          row,
+        );
+      },
+      row,
+    );
   }
   function markIn(row: HTMLElement) {
     row.removeAttribute("data-mark");
-    const ms = S(SPR.markIn, 0.4);
-    ms.to = 1;
-    tween(
-      [ms],
-      () => setMark(row, ms.x),
+    glide(
+      row,
+      [0.4, 1],
+      SPR.markIn,
+      (x) => setMark(row, x),
       () => showMark(row),
     );
   }
+  /** The thread grows down from the marker above once it shows, then the marker pops in. */
+  function threadIn(row: HTMLElement) {
+    const id = row.dataset.activityEntry ?? "",
+      prev = ids[ids.indexOf(id) - 1],
+      key = `${prev}>${id}`,
+      gr = grow.get(key);
+    if (!gr) return markIn(row);
+    const upper = prev !== undefined ? rowOf(prev) : null;
+    until(
+      () => !upper || !upper.hasAttribute("data-mark"),
+      () => {
+        releaseThread(key, gr, SPR.thread.threadDown);
+        until(() => gr.x > 0.85, () => markIn(row), row);
+      },
+      row,
+    );
+  }
 
-  /* ---------- which box opens: a new day, else a new run or card, else the row ---------- */
-  function boxFor(row: HTMLElement) {
-    if (layout === "thread") return row;
-    const cluster = row.closest<HTMLElement>(".v-activity-feed__cluster"),
-      day = row.closest<HTMLElement>(".v-activity-feed__day");
-    if (day && !known.has(day)) return day;
-    if (cluster && (layout === "bursts" || !known.has(cluster))) return cluster;
-    return row;
-  }
-  /** Where a box starts: zero when it is new, else its height without the new rows. */
-  function startOf(box: HTMLElement, rows: HTMLElement[]) {
-    if (rows.includes(box) || !known.has(box)) return 0;
-    const added = rows
-      .filter((r) => box.contains(r))
-      .reduce((sum, r) => sum + r.getBoundingClientRect().height, 0);
-    return Math.max(0, box.getBoundingClientRect().height - added);
-  }
-  const closedBurst = (row: HTMLElement) => {
-    const d = row
-      .closest(".v-activity-feed__cluster")
-      ?.querySelector<HTMLDetailsElement>(":scope > details");
-    return !!d && (!d.open || d.hasAttribute("data-closing"));
-  };
   function wash(row: HTMLElement) {
     const w = row.querySelector<HTMLElement>(".v-activity-feed__wash");
     if (!w) return;
-    const s = S(SPR.ledger.wash);
-    s.to = 1;
     w.setAttribute("data-on", "");
-    w.style.clipPath = "inset(0 100% 0 0 round 8px)";
-    tween(
-      [s],
-      () => {
-        w.style.clipPath = `inset(0 ${f2((1 - s.x) * 100)}% 0 0 round 8px)`;
+    glide(
+      row,
+      [0, 1],
+      SPR.ledger.wash,
+      (x) => {
+        w.style.clipPath = `inset(0 ${f2((1 - x) * 100)}% 0 0 round 8px)`;
       },
       () => {
         // the fade back runs in CSS within the shared draw duration
@@ -492,171 +642,165 @@ function createScene(host: HTMLElement) {
     );
   }
 
+  /* ---------- bursts: every row's disclosure follows its card ---------- */
+  /** A row arriving in, or regrouped into, a card takes the card's open state. */
+  function adoptCards() {
+    if (layout !== "bursts") return;
+    let card: HTMLElement[] = [];
+    const settleCard = () => {
+      const model = card.find((r) => known.has(r));
+      const fold = model && foldOf(model);
+      if (fold) {
+        const open = fold.open && !fold.hasAttribute("data-closing");
+        for (const r of card) {
+          const d = foldOf(r);
+          if (d && !d.hasAttribute("data-closing") && d.open !== open)
+            d.open = open;
+        }
+      }
+      card = [];
+    };
+    for (const el of boxes()) {
+      if (!el.matches(ROW)) continue;
+      if (el.hasAttribute("data-first") && card.length) settleCard();
+      card.push(el);
+      if (el.hasAttribute("data-last")) settleCard();
+    }
+    settleCard();
+  }
+  function openCard(row: HTMLElement) {
+    const rows = groupOf(row);
+    for (const r of rows) {
+      const d = foldOf(r);
+      if (!d) continue;
+      d.removeAttribute("data-closing");
+      if (!d.open) d.open = true;
+      const a = heights.get(r);
+      if (a && a.to !== "auto") release(r);
+    }
+  }
+
   /* ---------- arrival: a live prepend ---------- */
-  function arrive(fresh: string[]) {
-    const rows = fresh
-      .map((id) => rowOf(id))
-      .filter((r): r is HTMLElement => !!r);
-    if (layout === "thread") {
-      for (const row of rows) {
-        const id = row.dataset.activityEntry ?? "",
-          next = ids[ids.indexOf(id) + 1],
-          key = next !== undefined ? `${id}>${next}` : null,
-          gr = key ? holdThread(key, "up") : null,
-          isBrand = brand.has(id);
-        row.setAttribute("data-mark", "hidden");
-        row.setAttribute("data-arriving", "");
-        markScale.set(row, 0);
-        let shown = false,
-          threaded = false;
-        animHeight(row, {
-          from: 0,
-          k: SPR.thread.arrive,
+  function arrive(rows: HTMLElement[]) {
+    const set = withLabels(rows);
+    const from = startsOf(set);
+    for (const el of set) {
+      const start = from.get(el) ?? 0;
+      if (!el.matches(ROW)) {
+        const k =
+          layout === "thread"
+            ? SPR.thread.arrive
+            : layout === "ledger"
+              ? SPR.ledger.arrive
+              : SPR.bursts.arrive;
+        animHeight(el, { from: start, k });
+        continue;
+      }
+      if (layout === "ledger") {
+        animHeight(el, { from: start, k: SPR.ledger.arrive });
+        wash(el);
+        continue;
+      }
+      if (layout === "bursts") {
+        const fold = foldOf(el);
+        if (fold && !fold.open) {
+          // a closed burst takes the line without opening
+          animHeight(el, { from: start, k: SPR.bursts.gulp, kick: 160 });
+          continue;
+        }
+        el.setAttribute("data-slide", "");
+        animHeight(el, {
+          from: start,
+          k: SPR.bursts.arrive,
           onFrame: (p) => {
-            if (!shown && p > 0.55) {
-              shown = true;
-              row.removeAttribute("data-arriving");
-            }
-            if (!threaded && p > 0.8) {
-              threaded = true;
-              if (!gr || !key) return bloom(row, isBrand);
-              releaseThread(key, gr, SPR.thread.threadUp);
-              until(
-                () => gr.s.x > 0.85,
-                () => bloom(row, isBrand),
-              );
-            }
+            if (p > 0.35) el.removeAttribute("data-slide");
           },
         });
-      }
-      return;
-    }
-    const opened = new Set<HTMLElement>();
-    for (const row of rows) {
-      if (layout === "ledger") {
-        const box = boxFor(row);
-        if (!opened.has(box)) {
-          opened.add(box);
-          animHeight(box, { from: startOf(box, rows), k: SPR.ledger.arrive });
-        }
-        wash(row);
         continue;
       }
-      const card = row.closest<HTMLElement>(".v-activity-feed__cluster");
-      if (card && known.has(card) && closedBurst(row)) {
-        // a closed burst takes the line without opening
-        if (!opened.has(card)) {
-          opened.add(card);
-          animHeight(card, { k: SPR.bursts.gulp, kick: 160 });
-        }
-        continue;
-      }
-      const box = boxFor(row);
-      row.setAttribute("data-slide", "");
-      let slid = false;
-      const slide = (p: number) => {
-        if (slid || p <= 0.35) return;
-        slid = true;
-        rows.forEach(
-          (r) => box.contains(r) && r.removeAttribute("data-slide"),
-        );
-      };
-      if (opened.has(box)) continue;
-      opened.add(box);
-      animHeight(box, {
-        from: startOf(box, rows),
-        k: SPR.bursts.arrive,
-        onFrame: slide,
+      const id = el.dataset.activityEntry ?? "",
+        next = ids[ids.indexOf(id) + 1],
+        key = next !== undefined ? `${id}>${next}` : null,
+        gr = key ? holdThread(key, "up") : null,
+        isBrand = brand.has(id);
+      el.setAttribute("data-mark", "hidden");
+      el.setAttribute("data-arriving", "");
+      setMark(el, 0);
+      let shown = false,
+        threaded = false;
+      animHeight(el, {
+        from: start,
+        k: SPR.thread.arrive,
+        onFrame: (p) => {
+          if (!shown && p > 0.55) {
+            shown = true;
+            el.removeAttribute("data-arriving");
+          }
+          if (!threaded && p > 0.8) {
+            threaded = true;
+            if (!gr || !key) return bloom(el, isBrand);
+            releaseThread(key, gr, SPR.thread.threadUp);
+            until(() => gr.x > 0.85, () => bloom(el, isBrand), el);
+          }
+        },
       });
     }
   }
 
   /* ---------- Show more: at most three items unfurl with a short stagger ---------- */
-  function unfurl(revealed: string[]) {
-    const rows = revealed
-      .slice(0, T.unfurlMax)
-      .map((id) => rowOf(id))
-      .filter((r): r is HTMLElement => !!r);
-    const boxes: { box: HTMLElement; rows: HTMLElement[]; from: number }[] = [];
-    for (const row of rows) {
-      const box = boxFor(row),
-        found = boxes.find((b) => b.box === box);
-      if (found) found.rows.push(row);
-      else boxes.push({ box, rows: [row], from: 0 });
+  function unfurl(revealed: HTMLElement[]) {
+    const set = withLabels(revealed.slice(0, T.unfurlMax));
+    const from = startsOf(set);
+    for (const el of set) {
+      hold(el, from.get(el) ?? 0);
+      if (!el.matches(ROW)) continue;
+      if (layout === "bursts") el.setAttribute("data-slide", "");
+      if (layout !== "thread") continue;
+      const id = el.dataset.activityEntry ?? "",
+        prev = ids[ids.indexOf(id) - 1];
+      el.setAttribute("data-mark", "hidden");
+      el.setAttribute("data-arriving", "");
+      setMark(el, 0);
+      if (prev !== undefined) holdThread(`${prev}>${id}`, "down");
     }
-    for (const b of boxes) {
-      b.from = startOf(b.box, rows);
-      hold(b.box, b.from);
-    }
-    if (layout === "thread")
-      for (const row of rows) {
-        const id = row.dataset.activityEntry ?? "",
-          prev = ids[ids.indexOf(id) - 1];
-        row.setAttribute("data-mark", "hidden");
-        row.setAttribute("data-arriving", "");
-        markScale.set(row, 0);
-        if (prev !== undefined) holdThread(`${prev}>${id}`, "down");
-      }
-    if (layout === "bursts")
-      rows.forEach((r) => r.setAttribute("data-slide", ""));
-    const go = ({ box, rows: inside, from }: (typeof boxes)[number]) => {
-      let shown = false,
-        threaded = false;
-      if (layout === "ledger")
-        return animHeight(box, { from, k: SPR.ledger.unfurl });
+    const go = (el: HTMLElement) => {
+      const start = from.get(el) ?? 0;
+      if (!el.matches(ROW) || layout === "ledger")
+        return animHeight(el, {
+          from: start,
+          k:
+            layout === "thread"
+              ? SPR.thread.unfurl
+              : layout === "ledger"
+                ? SPR.ledger.unfurl
+                : SPR.bursts.unfurl,
+        });
       if (layout === "bursts")
-        return animHeight(box, {
-          from,
+        return animHeight(el, {
+          from: start,
           k: SPR.bursts.unfurl,
           onFrame: (p) => {
-            if (shown || p <= 0.3) return;
-            shown = true;
-            inside.forEach((r) => r.removeAttribute("data-slide"));
+            if (p > 0.3) el.removeAttribute("data-slide");
           },
         });
-      animHeight(box, {
-        from,
+      let shown = false,
+        threaded = false;
+      animHeight(el, {
+        from: start,
         k: SPR.thread.unfurl,
         onFrame: (p) => {
           if (!shown && p > 0.5) {
             shown = true;
-            inside.forEach((r) => r.removeAttribute("data-arriving"));
+            el.removeAttribute("data-arriving");
           }
           if (threaded || p <= 0.6) return;
           threaded = true;
-          // the thread grows on from the marker above, then the marker pops in
-          const next = (i: number) => {
-            const row = inside[i];
-            if (!row) return;
-            const id = row.dataset.activityEntry ?? "",
-              prev = ids[ids.indexOf(id) - 1],
-              key = `${prev}>${id}`,
-              gr = grow.get(key);
-            if (!gr) {
-              markIn(row);
-              return next(i + 1);
-            }
-            const upper = prev !== undefined ? rowOf(prev) : null;
-            until(
-              () => !upper || !upper.hasAttribute("data-mark"),
-              () => {
-                releaseThread(key, gr, SPR.thread.threadDown);
-                until(
-                  () => gr.s.x > 0.85,
-                  () => {
-                    markIn(row);
-                    next(i + 1);
-                  },
-                );
-              },
-            );
-          };
-          next(0);
+          threadIn(el);
         },
       });
     };
-    boxes.forEach((b, i) =>
-      i ? after(i * T.unfurlStagger, () => go(b)) : go(b),
+    set.forEach((el, i) =>
+      i ? after(i * T.unfurlStagger, () => go(el), el) : go(el),
     );
   }
 
@@ -678,15 +822,30 @@ function createScene(host: HTMLElement) {
     }, T.breathFor);
   }
 
+  /** A box that left: cancel everything it owned and let it go. */
+  function forget(el: HTMLElement) {
+    gone.add(el);
+    heights.delete(el);
+    markScale.delete(el);
+    for (const g of [...glides]) if (g.owner === el) g.cancel();
+    for (const a of [...anims]) if (a.owner === el) anims.delete(a);
+    for (const w of [...waits]) if (w.owner === el) waits.delete(w);
+    for (const b of [...blobs])
+      if (b.row === el) {
+        blobs.delete(b);
+        b.el.remove();
+      }
+  }
+
   /** Finish every episode at its rest paint: used for quiet, hidden tabs and layout changes. */
   function settle() {
     gen++;
     timers.forEach(cancelMotion);
     timers.clear();
     waits.clear();
-    const boxes = [...heights];
+    const sized = [...heights];
     heights.clear();
-    for (const [el, a] of boxes) {
+    for (const [el, a] of sized) {
       if (a.to === "auto") {
         el.style.height = "";
         el.removeAttribute("data-moving");
@@ -702,6 +861,7 @@ function createScene(host: HTMLElement) {
     const running = [...anims];
     anims.clear();
     running.forEach((a) => a.done?.());
+    [...glides].forEach((g) => g.finish());
     blobs.forEach((b) => b.el.remove());
     blobs.clear();
     grow.clear();
@@ -741,7 +901,9 @@ function createScene(host: HTMLElement) {
         waits.delete(w);
         w.run();
       });
-      return heights.size > 0 || anims.size > 0 || waits.size > 0;
+      return (
+        heights.size > 0 || anims.size > 0 || waits.size > 0 || glides.size > 0
+      );
     },
   };
 
@@ -765,6 +927,7 @@ function createScene(host: HTMLElement) {
       const before = new Set(ids);
       const hadRows = ids.length > 0;
       ids = [...next.ids];
+      if (!relayout) adoptCards();
       if (!started || relayout || !allowed || document.hidden) {
         settle();
         if (relayout) breathId = null;
@@ -777,34 +940,54 @@ function createScene(host: HTMLElement) {
         const reveals = fresh.filter(
           (id) => shown.has(id) && ids.indexOf(id) >= top,
         );
+        const rows = (list: string[]) =>
+          list.map(rowOf).filter((r): r is HTMLElement => !!r);
         // a bulk load or a first paint appears at rest; live prepends arrive
         if (arrivals.length && arrivals.length <= T.unfurlMax) {
-          arrive(arrivals);
+          arrive(rows(arrivals));
           if (hadRows || arrivals.length === 1) breathe(arrivals[0]);
         }
-        if (reveals.length) unfurl(reveals);
+        if (reveals.length) unfurl(rows(reveals));
       }
       started = true;
-      host
-        .querySelectorAll(".v-activity-feed__day,.v-activity-feed__cluster")
-        .forEach((el) => known.add(el));
+      for (const el of boxes()) known.add(el);
+      record();
       applyBreath();
       draw();
       wake();
     },
     measure() {
+      // At rest, any size change (a rewrap, a toggled burst, a caller's content) is the new rest.
+      if (!heights.size) record();
       draw();
     },
     /** Close a removed box on a spring, then let presence unmount it. */
     leave(el: HTMLElement, done: () => void) {
-      if (!allowed || document.hidden || !el.isConnected) return done();
-      if (layout === "thread" && el.matches(ROW)) {
-        const ms = S(SPR.markOut, markScale.get(el) ?? 1);
-        ms.v = 2.5;
-        ms.to = 0;
-        tween([ms], () => setMark(el, Math.max(0, ms.x)));
-      }
-      animHeight(el, { to: 0, k: SPR.remove, done });
+      const finish = () => {
+        forget(el);
+        done();
+      };
+      if (!allowed || document.hidden || !el.isConnected) return finish();
+      // the leaving box also takes whatever its neighbours just gained or lost
+      const from =
+        el.getBoundingClientRect().height +
+        drift(beside(el, "previousElementSibling")) +
+        drift(beside(el, "nextElementSibling"));
+      if (layout === "thread" && el.matches(ROW))
+        glide(
+          el,
+          [markScale.get(el) ?? 1, 0],
+          SPR.markOut,
+          (x) => setMark(el, Math.max(0, x)),
+          undefined,
+          2.5,
+        );
+      animHeight(el, {
+        from: Math.max(0, from),
+        to: 0,
+        k: SPR.remove,
+        done: finish,
+      });
       draw();
     },
     /** A removal reversed while it was still closing. */
@@ -812,38 +995,71 @@ function createScene(host: HTMLElement) {
       const a = heights.get(el);
       if (!a || a.to !== 0) return;
       a.done = undefined;
+      for (const g of [...glides]) if (g.owner === el) g.cancel();
       animHeight(el, { k: SPR.restore });
-      if (el.matches(ROW)) setMark(el, 1);
+      if (el.matches(ROW)) showMark(el);
     },
-    /** Open or close a burst on a spring; false lets the native toggle happen instantly. */
+    /** Open or close a burst on a spring; every row's disclosure follows the head. */
     toggle(details: HTMLDetailsElement) {
-      const card = details.parentElement;
-      if (!allowed || document.hidden || !card) return false;
-      if (details.open && !details.hasAttribute("data-closing")) {
-        const full = card.getBoundingClientRect().height;
-        details.open = false;
-        const closed = natural(card);
-        details.open = true;
-        details.setAttribute("data-closing", "");
-        animHeight(card, {
-          from: full,
-          to: closed,
-          k: SPR.bursts.close,
-          done: () => {
-            details.removeAttribute("data-closing");
-            details.open = false;
-            card.style.height = "";
-            card.removeAttribute("data-moving");
-          },
+      const row = details.closest<HTMLElement>(ROW);
+      if (!row) return false;
+      const rows = groupOf(row),
+        folds = rows.map(foldOf);
+      const closing = details.open && !details.hasAttribute("data-closing");
+      if (!allowed || document.hidden) {
+        rows.forEach((r) => heights.has(r) && release(r));
+        folds.forEach((d) => {
+          if (!d) return;
+          d.removeAttribute("data-closing");
+          d.open = !closing;
         });
+        return true;
+      }
+      const from = rows.map((r) => r.getBoundingClientRect().height);
+      if (closing) {
+        folds.forEach((d) => d && (d.open = false));
+        const to = rows.map(natural);
+        folds.forEach((d) => {
+          if (!d) return;
+          d.open = true;
+          d.setAttribute("data-closing", "");
+        });
+        let left = rows.length;
+        rows.forEach((r, i) =>
+          animHeight(r, {
+            from: from[i],
+            to: to[i],
+            k: SPR.bursts.close,
+            done: () => {
+              if (--left) return;
+              folds.forEach((d) => {
+                if (!d) return;
+                d.removeAttribute("data-closing");
+                d.open = false;
+              });
+              rows.forEach(release);
+            },
+          }),
+        );
       } else {
-        details.removeAttribute("data-closing");
-        const from = card.getBoundingClientRect().height;
-        details.open = true;
-        animHeight(card, { from, k: SPR.bursts.open });
+        folds.forEach((d) => {
+          if (!d) return;
+          d.removeAttribute("data-closing");
+          d.open = true;
+        });
+        rows.forEach((r, i) =>
+          animHeight(r, { from: from[i], k: SPR.bursts.open }),
+        );
       }
       return true;
     },
+    /** A disclosure opened natively (find in page, a fragment link): its whole card opens. */
+    reveal(details: HTMLDetailsElement) {
+      const row = details.closest<HTMLElement>(ROW);
+      if (!row || !details.open || details.hasAttribute("data-closing")) return;
+      if (groupOf(row).some((r) => foldOf(r)?.open === false)) openCard(row);
+    },
+    openCard,
     attach() {
       scenes.add(scene);
     },
