@@ -156,7 +156,8 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       await text(root.getByRole("status"), "2 of 4 completed");
       await attribute(current, "data-milestone-id", "milestone-2");
       // The working mark travels on its own layer, then hands the marker back to static paint.
-      await eventually(async () => await path.locator("[data-travel-owned]").count() === 0, "Travel settles back to static paint");
+      // The beat lasts about 1.7 s; slow CI renderers draw few frames, so allow 8 s for the hand-back.
+      await eventually(async () => await path.locator("[data-travel-owned]").count() === 0, "Travel settles back to static paint", 8000);
       await root.getByRole("button", { name: "Fail this step", exact: true }).click();
       await attribute(current, "data-state", "needs");
       await text(current.locator(".v-milestone-path__status"), "Needs one action");
