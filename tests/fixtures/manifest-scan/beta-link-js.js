@@ -1,0 +1,1 @@
+(0,n.jsx)("link",{rel:"canonical",href:"https://cojeev.com/"})
