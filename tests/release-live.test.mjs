@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,releaseMetadata,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
 
 const commit='a'.repeat(40),token='t'.repeat(40);
-const site='https://beta.000h.cojeev.com',api='https://feedback-beta.cojeev.com';
+const site='https://beta.000h.cojeev.com/ui',api='https://feedback-beta.cojeev.com';
 const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex, nofollow'};
 // A live release is a service expected to deliver, so this stands for one that declares
 // itself active with every delivery path configured, the maintainer alert included.
@@ -271,4 +271,36 @@ test('a deployed release is not live while its declared delivery readiness is in
     assert.deepEqual(waited,[]);
   }
   assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('provider-unconfigured'),'an unconfigured provider must never be retried as propagation lag');
+});
+
+test('production health and release probes use apex ui directly and reject redirects',async()=>{
+  const seen=[];
+  const fetcher=async(url,options)=>{
+    seen.push({url,options});assert.equal(options.redirect,'error');
+    if(url==='https://feedback.cojeev.com/v1/admin/health')return Response.json(delivery);
+    if(url.endsWith('/health'))return Response.json({status:'ok',environment:'production',release:commit});
+    if(url.endsWith('/release.json'))return Response.json({environment:'production',release:commit},{headers});
+    return new Response(null,{status:url.endsWith('/r/button.json')?200:404,headers});
+  };
+  assert.deepEqual(await liveProblems('production',commit,{token,fetcher}),[]);
+  assert.equal(seen[0].url,'https://cojeev.com/ui/health');
+  assert.ok(seen.every(({url})=>!url.includes('www.')&&!url.includes('000h.')));
+});
+test('rollback live checks probe the artifact layout rather than the new canonical site',async()=>{
+  for(const environment of ['beta','production']) {
+    const site=environment==='beta'?'https://beta.000h.cojeev.com':'https://000h.cojeev.com';
+    const api=environment==='beta'?'https://feedback-beta.cojeev.com':'https://feedback.cojeev.com';
+    const seen=[];
+    const fetcher=async(url,options)=>{
+      seen.push(url);assert.equal(options.redirect,'error');
+      if(url===`${api}/v1/admin/health`)return Response.json(delivery);
+      if(url.endsWith('/health'))return Response.json({status:'ok',environment,release:commit});
+      if(url===`${site}/release.json`)return Response.json({environment,release:commit},{headers});
+      if(url===`${site}/r/button.json`)return Response.json({name:'button'},{headers});
+      if(url===`${site}/__cojeev_missing_release_probe__/`)return new Response(null,{status:404,headers});
+      throw new Error('Unexpected URL');
+    };
+    assert.deepEqual(await liveProblems(environment,commit,{token,fetcher,layout:'root'}),[]);
+    assert.equal(seen[0],`${site}/health`);
+  }
 });

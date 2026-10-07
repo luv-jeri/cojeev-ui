@@ -28,8 +28,8 @@
     "ENVIRONMENT": "production",
     "TURNSTILE_SITE_KEY": "0x4AAAAAAEt12whn6p_17NLe",
     "RELEASE": "unconfigured",
-    "ALLOWED_ORIGINS": "https://000h.cojeev.com,https://feedback.cojeev.com,https://luv-jeri.github.io",
-    "SITE_URL": "https://000h.cojeev.com",
+    "ALLOWED_ORIGINS": "https://www.cojeev.com,https://cojeev.com,https://000h.cojeev.com,https://feedback.cojeev.com,https://luv-jeri.github.io",
+    "SITE_URL": "https://cojeev.com/ui",
     "LOCAL_MODE": "false",
     "EMAIL_ENABLED": "true",
     "EMAIL_FROM": "hello@cojeev.com",
@@ -73,7 +73,7 @@
         "ENVIRONMENT": "beta",
         "RELEASE": "unconfigured",
         "ALLOWED_ORIGINS": "https://beta.000h.cojeev.com,https://feedback-beta.cojeev.com",
-        "SITE_URL": "https://beta.000h.cojeev.com",
+        "SITE_URL": "https://beta.000h.cojeev.com/ui",
         "LOCAL_MODE": "false",
         "EMAIL_ENABLED": "true",
         "EMAIL_FROM": "hello@cojeev.com",
@@ -103,7 +103,13 @@
         "crons": [
           "*/5 * * * *"
         ]
-      }
+      },
+      "services": [
+        {
+          "binding": "WEBSITE",
+          "service": "cojeev-ui-registry-beta"
+        }
+      ]
     },
     "production": {
       "name": "cojeev-ui-reporting",
@@ -117,8 +123,8 @@
         "ENVIRONMENT": "production",
         "TURNSTILE_SITE_KEY": "0x4AAAAAAEt12whn6p_17NLe",
         "RELEASE": "unconfigured",
-        "ALLOWED_ORIGINS": "https://000h.cojeev.com,https://feedback.cojeev.com,https://luv-jeri.github.io",
-        "SITE_URL": "https://000h.cojeev.com",
+        "ALLOWED_ORIGINS": "https://www.cojeev.com,https://cojeev.com,https://000h.cojeev.com,https://feedback.cojeev.com,https://luv-jeri.github.io",
+        "SITE_URL": "https://cojeev.com/ui",
         "LOCAL_MODE": "false",
         "EMAIL_ENABLED": "true",
         "EMAIL_FROM": "hello@cojeev.com",
@@ -148,7 +154,19 @@
         "crons": [
           "*/5 * * * *"
         ]
-      }
+      },
+      "services": [
+        {
+          "binding": "WEBSITE",
+          "service": "cojeev-ui-registry"
+        }
+      ]
     }
-  }
+  },
+  "services": [
+    {
+      "binding": "WEBSITE",
+      "service": "cojeev-ui-registry"
+    }
+  ]
 }

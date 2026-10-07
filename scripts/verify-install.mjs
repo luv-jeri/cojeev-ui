@@ -5,10 +5,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 
+import { environmentConfig } from "./release-config.mjs";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const installer = "shadcn@4.21.0";
 const getArg = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
-const baseURL = (getArg("url") || "https://000h.cojeev.com").replace(/\/$/, "");
+const baseURL = (getArg("url") || environmentConfig("production").site).replace(/\/$/, "");
 const ids = [...new Set((getArg("components") || "button,badge,card,accordion,dialog").split(",").map(id => id.trim()).filter(Boolean))];
 const foundationOnly = ids.length === 1 && ids[0] === "cojeev";
 const specimens = {

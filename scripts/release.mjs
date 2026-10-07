@@ -5,8 +5,8 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
-import {buildEnvironment,environmentConfig} from './release-config.mjs';
-import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
+import {buildEnvironment,environmentConfig,reportingOrigins,reportingServices} from './release-config.mjs';
+import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest,artifactLayout} from './release-manifest.mjs';
 import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
 import {siteHeaders} from '../workers/registry-host/src/headers.mjs';
@@ -18,6 +18,16 @@ export function releaseMetadata(environment,commit,publicEnv) {
     release:commit,
     analyticsEnabled:publicEnv.NEXT_PUBLIC_ANALYTICS_ENABLED==='true'&&Boolean(publicEnv.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN?.trim()),
   };
+}
+// Next exports paths relative to the application root. Cloudflare assets need
+// the URL prefix on disk; _headers and the fallback 404 remain at the asset root.
+export async function prepareStaticOutput(output,environment,commit,publicEnv) {
+  const entries=await fs.readdir(output);
+  await fs.mkdir(path.join(output,'ui'));
+  for(const entry of entries) await fs.rename(path.join(output,entry),path.join(output,'ui',entry));
+  await fs.copyFile(path.join(output,'ui/404.html'),path.join(output,'404.html'));
+  await fs.writeFile(path.join(output,'ui/release.json'),JSON.stringify(releaseMetadata(environment,commit,publicEnv))+'\n');
+  await fs.writeFile(path.join(output,'_headers'),siteHeaders(environment));
 }
 export async function buildRelease(root,environment,commit,destination,settings={}) {
   if(process.versions.node!=='22.22.0') throw new Error('Release build requires Node 22.22.0');
@@ -34,11 +44,10 @@ export async function buildRelease(root,environment,commit,destination,settings=
     await fs.cp(await fs.realpath(path.join(root,'node_modules')),path.join(scratch,'node_modules'),{recursive:true,verbatimSymlinks:true});
     const buildEnv={PATH:process.env.PATH,HOME:process.env.HOME,TMPDIR:process.env.TMPDIR,CI:'true',NEXT_TELEMETRY_DISABLED:'1',...publicEnv};
     execFileSync('npm',['run','build'],{cwd:scratch,env:buildEnv,stdio:'inherit'});
+    await prepareStaticOutput(path.join(scratch,'out'),environment,commit,publicEnv);
     // Refuse to merge into an older release directory.
     await fs.mkdir(destination,{recursive:false});
     await fs.cp(path.join(scratch,'out'),path.join(destination,'site'),{recursive:true});
-    await fs.writeFile(path.join(destination,'site/release.json'),JSON.stringify(releaseMetadata(environment,commit,publicEnv))+'\n');
-    await fs.writeFile(path.join(destination,'site/_headers'),siteHeaders(environment));
     for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
       const directory=path.join(destination,kind);await fs.mkdir(directory);
       const source=await json(path.join(scratch,`workers/${worker}/wrangler.jsonc`));
@@ -46,6 +55,9 @@ export async function buildRelease(root,environment,commit,destination,settings=
       delete config.env;delete config.$schema;
       if(kind==='website') config.assets={...config.assets,directory:'../site'};
       else {
+        config.vars.SITE_URL=environmentConfig(environment).site;
+        config.services=reportingServices(environment);
+        config.vars.ALLOWED_ORIGINS=reportingOrigins(environment).join(',');
         config.d1_databases=config.d1_databases.map(binding=>({...binding,migrations_dir:'./migrations'}));
         await fs.cp(path.join(scratch,'workers/reporting/migrations'),path.join(directory,'migrations'),{recursive:true});
       }
@@ -62,14 +74,15 @@ export async function buildRelease(root,environment,commit,destination,settings=
 export async function readArtifact(directory,environment,commit,digest) {
   const manifest=await json(path.join(directory,'manifest.json'));
   await verifyManifest(directory,manifest,{environment,commit,digest});
+  const layout=artifactLayout(manifest.files);
   for(const kind of ['api','website']) {
     const config=await json(path.join(directory,kind,'wrangler.jsonc'));
-    validateDeploymentConfig(environment,config,kind);
+    validateDeploymentConfig(environment,config,kind,layout);
     if(config.vars.RELEASE!==commit||config.main!=='./index.js') throw new Error('Artifact release/config mismatch');
     // Files that skip the Worker get their security headers only from site/_headers.
     if(kind==='website'&&config.assets.run_worker_first!==true) await fs.access(path.join(directory,'site/_headers')).catch(()=>{throw new Error('Artifact lets static files skip the Worker without site/_headers');});
   }
-  const release=await json(path.join(directory,'site/release.json'));
+  const release=await json(path.join(directory,layout==='ui'?'site/ui/release.json':'site/release.json'));
   if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');
   return manifest;
 }
@@ -142,8 +155,8 @@ const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   return fetcher(url,{...options,signal:AbortSignal.any(signals)});
 };
 /** Sanitized fixed codes for one live read of the deployed site and API. */
-export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch}={}) {
-  let problems=await checkHealth(environment,{token,commit,fetcher}).then(result=>result.problems);
+export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch,layout='ui'}={}) {
+  let problems=await checkHealth(environment,{token,commit,fetcher,layout}).then(result=>result.problems);
   // checkHealth reports a missing token and an admin endpoint that did not answer
   // usefully under one code. A token was supplied here, and the public endpoints
   // are unreachable too, so that is one outage rather than a second, permanent
@@ -162,7 +175,7 @@ export async function liveProblems(environment,commit,{token=process.env.HEALTH_
   // or `release-mismatch`, which is both why success is impossible here and why
   // the run retries, so an unready read can never be mistaken for a clean one.
   if(problems.includes('http-health')||problems.includes('release-mismatch')) return [...new Set(problems)].sort();
-  const target=environmentConfig(environment);
+  const target=environmentConfig(environment,layout);
   for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
     let response;
     try {response=await fetcher(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
@@ -220,9 +233,10 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
     else if(command==='live') {
       const expected=process.env.EXPECTED_ANALYTICS_ENABLED;
       if(expected!==undefined&&!['true','false'].includes(expected)) throw new Error('Invalid expected analytics setting');
-      await checkLiveRelease(environment,commit,{expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
+      const layout=directory?artifactLayout((await json(path.join(path.resolve(directory),'manifest.json'))).files):'ui';
+      await checkLiveRelease(environment,commit,{layout,expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
       console.log('Live release checks passed');
     }
-    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
+    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA [ARTIFACT_DIRECTORY]');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }

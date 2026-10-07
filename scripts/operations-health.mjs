@@ -20,8 +20,8 @@ export function assessHealth(data) {
   if((data.deploymentIntent==='active'||data.activationCutoff)&&!ready) problems.add('provider-unconfigured');
   return [...problems].sort();
 }
-export async function checkHealth(environment,{token,commit,fetcher=fetch}={}) {
-  const target=environmentConfig(environment),problems=[];
+export async function checkHealth(environment,{token,commit,fetcher=fetch,layout='ui'}={}) {
+  const target=environmentConfig(environment,layout),problems=[];
   const get=async(url,headers={})=>{
     const response=await fetcher(url,{headers,redirect:'error',signal:AbortSignal.timeout(15000)});
     if(!response.ok) throw new Error('HTTP check failed');

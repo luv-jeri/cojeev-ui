@@ -70,7 +70,7 @@ jobs:
           REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
           RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
           REPORTING_ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
-      - run: node scripts/release.mjs live "$TARGET" "$COMMIT"
+      - run: node scripts/release.mjs live "$TARGET" "$COMMIT" "artifacts/release/$TARGET"
         env:
           TARGET: ${{ inputs.environment }}
           COMMIT: ${{ inputs.commit }}
