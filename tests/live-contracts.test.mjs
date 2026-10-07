@@ -9,6 +9,7 @@ import {fileURLToPath} from 'node:url';
 import {createManifest,manifestDigest} from '../scripts/release-manifest.mjs';
 import {liveProblems,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
 import {securityHeaders} from '../workers/registry-host/src/headers.mjs';
+import {decide} from '../workers/registry-host/src/routing.mjs';
 
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const commit='a'.repeat(40),token='fixture-health-token';
@@ -49,7 +50,7 @@ function fixture(environment='production',stage='additive') {
     put(url,bytes,200,{'content-type':file.endsWith('.json')?'application/json':file.endsWith('.txt')?'text/plain':'text/javascript'});
   }
   put(legacy+'/r/button.json','',200,{'content-type':'application/json'},'HEAD');
-  for(const url of [legacy+'/r/__cojeev_missing__.json',canonical+'/r/__cojeev_missing__.json',legacy+'/__cojeev_missing__.txt']) put(url,'missing',404);
+  for(const url of [legacy+'/r/cojeev-missing-probe.json',canonical+'/r/cojeev-missing-probe.json',legacy+'/__cojeev_missing__.txt']) put(url,'missing',404);
   if(stage==='redirect') for(const route of legacyRedirects) for(const method of ['GET','HEAD']) put(legacy+route,'',301,{location:canonical+route,'cache-control':'no-store'},method);
   else for(const route of ['/','/docs/button/']) put(legacy+route,'old page',200,{'content-type':'text/html'});
   const baseline={hashes:new Map(Object.entries(files).filter(([file])=>file.startsWith('site/r/')).map(([file,bytes])=>[file,hash(bytes)])),apexProbes:{}};
@@ -76,6 +77,31 @@ async function problems(f,expected=f.expected) {
   assert.equal(typeof module.contractProblems,'function','contractProblems must implement the live contracts');
   return module.contractProblems(f.environment,expected,{fetcher:f.fetcher,baseline:f.baseline,robotsBefore});
 }
+
+// An invalid registry probe redirects in the real routing table and cannot verify an absent item.
+test('missing_registry_probe_is_valid_and_absent_at_both_mounts',async()=>{
+  for(const environment of ['production','beta']) {
+    const f=fixture(environment,'redirect');
+    const fetcher=async(input,options={})=>{
+      const url=new URL(input);
+      if(/\/r\/.*missing.*\.json$/.test(url.pathname)) {
+        f.requests.push({url:url.href,method:options.method??'GET'});
+        const decision=decide(url,options.method??'GET',{ENVIRONMENT:environment,MIGRATION_STAGE:'redirect'});
+        return decision.kind==='asset'&&decision.registryName
+          ? new Response('absent registry item',{status:404,headers:environment==='beta'?{'x-robots-tag':'noindex, nofollow'}:{}})
+          : new Response(null,{status:301,headers:{location:decision.location??f.canonical+'/'}});
+      }
+      return f.fetcher(input,options);
+    };
+    const {contractProblems}=await import('../scripts/live-contracts.mjs');
+    assert.deepEqual(await contractProblems(environment,f.expected,{fetcher,baseline:f.baseline,robotsBefore}),[]);
+    for(const base of [f.legacy,f.canonical])
+      assert.ok(f.requests.some(({url})=>url===base+'/r/cojeev-missing-probe.json'));
+    assert.ok(f.requests.some(({url})=>url===f.legacy+'/__cojeev_missing__.txt'));
+    f.put(f.legacy+'/r/cojeev-missing-probe.json','',301,{location:f.canonical+'/r/cojeev-missing-probe.json'});
+    assert.ok((await problems(f)).includes('registry-missing:/r/cojeev-missing-probe.json'));
+  }
+});
 
 // Comparing peers or trusting a digest header instead of the promoted bytes breaks this invariant.
 test('live_registry_hashes_match_promoted_artifact_not_only_each_other',async t=>{

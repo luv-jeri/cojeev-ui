@@ -125,7 +125,7 @@ export async function contractProblems(environment,{website,api},{fetcher=fetch,
     });
   }
   await check(legacySite+'/r/button.json','registry-head',async response=>direct(response)&&response.status===200&&(await response.arrayBuffer()).byteLength===0,{method:'HEAD'});
-  for(const base of variant?[legacySite,canonicalSite]:[legacySite]) await check(base+'/r/__cojeev_missing__.json','registry-missing:'+new URL(base+'/r/__cojeev_missing__.json').pathname,response=>direct(response)&&response.status===404);
+  for(const base of variant?[legacySite,canonicalSite]:[legacySite]) await check(base+'/r/cojeev-missing-probe.json','registry-missing:'+new URL(base+'/r/cojeev-missing-probe.json').pathname,response=>direct(response)&&response.status===404);
   if(variant&&website.manifest.migrationStage==='redirect') {
     for(const route of redirectPages) for(const method of ['GET','HEAD']) await check(legacySite+route,'legacy-redirect:'+method+':'+route,response=>redirect(response,canonicalSite+route),{method});
   } else for(const route of ['/','/docs/button/']) await check(legacySite+route,'legacy-page:'+route,response=>direct(response)&&response.status===200&&media(response)==='text/html');
