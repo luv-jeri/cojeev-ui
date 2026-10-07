@@ -28,18 +28,25 @@ export const packagedWorker = async directory => (await import(pathToFileURL(pat
 export async function checkArtifactCsp(directory,environment,worker=host) {
   const target=environmentConfig(environment),opposite=environmentConfig(environment==='beta'?'production':'beta');
   const env={ENVIRONMENT:environment,RELEASE:'0'.repeat(40),ASSETS:directoryAssets(path.join(directory,'site'))};
-  const response=await worker.fetch(new Request(`${target.site}/`),env);
+  const response=await worker.fetch(new Request(`${target.canonicalSite}/`),env);
   if(!response.ok) throw new Error(`Packaged home page did not serve through the hosting Worker (${response.status})`);
   const header=response.headers.get('content-security-policy')??'';
   const policy=Object.fromEntries(header.split(';').map(part=>part.trim().split(/\s+/)).filter(([name])=>name).map(([name,...values])=>[name,values]));
-  const permits=(directive,origin)=>(policy[directive]??policy['default-src']??[]).includes(origin);
+  const urlOrigin=value=>URL.canParse(value) && /^https?:\/\//i.test(value)?new URL(value).origin:null;
+  const permits=(directive,origin)=>{
+    const sources=policy[directive]??policy['default-src']??[];
+    return sources.some(source=>urlOrigin(source)===origin) ||
+      sources.includes("'self'") && origin===new URL(target.canonicalSite).origin;
+  };
   // Turnstile and PostHog are compiled into the app unconditionally, and Cloudflare
   // injects its Web Analytics beacon at the edge (it reports to same-origin
   // /cdn-cgi/rum), so their origins are required of every environment; the API
   // origin is this one's only.
   const required=[[target.api,['connect-src']],['https://eu.i.posthog.com',['connect-src']],['https://eu-assets.i.posthog.com',['script-src','connect-src']],['https://challenges.cloudflare.com',['script-src','frame-src']],['https://static.cloudflareinsights.com',['script-src']]];
   const problems=required.flatMap(([origin,directives])=>directives.filter(directive=>!permits(directive,origin)).map(directive=>`${directive} no longer permits ${origin}`));
-  for(const forbidden of [opposite.api,opposite.site]) if(Object.values(policy).some(values=>values.includes(forbidden))) problems.push(`policy permits the ${opposite.site===forbidden?'website':'API'} origin of the other environment (${forbidden})`);
+  for(const forbidden of new Set([opposite.api,opposite.legacySite,opposite.origin].map(value=>new URL(value).origin)))
+    if(Object.values(policy).some(values=>values.some(value=>urlOrigin(value)===forbidden)))
+      problems.push(`policy permits the ${opposite.api===forbidden?'API':'website'} origin of the other environment (${forbidden})`);
   // Each served resource tag is checked against the directive that actually governs
   // it, so an origin permitted only by connect-src cannot authorise a script or an
   // image. An ordinary outbound anchor is navigation, not a subresource, and is

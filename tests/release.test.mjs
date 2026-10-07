@@ -158,9 +158,9 @@ test('tracked snapshot preserves executable mode and verifies bytes against the 
 });
 test('the packaged site served through the hosting Worker keeps a CSP that permits every runtime origin',async()=>{
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-csp-'));
-  const page=body=>fs.writeFile(path.join(dir,'site/index.html'),`<html><body>${body}</body></html>`);
+  const page=body=>fs.writeFile(path.join(dir,'site/ui/index.html'),`<html><body>${body}</body></html>`);
   try {
-    await fs.mkdir(path.join(dir,'site'));
+    await fs.mkdir(path.join(dir,'site/ui'),{recursive:true});
     // An outbound anchor and a canonical link are navigation and metadata, not
     // subresources: neither may be reported against a subresource directive.
     await page('<a href="https://github.com/luv-jeri">source</a><link rel="canonical" href="https://github.com/luv-jeri/cojeev-ui">');
@@ -168,7 +168,7 @@ test('the packaged site served through the hosting Worker keeps a CSP that permi
       const opposite=environmentConfig(environment==='beta'?'production':'beta');
       const {policy}=await checkArtifactCsp(dir,environment);
       assert.ok(policy.includes(environmentConfig(environment).api),policy);
-      assert.ok(!policy.includes(opposite.api)&&!policy.includes(opposite.site),policy);
+      assert.ok(![opposite.api,opposite.legacySite,opposite.origin].some(origin=>policy.includes(origin)),policy);
       for(const origin of ['https://challenges.cloudflare.com','https://eu.i.posthog.com','https://eu-assets.i.posthog.com','https://static.cloudflareinsights.com']) assert.ok(policy.includes(origin),origin);
     }
     await page('<script src="https://cdn.example.com/x.js"></script>');
@@ -197,7 +197,7 @@ test('the packaged site served through the hosting Worker keeps a CSP that permi
     }};
     await page('<p>no injected tag</p>');
     await assert.rejects(checkArtifactCsp(dir,'beta',withoutBeacon),/script-src no longer permits https:\/\/static\.cloudflareinsights\.com/);
-    await fs.rm(path.join(dir,'site/index.html'));
+    await fs.rm(path.join(dir,'site/ui/index.html'));
     await assert.rejects(checkArtifactCsp(dir,'beta'),/did not serve/);
   } finally { await fs.rm(dir,{recursive:true,force:true}); }
 });
