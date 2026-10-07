@@ -11,6 +11,7 @@ import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeployme
 import {assessHealth} from './operations-health.mjs';
 import {readBaselineRecord,WEBSITE_PHASES,API_PHASES} from './release-phases.mjs';
 import {readBaseline,packageEnvironment,readVariant} from './release-variants.mjs';
+import {livePairCli} from './release-pair.mjs';
 export {readVariant};
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
@@ -316,6 +317,8 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
         console.log(`${name} ${variant} ${sha} ${digest} ${deploymentId}`);
         if(process.env.GITHUB_OUTPUT) await fs.appendFile(process.env.GITHUB_OUTPUT,`${key}_digest=${digest}\n${key}_id=${deploymentId}\n`);
       }
+    } else if(command==='live-pair') {
+      await livePairCli(process.argv.slice(3));
     } else if(command==='verify') {await readVariant(path.resolve(directory),environment,commit,digest);console.log('Artifact verified');}
     else if(command==='deploy'||command==='rollback') console.log(JSON.stringify(await deployRelease(path.resolve(directory),environment,commit,digest,{rollback:command==='rollback'})));
     else if(command==='live') {
