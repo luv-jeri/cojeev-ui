@@ -32,7 +32,8 @@ function structuredDataValid(value,canonicalSite) {
   });
 }
 
-export async function contractProblems(environment,{website,api},{fetcher=fetch,baseline,robotsBefore=''}={}) {
+// Callers pass {website, api} (plan interface); every contract is website-side because liveProblems matches the api identity first.
+export async function contractProblems(environment,{website},{fetcher=fetch,baseline,robotsBefore=''}={}) {
   const {canonicalSite,legacySite,origin}=environmentConfig(environment);
   const variant=website.kind==='variant';
   if(!variant&&!(baseline?.hashes instanceof Map)) throw new Error(`Baseline artifact missing: ${environment}`);

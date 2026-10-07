@@ -73,9 +73,9 @@ function fixture(environment='production',stage='additive') {
   return {environment,legacy,origin,canonical,api,expected,baseline,files,responses,requests,fetcher,put,html};
 }
 async function problems(f,expected=f.expected) {
-  const module=await import('../scripts/live-contracts.mjs');
-  assert.equal(typeof module.contractProblems,'function','contractProblems must implement the live contracts');
-  return module.contractProblems(f.environment,expected,{fetcher:f.fetcher,baseline:f.baseline,robotsBefore});
+  const mod=await import('../scripts/live-contracts.mjs');
+  assert.equal(typeof mod.contractProblems,'function','contractProblems must implement the live contracts');
+  return mod.contractProblems(f.environment,expected,{fetcher:f.fetcher,baseline:f.baseline,robotsBefore});
 }
 
 // An invalid registry probe redirects in the real routing table and cannot verify an absent item.
