@@ -1504,7 +1504,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 |---|---|---|---|
 | `tracking_fragment_survives_legacy_redirect` | production | `https://000h.cojeev.com/track/#gate-0000` | `https://cojeev.com/ui/track/#gate-0000` |
 | the same | production | `https://000h.cojeev.com/docs/button/?a=1&a=2` | `https://cojeev.com/ui/docs/button/?a=1&a=2` |
-| the same | production | `https://000h.cojeev.com/docs/%62utton/` | `https://cojeev.com/ui/docs/%62utton/` (the encoding is unchanged, whatever the final page) |
+| the same | production | `https://000h.cojeev.com/docs/%62utton/` | First hop: 301 with exact `Location: https://cojeev.com/ui/docs/%62utton/` (the encoding is unchanged at the Worker). The asset layer's own 307 to `/ui/docs/button/` is preserved (spec: keep the asset layer's encoding behaviour). The final page is 200 beneath `/ui/` with no `/ui/ui/`. Ruling R-A19-1, 2026-10-07. |
 | `beta_tracking_fragment_survives_same_host_redirect_in_browser` | beta | `https://beta.000h.cojeev.com/track/#gate-0000` | `https://beta.000h.cojeev.com/ui/track/#gate-0000` |
 | `beta_queued_admin_query_and_component_links_survive_cutover` | beta | `/feedback-admin/?report=gate-0000` | `https://beta.000h.cojeev.com/ui/feedback-admin/?report=gate-0000` |
 | the same | beta | `/docs/button/` | `…/ui/docs/button/`, with page status 200 and the button heading visible |
