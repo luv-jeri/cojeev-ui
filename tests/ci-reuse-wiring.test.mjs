@@ -91,7 +91,7 @@ test('reuse_still_builds_release_pair', () => {
   for (const c of ['npm run lint', 'npm run typecheck', 'npm test', 'npm run gate']) assert.ok(cmds.includes(c), c);
   for (const s of steps) {
     const text = `${s.run ?? ''} ${s.name ?? ''} ${s.uses ?? ''}`;
-    if (/build-pair|release-csp|release-install|release-\$\{\{|npm ci|Select release verification depth/.test(text)) {
+    if (/build-variants|release-csp|release-install|release-\$\{\{|npm ci|Select release verification depth/.test(text)) {
       assert.ok(!s.if?.includes(REUSE_OFF), `must still run on reuse: ${text}`);
     }
   }
@@ -99,7 +99,7 @@ test('reuse_still_builds_release_pair', () => {
   assert.equal(rel.if, "steps.depth.outputs.run_release == 'true'");
 });
 test('deploy_needs_release_pack_on_pushed_commit', () => {
-  assert.equal(wf.jobs.verify.outputs.beta_digest, '${{ steps.release.outputs.beta_digest }}');
+  assert.equal(wf.jobs.verify.outputs.beta_website_mounted_digest, '${{ steps.release.outputs.beta_website_mounted_digest }}');
   assert.match(wf.jobs.beta.if, /needs\.verify\.outputs\.run_release == 'true'/);
   assert.equal(wf.jobs.beta.needs, 'verify');
   assert.deepEqual(wf.jobs.production.needs, ['verify', 'beta']);

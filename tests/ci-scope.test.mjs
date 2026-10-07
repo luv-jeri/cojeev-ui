@@ -392,15 +392,17 @@ test('the workflow keeps release acceptance independent of the classifier', () =
   assert.doesNotMatch(checkpointIf, /scope != 'full'/);
 });
 
-test('live deployment checks compare the published analytics state with the current environment intent', () => {
+test('release variants keep analytics intent while live pair reporting stays public', () => {
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const release = workflow.jobs.verify.steps.find(step => step.id === 'release');
   for (const [jobName, variable] of [
     ['beta', 'BETA_ANALYTICS_ENABLED'],
     ['production', 'PRODUCTION_ANALYTICS_ENABLED'],
   ]) {
-    const live = workflow.jobs[jobName].steps.find(step => /release\.mjs live/.test(String(step.run ?? '')));
-    assert.ok(live, `${jobName} must keep its live release check`);
-    assert.equal(live.env?.EXPECTED_ANALYTICS_ENABLED, `\${{ vars.${variable} || 'false' }}`);
+    assert.equal(release.env[variable], `\${{ vars.${variable} || 'false' }}`);
+    const live = workflow.jobs[jobName].steps.find(step => step.id === 'pair');
+    assert.equal(live.run, `node scripts/release.mjs live-pair ${jobName}`);
+    assert.ok(!live.env, `${jobName} reads the public live pair without deployment settings`);
   }
 });
 
@@ -412,7 +414,7 @@ test('the scoped job is bounded and never publishes release evidence', () => {
 
   const serialized = JSON.stringify(checkpoint);
   assert.doesNotMatch(serialized, /release-\$\{\{ github\.sha \}\}/, 'the scoped job must not publish a release artifact');
-  assert.doesNotMatch(serialized, /build-pair/, 'the scoped job must not build the release pair');
+  assert.doesNotMatch(serialized, /build-variants/, 'the scoped job must not build the release pair');
   // The catalogue gate is `npm run gate` exactly. A named journey script such
   // as `npm run gate:marketing` opens a bounded set of real pages and is not it.
   assert.doesNotMatch(serialized, /npm run gate(?!:marketing\b)/, 'only the named marketing journey is allowed here, not other catalogue gates');
@@ -586,7 +588,7 @@ test('unused-code maintenance runs the real journeys of the files it names, afte
   // A bounded set of real pages, never the catalogue gate or a release build.
   const serialized = JSON.stringify(guarded);
   assert.doesNotMatch(serialized, /npm run gate(?!:marketing\b)/, 'only the named marketing journey is allowed here, not other catalogue gates');
-  assert.doesNotMatch(serialized, /gate:docs|gate:mobile|gate:reference|build-pair|release\.mjs/, 'no release or catalogue work in a maintenance check');
+  assert.doesNotMatch(serialized, /gate:docs|gate:mobile|gate:reference|build-variants|release\.mjs/, 'no release or catalogue work in a maintenance check');
 });
 
 test('every route that imports the shared landing stylesheet is actually opened by a check', () => {
@@ -654,7 +656,7 @@ test('the E02-1 copy files are opened, as built pages, by the suite they select'
     'the copy must be read from a freshly built static export');
 });
 
-test('deployment still depends on the full job and its digests', () => {
+test('live pair reporting still depends on the full job and its release decision', () => {
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
   for (const name of ['beta', 'production']) {
     const job = workflow.jobs[name];
@@ -663,8 +665,8 @@ test('deployment still depends on the full job and its digests', () => {
     assert.match(String(job.if), /github\.ref == 'refs\/heads\/main'/);
     assert.match(String(job.if), /github\.event_name != 'pull_request'/);
     const serialized = JSON.stringify(job);
-    assert.match(serialized, /release-\$\{\{ github\.sha \}\}/, `${name} must download the artifact only the full job uploads`);
-    assert.match(serialized, /needs\.verify\.outputs\./, `${name} must verify the digest the full job produced`);
+    assert.match(serialized, /needs\.verify\.outputs\.run_release == 'true'/, `${name} must respect the full job's release decision`);
+    assert.match(serialized, new RegExp(`release\\.mjs live-pair ${name}`), `${name} must report the public live pair`);
     assert.ok(!needs.includes('checkpoint'), `${name} must not depend on a scoped check`);
   }
   assert.equal(workflow.jobs.production.needs.join(','), 'verify,beta');
@@ -675,7 +677,7 @@ test('the full job keeps every gate it had before the split', () => {
   const verify = JSON.stringify(workflow.jobs.verify);
   for (const gate of [
     'npm run lint', 'npm run typecheck', 'npm test', 'npm run reporting:test', 'npm run registry-host:test',
-    'build-pair', 'release-csp.mjs', 'npm run check:examples', 'npm run gate', 'npm run gate:mobile',
+    'build-variants', 'release-csp.mjs', 'npm run check:examples', 'npm run gate', 'npm run gate:mobile',
     'npm run gate:marketing', 'npm run gate:smooth-scroll', 'run-reporting-browser.mjs',
     'tests/analytics.browser.mjs', 'npm run analytics:browser', 'release-install.mjs',
   ]) {
@@ -1011,7 +1013,7 @@ test('structured data pages select rendered SEO validation instead of the compon
   assert.equal(outputs.run_release, 'true');
 
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
-  const validation = workflow.jobs.verify.steps.find(step => step.run === 'node scripts/check-structured-data.mjs --dir artifacts/release/production/site');
+  const validation = workflow.jobs.verify.steps.find(step => step.run === 'node scripts/check-structured-data.mjs --dir artifacts/release/production/website-regenerated/site/ui --site https://cojeev.com/ui');
   assert.ok(validation, 'the release job must inspect the packaged production HTML');
   assert.match(validation.if, /run_seo == 'true'/);
 
@@ -1131,7 +1133,7 @@ test('a reduced depth switches off the catalogue only, never packaging or integr
   }
   // Packaging, artifact integrity and consumer installation: never reducible by
   // the catalogue flag, only absent when nothing deployable changed at all.
-  for (const gate of ['build-pair', 'release-csp.mjs', 'release-install.mjs']) {
+  for (const gate of ['build-variants', 'release-csp.mjs', 'release-install.mjs']) {
     const step = findStep(verify, gate);
     assert.ok(step, gate);
     assert.match(String(step.if), /steps\.depth\.outputs\.run_release == 'true'/, gate);
@@ -1423,7 +1425,7 @@ test('quick_depth_keeps_checks_and_skips_the_release_pack', () => {
     const step = releaseSteps().find(s => String(s.run ?? '').includes(needle));
     assert.ok(readsFlag(step, 'run_checks'), needle);
   }
-  for (const needle of ['release.mjs build-pair', 'release-csp.mjs', 'release-install.mjs']) assert.ok(readsFlag(stepRunning(needle), 'run_release'), needle);
+  for (const needle of ['release.mjs build-variants', 'release-csp.mjs', 'release-install.mjs']) assert.ok(readsFlag(stepRunning(needle), 'run_release'), needle);
   assert.equal(out.run_release, 'false');
 });
 

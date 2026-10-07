@@ -113,13 +113,15 @@ const contractOutputs = paths => releaseOutputs(releaseDepth(paths, '', { gateId
 const SMOKE = {
   depth: 'affected', run_checks: 'true', run_release: 'true', run_catalogue: 'true',
   gate_ids: 'button,tabs', run_transient: 'false', run_analytics: 'false', run_seo: 'false', run_reporting: 'true',
+  run_migration: 'false',
 };
 
 test('ci_contract_edit_runs_smoke_not_full', () => {
   assert.deepEqual(CI_SMOKE_IDS, ['button', 'tabs']);
   for (const file of ['.github/workflows/verify.yml', 'scripts/ci-scope.mjs']) {
     const { depth_reason, ...rest } = contractOutputs([file]);
-    assert.deepEqual(rest, SMOKE, file);
+    // verify.yml hosts the migration gates, so A21 routes its edits to them too.
+    assert.deepEqual(rest, file.endsWith('verify.yml') ? {...SMOKE, run_migration: 'true'} : SMOKE, file);
     assert.ok(depth_reason.includes('button,tabs'), depth_reason);
   }
   // Docs mixed in change nothing.
