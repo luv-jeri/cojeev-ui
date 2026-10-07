@@ -56,6 +56,17 @@
 .v-milestone-path__connection[data-travel-owned] {
   visibility: hidden;
 }
+/* At rest the shared contour body is the halo: same paint, scaled from the
+   36 px marker to the 22.5 px halo radius the travel layer settles on. */
+.v-milestone-path__marker[data-morph="fill"] {
+  --mfill: color-mix(in srgb, var(--v-pink) 22%, transparent);
+}
+.v-milestone-path__marker > svg.v-morph {
+  transform: scale(1.25);
+}
+.v-milestone-path__marker:has(> svg.v-morph) .v-milestone-path__halo {
+  display: none;
+}
 .v-milestone-path__mark {
   display: block;
   inline-size: 100%;

@@ -91,7 +91,9 @@ export function MilestonePathExample({ variant = "journey" }: ExampleProps) {
         const id = `milestone-${index}-${step}`;
         if (index < current || (index === current && step === 0))
           return { id, title, state: "complete" };
-        if (index === current && step === 1) return { id, title, state: "current" };
+        // A failed parent has no step in progress; the next one waits for the retry.
+        if (index === current && step === 1)
+          return { id, title, state: run.failed ? "upcoming" : "current" };
         return { id, title, state: "upcoming" };
       }),
     };

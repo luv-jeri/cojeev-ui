@@ -137,6 +137,40 @@ try {
   await path.getByText("No milestones yet", { exact: true }).waitFor();
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.evaluate(() => window.render({ presentation: "journey" }));
+  const marker = path.locator(
+    '[data-state="current"] .v-milestone-path__marker',
+  );
+  await marker.scrollIntoViewIfNeeded();
+  await marker.locator("[data-morph-body]").waitFor({ state: "attached" });
+  const moving = await marker.evaluate(async (el) => {
+    const box = el.getBoundingClientRect();
+    el.dispatchEvent(
+      new PointerEvent("pointerenter", {
+        bubbles: true,
+        clientX: box.x + box.width - 1,
+        clientY: box.y + box.height / 2,
+        pointerType: "mouse",
+      }),
+    );
+    document.dispatchEvent(
+      new PointerEvent("pointermove", {
+        bubbles: true,
+        clientX: box.x + box.width - 1,
+        clientY: box.y + box.height / 2,
+        pointerType: "mouse",
+      }),
+    );
+    const paths = [];
+    for (let i = 0; i < 20; i++) {
+      await new Promise(requestAnimationFrame);
+      paths.push(el.querySelector("[data-morph-body]").getAttribute("d"));
+    }
+    return new Set(paths).size;
+  });
+  assert.ok(
+    moving > 2,
+    "The current marker has an actual shared contour response",
+  );
   await path.scrollIntoViewIfNeeded();
   await page.waitForTimeout(150);
   const future = path.getByText("A future checkpoint", { exact: true });

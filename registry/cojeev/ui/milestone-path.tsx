@@ -15,6 +15,7 @@ import { useChoreography } from "../motion/choreography";
 import { assignMotionRef } from "../motion/refs";
 import { useFlowGroup } from "../motion/use-flow";
 import { useGuidanceMotion } from "../motion/use-guidance-motion";
+import { useMorph } from "../motion/use-morph";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import { Empty, EmptyDescription, EmptyTitle } from "./empty";
@@ -349,6 +350,8 @@ function Step({
 }) {
   const { travel, labels, onSelect } = React.useContext(SharedContext);
   const id = React.useId();
+  // Shared pointer contour on the resting mark; the travel layer hides it only mid-beat.
+  const morph = useMorph<HTMLSpanElement>("buttons");
   return (
     <MilestoneItem
       step={index + 1}
@@ -380,7 +383,9 @@ function Step({
         </svg>
       )}
       <span
+        ref={morph}
         aria-hidden="true"
+        data-morph={item.state === "current" ? "fill" : "none"}
         data-slot="milestone-path-indicator"
         data-part="indicator"
         className="v-milestone-path__marker"
