@@ -60,7 +60,7 @@ test('default_and_environment_configs_agree',()=>{
   for(const [environment,expected] of Object.entries(targets)) {
     const config=environmentConfig(environment);
     for(const [field,value] of Object.entries(expected)) assert.deepEqual(config[field],value,`${environment} ${field}`);
-    assert.equal(config.site,config.legacySite);
+    assert.ok(!Object.hasOwn(config,'site'));
     // A packaging caller cannot change the approved targets used by the next guard.
     config.routes[0].pattern='unreviewed.cojeev.com';
     config.allowedOrigins.push('https://unreviewed.cojeev.com');

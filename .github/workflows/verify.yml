@@ -280,9 +280,28 @@ jobs:
       # Supersede an outdated pull request check, never a main release run.
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     outputs:
-      beta_digest: ${{ steps.release.outputs.beta_digest }}
-      production_digest: ${{ steps.release.outputs.production_digest }}
+      beta_api_prepared_digest: ${{ steps.release.outputs.beta_api_prepared_digest }}
+      beta_api_prepared_id: ${{ steps.release.outputs.beta_api_prepared_id }}
+      beta_api_linked_digest: ${{ steps.release.outputs.beta_api_linked_digest }}
+      beta_api_linked_id: ${{ steps.release.outputs.beta_api_linked_id }}
+      beta_website_mounted_digest: ${{ steps.release.outputs.beta_website_mounted_digest }}
+      beta_website_mounted_id: ${{ steps.release.outputs.beta_website_mounted_id }}
+      beta_website_regenerated_digest: ${{ steps.release.outputs.beta_website_regenerated_digest }}
+      beta_website_regenerated_id: ${{ steps.release.outputs.beta_website_regenerated_id }}
+      beta_website_redirect_digest: ${{ steps.release.outputs.beta_website_redirect_digest }}
+      beta_website_redirect_id: ${{ steps.release.outputs.beta_website_redirect_id }}
+      production_api_prepared_digest: ${{ steps.release.outputs.production_api_prepared_digest }}
+      production_api_prepared_id: ${{ steps.release.outputs.production_api_prepared_id }}
+      production_api_linked_digest: ${{ steps.release.outputs.production_api_linked_digest }}
+      production_api_linked_id: ${{ steps.release.outputs.production_api_linked_id }}
+      production_website_mounted_digest: ${{ steps.release.outputs.production_website_mounted_digest }}
+      production_website_mounted_id: ${{ steps.release.outputs.production_website_mounted_id }}
+      production_website_regenerated_digest: ${{ steps.release.outputs.production_website_regenerated_digest }}
+      production_website_regenerated_id: ${{ steps.release.outputs.production_website_regenerated_id }}
+      production_website_redirect_digest: ${{ steps.release.outputs.production_website_redirect_digest }}
+      production_website_redirect_id: ${{ steps.release.outputs.production_website_redirect_id }}
       run_release: ${{ steps.depth.outputs.run_release }}
+      run_migration: ${{ steps.depth.outputs.run_migration }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -388,10 +407,24 @@ jobs:
         if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npm run registry-host:test
         if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
-      - name: Prepare both environments from this clean commit
+      - name: Fetch the pinned baselines
+        if: steps.depth.outputs.run_release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for commit in $(jq -r '.beta.commit, .production.commit' scripts/release-baseline.json | sort -u); do
+            mkdir -p "$RUNNER_TEMP/baseline/$commit"
+            gh release download migration-baseline -p "release-$commit.tar.gz" -D "$RUNNER_TEMP/baseline/$commit"
+            tar -xzf "$RUNNER_TEMP/baseline/$commit/release-$commit.tar.gz" -C "$RUNNER_TEMP/baseline/$commit"
+          done
+          beta_commit=$(jq -r '.beta.commit' scripts/release-baseline.json)
+          production_commit=$(jq -r '.production.commit' scripts/release-baseline.json)
+          echo "BASELINE_BETA_DIRECTORY=$RUNNER_TEMP/baseline/$beta_commit/beta" >> "$GITHUB_ENV"
+          echo "BASELINE_PRODUCTION_DIRECTORY=$RUNNER_TEMP/baseline/$production_commit/production" >> "$GITHUB_ENV"
+      - name: Prepare migration variants for both environments from this clean commit
         id: release
         if: steps.depth.outputs.run_release == 'true'
-        run: node scripts/release.mjs build-pair "$GITHUB_SHA" artifacts/release
+        run: node scripts/release.mjs build-variants "$GITHUB_SHA" artifacts/release
         env:
           BETA_POSTHOG_PROJECT_TOKEN: ${{ vars.BETA_POSTHOG_PROJECT_TOKEN }}
           PRODUCTION_POSTHOG_PROJECT_TOKEN: ${{ vars.PRODUCTION_POSTHOG_PROJECT_TOKEN }}
@@ -401,11 +434,15 @@ jobs:
       - name: Check the hosting CSP against each packaged artifact
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_release == 'true'
         run: |
-          node scripts/release-csp.mjs beta artifacts/release/beta
-          node scripts/release-csp.mjs production artifacts/release/production
+          node scripts/release-csp.mjs beta artifacts/release/beta/website-mounted
+          node scripts/release-csp.mjs beta artifacts/release/beta/website-regenerated
+          node scripts/release-csp.mjs beta artifacts/release/beta/website-redirect
+          node scripts/release-csp.mjs production artifacts/release/production/website-mounted
+          node scripts/release-csp.mjs production artifacts/release/production/website-regenerated
+          node scripts/release-csp.mjs production artifacts/release/production/website-redirect
       - name: Validate rendered structured data
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_seo == 'true'
-        run: node scripts/check-structured-data.mjs --dir artifacts/release/production/site
+        run: node scripts/check-structured-data.mjs --dir artifacts/release/production/website-regenerated/site/ui --site https://cojeev.com/ui
       - name: Build manual Pages compatibility fixture for existing browser gates
         if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
         run: npm run build
@@ -491,11 +528,37 @@ jobs:
       - name: Verify fresh consumer installation from each verified environment artifact
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_release == 'true'
         run: |
-          node scripts/release-install.mjs beta "$GITHUB_SHA" artifacts/release/beta "$BETA_DIGEST"
-          node scripts/release-install.mjs production "$GITHUB_SHA" artifacts/release/production "$PRODUCTION_DIGEST"
+          node scripts/release-install.mjs beta "$GITHUB_SHA" artifacts/release/beta/website-mounted "$BETA_WEBSITE_MOUNTED_DIGEST"
+          node scripts/release-install.mjs beta "$GITHUB_SHA" artifacts/release/beta/website-regenerated "$BETA_WEBSITE_REGENERATED_DIGEST"
+          node scripts/release-install.mjs production "$GITHUB_SHA" artifacts/release/production/website-mounted "$PRODUCTION_WEBSITE_MOUNTED_DIGEST"
+          node scripts/release-install.mjs production "$GITHUB_SHA" artifacts/release/production/website-regenerated "$PRODUCTION_WEBSITE_REGENERATED_DIGEST"
         env:
-          BETA_DIGEST: ${{ steps.release.outputs.beta_digest }}
-          PRODUCTION_DIGEST: ${{ steps.release.outputs.production_digest }}
+          BETA_WEBSITE_MOUNTED_DIGEST: ${{ steps.release.outputs.beta_website_mounted_digest }}
+          BETA_WEBSITE_REGENERATED_DIGEST: ${{ steps.release.outputs.beta_website_regenerated_digest }}
+          PRODUCTION_WEBSITE_MOUNTED_DIGEST: ${{ steps.release.outputs.production_website_mounted_digest }}
+          PRODUCTION_WEBSITE_REGENERATED_DIGEST: ${{ steps.release.outputs.production_website_regenerated_digest }}
+      - name: Install Chromium for migration gates
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_migration == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Check packaged asset chains for all website variants
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_migration == 'true'
+        run: |
+          node scripts/check-asset-chains.mjs artifacts/release/beta/website-mounted
+          node scripts/check-asset-chains.mjs artifacts/release/beta/website-regenerated
+          node scripts/check-asset-chains.mjs artifacts/release/beta/website-redirect
+          node scripts/check-asset-chains.mjs artifacts/release/production/website-mounted
+          node scripts/check-asset-chains.mjs artifacts/release/production/website-regenerated
+          node scripts/check-asset-chains.mjs artifacts/release/production/website-redirect
+      - name: Check packaged redirects in both environments
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_migration == 'true'
+        run: |
+          node scripts/redirect-browser.mjs --packaged=artifacts/release/beta/website-redirect
+          node scripts/redirect-browser.mjs --packaged=artifacts/release/production/website-redirect
+      - name: Rehearse rollback in both environments
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_migration == 'true'
+        run: |
+          node scripts/rollback-rehearsal.mjs artifacts/release beta
+          node scripts/rollback-rehearsal.mjs artifacts/release production
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: steps.depth.outputs.run_release == 'true'
         with:
@@ -596,7 +659,7 @@ jobs:
     timeout-minutes: 20
     environment:
       name: beta
-      url: https://beta.000h.cojeev.com
+      url: https://beta.000h.cojeev.com/ui/
     concurrency:
       group: deploy-beta
       cancel-in-progress: false
@@ -612,29 +675,13 @@ jobs:
         with:
           node-version: 22.22.0
       - run: npm ci --ignore-scripts
-      - name: Prepare pinned external deployment runtime
-        run: |
-          mkdir -p "$RUNNER_TEMP/cojeev-wrangler"
-          cp .github/wrangler-runtime/package*.json "$RUNNER_TEMP/cojeev-wrangler/"
-          npm ci --ignore-scripts --prefix "$RUNNER_TEMP/cojeev-wrangler"
-          echo "WRANGLER_BIN=$RUNNER_TEMP/cojeev-wrangler/node_modules/wrangler/bin/wrangler.js" >> "$GITHUB_ENV"
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: release-${{ github.sha }}
-          path: artifacts/release
-      - name: Record D1 recovery point, migrate, and deploy beta
-        run: node scripts/release.mjs deploy beta "$GITHUB_SHA" artifacts/release/beta "$DIGEST"
+      - name: Report the live pair
+        id: pair
+        run: node scripts/release.mjs live-pair beta
+      - name: Report manual promotion policy
+        run: echo "Live pair $PAIR. main builds and verifies only; promote with promote.yml." >> "$GITHUB_STEP_SUMMARY"
         env:
-          DIGEST: ${{ needs.verify.outputs.beta_digest }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
-          REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
-          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
-          REPORTING_ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
-      - run: node scripts/release.mjs live beta "$GITHUB_SHA"
-        env:
-          HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
-          EXPECTED_ANALYTICS_ENABLED: ${{ vars.BETA_ANALYTICS_ENABLED || 'false' }}
+          PAIR: ${{ steps.pair.outputs.pair }}
       - name: Independent failure notification
         if: failure()
         run: node scripts/operations-health.mjs beta
@@ -652,7 +699,7 @@ jobs:
     timeout-minutes: 20
     environment:
       name: production
-      url: https://000h.cojeev.com
+      url: https://cojeev.com/ui/
     concurrency:
       group: deploy-production
       cancel-in-progress: false
@@ -668,29 +715,13 @@ jobs:
         with:
           node-version: 22.22.0
       - run: npm ci --ignore-scripts
-      - name: Prepare pinned external deployment runtime
-        run: |
-          mkdir -p "$RUNNER_TEMP/cojeev-wrangler"
-          cp .github/wrangler-runtime/package*.json "$RUNNER_TEMP/cojeev-wrangler/"
-          npm ci --ignore-scripts --prefix "$RUNNER_TEMP/cojeev-wrangler"
-          echo "WRANGLER_BIN=$RUNNER_TEMP/cojeev-wrangler/node_modules/wrangler/bin/wrangler.js" >> "$GITHUB_ENV"
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: release-${{ github.sha }}
-          path: artifacts/release
-      - name: Promote the prepared production artifact after environment approval
-        run: node scripts/release.mjs deploy production "$GITHUB_SHA" artifacts/release/production "$DIGEST"
+      - name: Report the live pair
+        id: pair
+        run: node scripts/release.mjs live-pair production
+      - name: Report manual promotion policy
+        run: echo "Live pair $PAIR. main builds and verifies only; promote with promote.yml." >> "$GITHUB_STEP_SUMMARY"
         env:
-          DIGEST: ${{ needs.verify.outputs.production_digest }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
-          REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
-          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
-          REPORTING_ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
-      - run: node scripts/release.mjs live production "$GITHUB_SHA"
-        env:
-          HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
-          EXPECTED_ANALYTICS_ENABLED: ${{ vars.PRODUCTION_ANALYTICS_ENABLED || 'false' }}
+          PAIR: ${{ steps.pair.outputs.pair }}
       - name: Independent failure notification
         if: failure()
         run: node scripts/operations-health.mjs production
