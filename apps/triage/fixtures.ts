@@ -49,7 +49,7 @@ const detailOf = (r: TriageListRow): TriageDetail => ({
   report: {
     ...r,
     description: descriptions[r.id] ?? "",
-    references_json: JSON.stringify(r.id === "rpt_a1" ? ["https://www.cojeev.com/ui/docs/tabs"] : []),
+    references_json: JSON.stringify(r.id === "rpt_a1" ? ["https://cojeev.com/ui/docs/tabs"] : []),
     triage_reason: reasons[r.id] ?? null,
     triage_body: r.triage_state === "approved" && r.triage_by === "ai" ? `${descriptions[r.id]}${r.id === "rpt_a1" ? "\n\nExpected: the indicator slides from the current tab to the clicked one." : ""}` : null,
   },

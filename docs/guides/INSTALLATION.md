@@ -13,7 +13,7 @@ For a Vite project with Tailwind and the alias configured, initialize shadcn and
 
 ```sh
 npx shadcn@latest init
-npx shadcn@latest add https://www.cojeev.com/ui/r/button.json
+npx shadcn@latest add https://cojeev.com/ui/r/button.json
 ```
 
 ```tsx
@@ -37,7 +37,7 @@ For namespace commands, add this entry to your application's `components.json`:
 ```json
 {
   "registries": {
-    "@cojeev": "https://www.cojeev.com/ui/r/{name}.json"
+    "@cojeev": "https://cojeev.com/ui/r/{name}.json"
   }
 }
 ```
@@ -49,7 +49,7 @@ You can then use `npx shadcn@latest add @cojeev/button`. The namespace entry is 
 Components read spacing, type and control-height tokens that the foundation stylesheet defines. The shadcn CLI never replaces a file you already have unless you ask, so a project installed before a token was added keeps its old `tokens.css`, and a newly added component can lose its spacing or font. Refresh the foundation when you add components from a newer release:
 
 ```sh
-npx shadcn@latest add https://www.cojeev.com/ui/r/cojeev.json --overwrite
+npx shadcn@latest add https://cojeev.com/ui/r/cojeev.json --overwrite
 ```
 
 This replaces every file the foundation installs: its stylesheets, `lib/utils.ts` (the `cn` helper), `lib/cojeev/`, `lib/cojeev-motion/` and the font script. Preview the changes with `--dry-run` first, then reapply any local edits you made to those files.

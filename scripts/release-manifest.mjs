@@ -33,10 +33,10 @@ export function assertCleanSource(root, commit) {
   return commit;
 }
 const LOCAL_HOSTS=['localhost','127.0.0.1','[::1]'];
-export function validateContent(file, content, environment) {
-  const target=environmentConfig(environment);
-  const opposite=environmentConfig(environment==='beta'?'production':'beta');
-  const forbidden=[new URL(opposite.site).hostname,new URL(opposite.api).hostname,'000h.cojeev.com','luv-jeri.github.io'];
+export function validateContent(file, content, environment, layout='ui') {
+  const target=environmentConfig(environment,layout);
+  const opposite=environmentConfig(environment==='beta'?'production':'beta',layout);
+  const forbidden=[new URL(opposite.site).hostname,new URL(opposite.api).hostname,...(layout==='ui'?['000h.cojeev.com','www.cojeev.com']:[]),'luv-jeri.github.io'];
   // A dependency position: a malformed value here is reported by name instead of
   // surfacing as a bare TypeError from the URL parser.
   const reject=url=>{
@@ -89,11 +89,18 @@ async function inventory(root, directory='') {
   }
   return files.sort();
 }
+export function artifactLayout(files) {
+  const entries=Array.isArray(files)?files:Object.keys(files);
+  const ui=entries.includes('site/ui/index.html'),root=entries.includes('site/index.html');
+  if(ui===root) throw new Error(ui?'Ambiguous website artifact layout':'Missing website artifact');
+  return ui?'ui':'root';
+}
 export async function createManifest(root, environment, commit) {
   environmentConfig(environment);
   if(!/^[a-f0-9]{40}$/.test(commit)) throw new Error('Invalid release commit');
+  const entries=await inventory(root),layout=artifactLayout(entries);
   const files={};
-  for(const file of await inventory(root)) {
+  for(const file of entries) {
     if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
     if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
     // The hosting Worker answers 404 here, but static files (see run_worker_first) never reach it.
@@ -110,10 +117,9 @@ export async function createManifest(root, environment, commit) {
     // each deployed Worker actually targets is controlled by
     // validateDeploymentConfig, which checks name, account, route hostname, D1, R2 and
     // allowed origins against this environment; live cross-origin behaviour is Task 4.
-    if(/\.(html|js|css|json|xml|txt)$/.test(file)) validateContent(file,bytes.toString('utf8'),environment);
+    if(/\.(html|js|css|json|xml|txt)$/.test(file)) validateContent(file,bytes.toString('utf8'),environment,layout);
     files[file]=hash(bytes);
   }
-  if(!files['site/ui/index.html']) throw new Error('Missing website artifact');
   return {schema:1,environment,commit,files};
 }
 export async function verifyManifest(root, manifest, expected) {

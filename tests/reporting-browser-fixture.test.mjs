@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { startReportingFixture } from '../scripts/reporting-browser-fixture.mjs';
 
 test('browser fixture refuses a remote website before starting services', async () => {
-  await assert.rejects(startReportingFixture('https://www.cojeev.com/ui', 0), /loopback/);
+  await assert.rejects(startReportingFixture('https://cojeev.com/ui', 0), /loopback/);
 });
 
 test('browser fixture serves the actual migrated Worker with private disposable storage', async () => {

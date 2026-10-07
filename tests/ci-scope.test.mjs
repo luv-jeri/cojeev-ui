@@ -945,7 +945,7 @@ test('structured data pages select rendered SEO validation instead of the compon
   assert.equal(outputs.run_release, 'true');
 
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
-  const validation = workflow.jobs.verify.steps.find(step => step.run === 'node scripts/check-structured-data.mjs --dir artifacts/release/production/site');
+  const validation = workflow.jobs.verify.steps.find(step => step.run === 'node scripts/check-structured-data.mjs --dir artifacts/release/production/site/ui');
   assert.ok(validation, 'the release job must inspect the packaged production HTML');
   assert.match(validation.if, /run_seo == 'true'/);
 

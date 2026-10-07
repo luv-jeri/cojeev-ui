@@ -10,7 +10,7 @@ import {
   serializeStructuredData,
 } from "../lib/seo/structured-data";
 
-const origin = "https://www.cojeev.com/ui";
+const origin = "https://cojeev.com/ui";
 
 function propertyNames(value: unknown): string[] {
   if (Array.isArray(value)) return value.flatMap(propertyNames);

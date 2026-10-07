@@ -20,7 +20,7 @@ before(async()=>{
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 after(async()=>{await mf?.dispose();});
@@ -1112,7 +1112,35 @@ test('email_html_escapes_every_value',()=>{
 });
 
 test('production component resolution accepts the canonical ui path and rejects other origins or root docs',()=>{
-  const env=backendEnv({SITE_URL:'https://www.cojeev.com/ui',LOCAL_MODE:'false'});
-  assert.equal(backend.componentURL('https://www.cojeev.com/ui/docs/x/',env),'https://www.cojeev.com/ui/docs/x/');
-  for(const url of ['https://www.cojeev.com/docs/x/','https://cojeev.com/ui/docs/x/','https://000h.cojeev.com/docs/x/','https://www.cojeev.com/ui/docs/x/?next=1']) assert.throws(()=>backend.componentURL(url,env),error=>error.status===422);
+  const env=backendEnv({SITE_URL:'https://cojeev.com/ui',LOCAL_MODE:'false'});
+  assert.equal(backend.componentURL('https://cojeev.com/ui/docs/x/',env),'https://cojeev.com/ui/docs/x/');
+  for(const url of ['https://cojeev.com/docs/x/','https://www.cojeev.com/ui/docs/x/','https://000h.cojeev.com/docs/x/','https://cojeev.com/ui/docs/x/?next=1']) assert.throws(()=>backend.componentURL(url,env),error=>error.status===422);
+});
+
+test('live component verification uses the website binding and fails closed without it',async()=>{
+  const url='https://cojeev.com/ui/docs/button/',calls=[];
+  const env=backendEnv({LOCAL_MODE:'false',SITE_URL:'https://cojeev.com/ui',WEBSITE:{fetch:async function(value,options){
+    assert.equal(this,env.WEBSITE);calls.push({value,options});
+    return new Response(null,{headers:{'Content-Type':'text/html; charset=utf-8'}});
+  }}});
+  const original=globalThis.fetch;
+  globalThis.fetch=async()=>{throw new Error('Same-zone fetch must not run');};
+  try {
+    assert.equal(await backend.verifyLiveComponent(env,url),url);
+    assert.equal(calls.length,1);assert.equal(calls[0].value,url);
+    assert.equal(calls[0].options.method,'HEAD');assert.equal(calls[0].options.redirect,'manual');
+    assert.ok(calls[0].options.signal instanceof AbortSignal);
+    await assert.rejects(backend.verifyLiveComponent({...env,WEBSITE:undefined},url),error=>error.status===422);
+    for(const response of [new Response(null,{status:301,headers:{Location:url}}),new Response(null,{status:404}),Response.json({ok:true})]) {
+      await assert.rejects(backend.verifyLiveComponent({...env,WEBSITE:{fetch:async()=>response}},url),error=>error.status===422);
+    }
+    await assert.rejects(backend.verifyLiveComponent({...env,WEBSITE:{fetch:async()=>{throw new Error('Unavailable');}}},url),error=>error.status===422);
+  } finally {globalThis.fetch=original;}
+});
+test('local component verification preserves offline mode and permits an explicit test fetcher',async()=>{
+  const env=backendEnv(),url=env.SITE_URL+'/docs/button/';
+  assert.equal(await backend.verifyLiveComponent(env,url),url);
+  let calls=0;
+  assert.equal(await backend.verifyLiveComponent(env,url,async()=>{calls++;return new Response(null,{headers:{'Content-Type':'text/html'}});}),url);
+  assert.equal(calls,1);
 });

@@ -1,3 +1,4 @@
+import {environmentConfig,reportingOrigins,websiteRoutes,reportingServices} from '../scripts/release-config.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -152,19 +153,25 @@ test('a supplemental bundle completes the protected base without overwriting it,
   assert.deepEqual(validateSecrets(composeSecretBundles(base,'{}'),'production'),{RESEND_API_KEY:dummyResend});
 });
 const sourceRoot=new URL('../',import.meta.url);
-async function fixture(environment='beta',{headers=true}={}) {
+async function fixture(environment='beta',{headers=true,layout='ui'}={}) {
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-deploy-test-'));
   for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
     await fs.mkdir(path.join(dir,kind));
     const source=JSON.parse(await fs.readFile(new URL(`workers/${worker}/wrangler.jsonc`,sourceRoot),'utf8'));
     const config={...source,...source.env[environment],main:'./index.js',vars:{...source.env[environment].vars,RELEASE:'a'.repeat(40)}};delete config.env;
+    if(layout==='root') {
+      config.routes=kind==='website'?websiteRoutes(environment,layout):config.routes;
+      if(kind==='api') {config.vars.SITE_URL=environmentConfig(environment,layout).site;config.vars.ALLOWED_ORIGINS=reportingOrigins(environment,layout).join(',');delete config.services;}
+      else config.assets.run_worker_first=['/*','!/_next/*','!/*.txt'];
+    }
     if(kind==='website')config.assets.directory='../site';
     await fs.writeFile(path.join(dir,kind,'wrangler.jsonc'),JSON.stringify(config));
     await fs.writeFile(path.join(dir,kind,'index.js'),'export default {}');
   }
-  await fs.mkdir(path.join(dir,'site/ui'),{recursive:true});
-  await fs.writeFile(path.join(dir,'site/ui/index.html'),'<html>public</html>');
-  await fs.writeFile(path.join(dir,'site/ui/release.json'),JSON.stringify({environment,release:'a'.repeat(40)}));
+  const site=layout==='ui'?'site/ui':'site';
+  await fs.mkdir(path.join(dir,site),{recursive:true});
+  await fs.writeFile(path.join(dir,site,'index.html'),`<html><a href="${environmentConfig(environment,layout).site}/docs/button/">public</a></html>`);
+  await fs.writeFile(path.join(dir,site,'release.json'),JSON.stringify({environment,release:'a'.repeat(40)}));
   if(headers) await fs.writeFile(path.join(dir,'site/_headers'),'/*\n  x-content-type-options: nosniff\n');
   await fs.mkdir(path.join(dir,'api/migrations'));
   await fs.writeFile(path.join(dir,'api/migrations/0002_safe_delivery.sql'),'-- fixture');
@@ -290,4 +297,42 @@ test('production deployment verifies both ui zone routes and origin-only reporti
   const api={...reporting,...reporting.env.production};delete api.env;
   assert.doesNotThrow(()=>validateDeploymentConfig('production',api,'api'));
   assert.throws(()=>validateDeploymentConfig('production',{...api,vars:{...api.vars,ALLOWED_ORIGINS:api.vars.ALLOWED_ORIGINS.replace('https://www.cojeev.com','https://www.cojeev.com/ui')}},'api'),/mismatch: vars.ALLOWED_ORIGINS/);
+});
+
+test('reporting configs bind only to the matching website Worker in both environments',async()=>{
+  const source=JSON.parse(await fs.readFile(new URL('workers/reporting/wrangler.jsonc',sourceRoot),'utf8'));
+  for(const environment of ['beta','production']) {
+    const config={...source,...source.env[environment]};delete config.env;
+    assert.deepEqual(config.services,reportingServices(environment));
+    validateDeploymentConfig(environment,config,'api');
+    for(const services of [undefined,reportingServices(environment==='beta'?'production':'beta')]) {
+      assert.throws(()=>validateDeploymentConfig(environment,{...config,services},'api'),/mismatch: services/);
+    }
+  }
+});
+test('rollback reads and redeploys immutable root-layout artifacts with legacy routes',async()=>{
+  const {readArtifact}=await import('../scripts/release.mjs');
+  const originalSecrets=process.env.REPORTING_SECRETS_JSON,originalAck=process.env.ROLLBACK_SCHEMA_ACK;
+  process.env.REPORTING_SECRETS_JSON=JSON.stringify({ADMIN_TOKEN:'a'.repeat(40),HEALTH_TOKEN:'h'.repeat(40),IP_HASH_SECRET:'b'.repeat(40),TURNSTILE_SECRET:'s'.repeat(40),TURNSTILE_SITE_KEY:'0x'+'a'.repeat(24)});
+  process.env.ROLLBACK_SCHEMA_ACK='0002_safe_delivery.sql';
+  try {
+    for(const environment of ['beta','production']) {
+      const {dir,manifest}=await fixture(environment,{layout:'root'}),calls=[];
+      try {
+        const digest=manifestDigest(manifest);
+        assert.deepEqual(await readArtifact(dir,environment,'a'.repeat(40),digest),manifest);
+        await deployRelease(dir,environment,'a'.repeat(40),digest,{rollback:true,run:args=>calls.push(args),backupDatabase:async()=>{throw new Error('Rollback must not migrate');},cf:async()=>[]});
+        assert.equal(calls.length,2);assert.ok(calls.every(args=>args[0]==='deploy'));
+        assert.deepEqual(await readArtifact(dir,environment,'a'.repeat(40),digest),manifest);
+        const config=JSON.parse(await fs.readFile(path.join(dir,'website/wrangler.jsonc'),'utf8'));
+        assert.throws(()=>validateDeploymentConfig(environment,config,'website'),/routes|assets.run_worker_first/);
+        validateDeploymentConfig(environment,config,'website','root');
+        await fs.writeFile(path.join(dir,'site/index.html'),'tampered');
+        await assert.rejects(readArtifact(dir,environment,'a'.repeat(40),digest),/integrity/);
+      } finally {await fs.rm(dir,{recursive:true,force:true});}
+    }
+  } finally {
+    if(originalSecrets===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=originalSecrets;
+    if(originalAck===undefined)delete process.env.ROLLBACK_SCHEMA_ACK;else process.env.ROLLBACK_SCHEMA_ACK=originalAck;
+  }
 });

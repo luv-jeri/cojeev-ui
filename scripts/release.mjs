@@ -5,8 +5,8 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
-import {buildEnvironment,environmentConfig,reportingOrigins} from './release-config.mjs';
-import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
+import {buildEnvironment,environmentConfig,reportingOrigins,reportingServices} from './release-config.mjs';
+import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest,artifactLayout} from './release-manifest.mjs';
 import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
 import {siteHeaders} from '../workers/registry-host/src/headers.mjs';
@@ -56,6 +56,7 @@ export async function buildRelease(root,environment,commit,destination,settings=
       if(kind==='website') config.assets={...config.assets,directory:'../site'};
       else {
         config.vars.SITE_URL=environmentConfig(environment).site;
+        config.services=reportingServices(environment);
         config.vars.ALLOWED_ORIGINS=reportingOrigins(environment).join(',');
         config.d1_databases=config.d1_databases.map(binding=>({...binding,migrations_dir:'./migrations'}));
         await fs.cp(path.join(scratch,'workers/reporting/migrations'),path.join(directory,'migrations'),{recursive:true});
@@ -73,14 +74,15 @@ export async function buildRelease(root,environment,commit,destination,settings=
 export async function readArtifact(directory,environment,commit,digest) {
   const manifest=await json(path.join(directory,'manifest.json'));
   await verifyManifest(directory,manifest,{environment,commit,digest});
+  const layout=artifactLayout(manifest.files);
   for(const kind of ['api','website']) {
     const config=await json(path.join(directory,kind,'wrangler.jsonc'));
-    validateDeploymentConfig(environment,config,kind);
+    validateDeploymentConfig(environment,config,kind,layout);
     if(config.vars.RELEASE!==commit||config.main!=='./index.js') throw new Error('Artifact release/config mismatch');
     // Files that skip the Worker get their security headers only from site/_headers.
     if(kind==='website'&&config.assets.run_worker_first!==true) await fs.access(path.join(directory,'site/_headers')).catch(()=>{throw new Error('Artifact lets static files skip the Worker without site/_headers');});
   }
-  const release=await json(path.join(directory,'site/ui/release.json'));
+  const release=await json(path.join(directory,layout==='ui'?'site/ui/release.json':'site/release.json'));
   if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');
   return manifest;
 }
@@ -153,8 +155,8 @@ const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   return fetcher(url,{...options,signal:AbortSignal.any(signals)});
 };
 /** Sanitized fixed codes for one live read of the deployed site and API. */
-export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch}={}) {
-  let problems=await checkHealth(environment,{token,commit,fetcher}).then(result=>result.problems);
+export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch,layout='ui'}={}) {
+  let problems=await checkHealth(environment,{token,commit,fetcher,layout}).then(result=>result.problems);
   // checkHealth reports a missing token and an admin endpoint that did not answer
   // usefully under one code. A token was supplied here, and the public endpoints
   // are unreachable too, so that is one outage rather than a second, permanent
@@ -173,7 +175,7 @@ export async function liveProblems(environment,commit,{token=process.env.HEALTH_
   // or `release-mismatch`, which is both why success is impossible here and why
   // the run retries, so an unready read can never be mistaken for a clean one.
   if(problems.includes('http-health')||problems.includes('release-mismatch')) return [...new Set(problems)].sort();
-  const target=environmentConfig(environment);
+  const target=environmentConfig(environment,layout);
   for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
     let response;
     try {response=await fetcher(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
@@ -231,9 +233,10 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
     else if(command==='live') {
       const expected=process.env.EXPECTED_ANALYTICS_ENABLED;
       if(expected!==undefined&&!['true','false'].includes(expected)) throw new Error('Invalid expected analytics setting');
-      await checkLiveRelease(environment,commit,{expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
+      const layout=directory?artifactLayout((await json(path.join(path.resolve(directory),'manifest.json'))).files):'ui';
+      await checkLiveRelease(environment,commit,{layout,expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
       console.log('Live release checks passed');
     }
-    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
+    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA [ARTIFACT_DIRECTORY]');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }

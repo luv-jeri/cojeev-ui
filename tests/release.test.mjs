@@ -13,7 +13,7 @@ test('unknown and opposite environment settings fail closed',()=>{
   assert.throws(()=>environmentConfig('preview'),/environment/i);
   assert.equal(environmentConfig('beta').databaseId,'e2adf4c4-5ab0-434d-b90f-96ea451e3be7');
   assert.equal(buildEnvironment('production','a'.repeat(40),{}).COJEEV_BASE_PATH,'/ui');
-  assert.throws(()=>buildEnvironment('beta','a'.repeat(40),{NEXT_PUBLIC_SITE_URL:'https://www.cojeev.com/ui'}),/environment|URL/i);
+  assert.throws(()=>buildEnvironment('beta','a'.repeat(40),{NEXT_PUBLIC_SITE_URL:'https://cojeev.com/ui'}),/environment|URL/i);
 });
 test('manifest verification detects edits, extra private files, missing files, and wrong identity',async()=>{
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-test-'));
@@ -48,7 +48,7 @@ test('the site cannot ship files under the paths the hosting Worker reserves, si
 test('artifact URL validation distinguishes documentation examples from deployable references',()=>{
   assert.doesNotThrow(()=>release.validateContent('site/docs/index.html','<code>http://localhost:3000</code>','beta'));
   assert.throws(()=>release.validateContent('site/ui/index.html','<script src="http://localhost:3000/app.js"></script>','beta'),/URL|environment/);
-  assert.throws(()=>release.validateContent('site/r/button.json',JSON.stringify({registryDependencies:['https://www.cojeev.com/ui/r/cojeev.json']}),'beta'),/URL|environment/);
+  assert.throws(()=>release.validateContent('site/r/button.json',JSON.stringify({registryDependencies:['https://cojeev.com/ui/r/cojeev.json']}),'beta'),/URL|environment/);
   assert.throws(()=>release.validateContent('site/_next/static/chunks/app.js','fetch("https://feedback.cojeev.com/v1/reports")','beta'),/URL|environment/);
   assert.throws(()=>release.validateContent('site/config.json','{"api":"http://localhost:3000"}','beta'),/URL|environment/);
   assert.throws(()=>release.validateContent('site/ui/index.html','<script>fetch("http://localhost:3000/data")</script>','beta'),/URL|environment/);
@@ -67,7 +67,7 @@ test('registry component source is scanned: opposite origins throw, inert localh
   assert.throws(()=>release.validateContent('site/registry.json',JSON.stringify({homepage:'https://…/'}),'beta'),{message:/Malformed URL dependency/});
 });
 test('public sitemap XML and RSC text payloads reject the other environment but keep inert localhost documentation',()=>{
-  assert.throws(()=>release.validateContent('site/sitemap.xml','<urlset><url><loc>https://www.cojeev.com/ui/</loc></url></urlset>','beta'),/Cross-environment/);
+  assert.throws(()=>release.validateContent('site/sitemap.xml','<urlset><url><loc>https://cojeev.com/ui/</loc></url></urlset>','beta'),/Cross-environment/);
   assert.throws(()=>release.validateContent('site/index.txt','2:{"api":"https:\\/\\/feedback.cojeev.com\\/v1\\/reports"}','beta'),/Cross-environment/);
   assert.throws(()=>release.validateContent('site/docs/index.txt','mirrored at https://beta.000h.cojeev.com/ui/r/button.json','production'),/Cross-environment/);
   assert.throws(()=>release.validateContent('site/index.txt','the old home was https://luv-jeri.github.io/cojeev-ui','beta'),/Cross-environment/);
@@ -186,4 +186,14 @@ test('old production host cannot survive in public dependencies or metadata',()=
     assert.throws(()=>release.validateContent('site/ui/r/button.json',JSON.stringify({registryDependencies:['https://000h.cojeev.com/r/cojeev.json']}),environment),/Cross-environment/);
     assert.throws(()=>release.validateContent('site/ui/sitemap.xml','<loc>https://000h.cojeev.com/</loc>',environment),/Cross-environment/);
   }
+});
+
+test('artifact layout requires exactly one homepage and keeps legacy URL checks environment-specific',()=>{
+  assert.equal(release.artifactLayout({'site/index.html':'hash'}),'root');
+  assert.equal(release.artifactLayout({'site/ui/index.html':'hash'}),'ui');
+  assert.throws(()=>release.artifactLayout({}),/Missing/);
+  assert.throws(()=>release.artifactLayout({'site/index.html':'hash','site/ui/index.html':'hash'}),/Ambiguous/);
+  assert.doesNotThrow(()=>release.validateContent('site/r/button.json',JSON.stringify({registryDependencies:['https://000h.cojeev.com/r/cojeev.json']}),'production','root'));
+  assert.throws(()=>release.validateContent('site/r/button.json',JSON.stringify({registryDependencies:['https://beta.000h.cojeev.com/r/cojeev.json']}),'production','root'),/Cross-environment/);
+  assert.throws(()=>release.validateContent('site/ui/r/button.json',JSON.stringify({registryDependencies:['https://www.cojeev.com/ui/r/cojeev.json']}),'production'),/Cross-environment/);
 });

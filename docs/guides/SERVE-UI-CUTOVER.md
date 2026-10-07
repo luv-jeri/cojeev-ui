@@ -1,61 +1,56 @@
 # Serve 000h under /ui
 
-Production is `https://www.cojeev.com/ui`; beta is `https://beta.000h.cojeev.com/ui`. The release target in `scripts/release-config.mjs` owns the deployed canonical origin and path. Builds, registry URLs, the legacy redirect, health probes and packaged reporting SITE_URL derive from it. Changing production to the apex later requires changing that target's `site` value and rebuilding. Both production zone routes already exist in the configuration. README examples, workflow environment display links and source Wrangler defaults mirror the current URL; keep those informational copies current when switching again.
+Production is `https://cojeev.com/ui` (apex); beta is `https://beta.000h.cojeev.com/ui`. The owner chose apex on 2026-10-08 to require zero dashboard work. The existing `www.cojeev.com/*` → `cojeev.com/*` redirect stays untouched, so `www.cojeev.com/ui` ends at the canonical apex address. Keep both website zone routes (`cojeev.com/ui*` and `www.cojeev.com/ui*`) and both reporting CORS origins.
 
-`buildRelease` nests Next's exported files under `site/ui/`, writes identity to `site/ui/release.json`, and leaves `_headers` and a copy of `404.html` at the asset root. Its manifest covers the new layout and still verifies every byte and the release identity. Framework chunks and RSC text at `/ui/_next/*` and `/ui/*.txt` continue to bypass Worker invocation. Reserved files under `/ui/media`, `/ui/backups`, `/ui/private` and `/ui/v1` are rejected by artifact validation, including files that would otherwise bypass the Worker.
+`scripts/release-config.mjs` owns the deployed canonical address. Build metadata, registry/install URLs, the legacy Worker redirect, reporting `SITE_URL`, and the direct production health probe (`https://cojeev.com/ui/health`) derive from it. README/install examples, CI environment links and source Wrangler defaults mirror it. Health and release probes use `redirect: 'error'` and therefore require a direct response.
 
-## Owner cutover steps
+`prepareStaticOutput` nests Next's export under `site/ui/`, writes `site/ui/release.json`, and leaves `_headers` and a fallback `404.html` at the asset root. CI structured-data validation reads `artifacts/release/production/site/ui`. Framework chunks and RSC text at `/ui/_next/*` and `/ui/*.txt` bypass Worker invocation. Artifact validation rejects reserved public paths under `/ui/media`, `/ui/backups`, `/ui/private` and `/ui/v1`.
 
-This branch changes no live infrastructure. After approval, publish through the existing protected beta/production release workflow. The production website configuration registers custom domain `000h.cojeev.com` plus zone routes `www.cojeev.com/ui*` and `cojeev.com/ui*` on zone `cojeev.com`. Beta retains its custom domain. The broad coming-soon route stays in place; the more specific UI route wins ([Cloudflare route matching](https://developers.cloudflare.com/workers/configuration/routing/routes/)).
+Reporting verifies published component pages through the `WEBSITE` service binding to `cojeev-ui-registry` (beta: `cojeev-ui-registry-beta`), avoiding same-zone public fetch routing. Packaging derives and validates the binding for each environment. Offline local mode retains its existing bypass; tests can supply a fetcher. Production without the binding fails verification instead of falling back to a public fetch.
 
-1. In Cloudflare → cojeev.com → DNS, confirm both apex and `www` have proxied (orange-cloud) DNS records. Existing working proxied records need no change. If `www` has no record, add proxied CNAME `www` → `cojeev.com`; if it is DNS-only, enable proxying. Do not replace the existing apex or legacy custom-domain records. Routes require proxied DNS ([Cloudflare route setup](https://developers.cloudflare.com/workers/configuration/routing/routes/)).
-2. In Cloudflare → Turnstile → the production widget → Settings → Hostname management, ensure `www.cojeev.com` and `cojeev.com` are allowed if the widget has a restricted hostname list. Adding `cojeev.com` also authorizes its subdomains; if it is already listed, no addition is needed ([Turnstile hostname management](https://developers.cloudflare.com/turnstile/additional-configuration/hostname-management/)). Retain existing legacy/beta hosts. Reporting CORS already allows both page origins and the legacy transition origin; its SITE_URL points to `/ui`.
-3. In Cloudflare → cojeev.com → Rules → Redirect Rules, edit the existing `www` → apex redirect so it excludes the UI subtree. Its match should be:
+## Owner dashboard steps: none required
 
-   ```text
-   (http.host eq "www.cojeev.com" and not (http.request.uri.path eq "/ui" or starts_with(http.request.uri.path, "/ui/")))
-   ```
+DNS is already proxied. Do not change DNS or the existing www-to-apex rule. The production release registers the legacy custom domain and both UI zone routes; beta retains its custom domain. The existing broad coming-soon route remains; the more specific UI route serves the application.
 
-   Retain the root site's existing redirect destination/status/query behavior. Disable any other redirect rule that would move `www` UI requests to apex. Do not flip all apex traffic to `www`: the root site is a separate Worker. The UI route on apex serves the same export with the `www` canonical metadata.
-4. Add a Single Redirect rule for the legacy host, excluding its root health endpoint:
+Only if the Turnstile widget restricts hostnames, verify its list: open Cloudflare → Turnstile → the production widget → Settings → Hostname management. If hostname restrictions are disabled, no action is needed. If a list is configured, confirm `cojeev.com` is present; that entry also covers subdomains. Retain existing legacy/beta entries. Add apex only if the restricted list does not already permit it. This is a conditional verification, not a required dashboard migration.
 
-   ```text
-   (http.host eq "000h.cojeev.com" and http.request.uri.path ne "/health")
-   ```
+Publishing still requires owner authorization through the existing protected release workflow. This fix batch performs no publication or live infrastructure changes.
 
-   Dynamic destination: `concat("https://www.cojeev.com/ui", http.request.uri.path)`; status **301**; **Preserve query string** enabled. `/` becomes `/ui/`. This rule is required to cover legacy requests that match the static-asset bypass, such as `/ui/_next/*` and `/ui/*.txt`. The Worker implements the redirect for requests that reach it. Cloudflare's `run_worker_first` exclusions are path-only, and asset `_redirects` cannot match a hostname ([Worker routing](https://developers.cloudflare.com/workers/static-assets/routing/worker-script/), [redirect limitations](https://developers.cloudflare.com/workers/static-assets/redirects/)). Enable the rule when the new production release is serving; keep it during transition.
-5. After publication and the rule changes, verify `/ui/health` on production and beta, legacy `/health` (200, no redirect), legacy homepage/docs/registry redirects with queries, `/ui` → `/ui/`, a real component JSON install, a missing URL (404), and reporting from the new production origin. Verify the legacy redirect also applies to `/ui/_next/*` and `/ui/*.txt`. Beta pages, admin pages and their RSC text must remain noindex. No live acceptance is claimed by this local build.
+## Optional legacy-host redirect
 
-## Remaining old-host references
+The website Worker sends legacy `000h.cojeev.com` requests to `https://cojeev.com/ui<path>` with status 301, preserving the query string. It strips an existing leading `/ui` first: both `/r/button.json` and `/ui/r/button.json` become `/ui/r/button.json`. `/ui` becomes `/ui/`; `/health` remains a direct 200 for legacy monitoring.
 
-`git grep -n "000h.cojeev.com"` retains only these intentional groups:
+An optional Single Redirect can also cover legacy static-asset bypasses, including `000h.cojeev.com/ui/_next/*` and `/ui/*.txt`. It is not required for cutover. If desired after publication, use this match (bare `/ui` stays with the Worker):
 
-| Files | Reason |
-| --- | --- |
-| release-config, registry-host source/config | Legacy redirect source/custom domain; beta canonical `/ui` host; transition CORS origin. |
-| reporting Wrangler config | Legacy transition origin; beta SITE_URL and page origin. SITE_URL is regenerated from the release target when packaging. |
-| verify.yml, release-live and release tests | Beta URL remains on its existing host with `/ui`; beta cross-environment rejection fixtures. |
-| release-manifest and release tests | Explicitly forbid old production host in public dependencies, sitemap and RSC content. |
-| registry-host tests | Legacy redirect, old `/health`, beta health, slash redirect and registry metric coverage. |
-| reporting integration test | Reject the legacy component URL now that SITE_URL is canonical `/ui`. |
-| this guide | Cutover source host, health exception and beta destination instructions. |
+```text
+(http.host eq "000h.cojeev.com" and http.request.uri.path ne "/health" and http.request.uri.path ne "/ui")
+```
 
-## Local evidence (2026-10-08)
+Dynamic destination (remove an existing `/ui/` prefix before adding the canonical prefix):
 
-- `npm run typecheck`: pass after Next generated its image declarations; the first clean-worktree run failed before the build generated those declarations (15.76 s), and the final run passed (17.96 s).
-- `node --test tests/release.test.mjs tests/release-live.test.mjs tests/operations.test.mjs workers/registry-host/test/*.test.mjs`: 63/63 pass (0.56 s final run; earlier run before added cases 1.12 s).
-- `npm run reporting:test`: 93/93 pass (17.39 s); after making the triage prompt derive its URL from the release target, its affected `triage-e2e.test.mjs` passed again (1.09 s).
-- One production build using `buildEnvironment('production', SHA, {})` with Node 22.22.0, followed by `prepareStaticOutput`: pass, build 49.40 s. `out/ui` contains pages, chunks and registry JSON; the root contains only `ui`, `_headers`, and `404.html`. Zero old-host matches in `out/`; sitemap, robots, canonical and OG URLs inspected against the release target.
-- Packaged the same build locally and verified 3,338 files through `createManifest`, `readArtifact` and the bundled Worker CSP check. This is verification output, not a clean-source promotion artifact.
-- Local Miniflare/workerd asset runtime: `/ui/`, button docs, registry JSON, `/ui/index.txt` and `/ui/health` returned 200; a missing `/ui/` page returned 404; legacy `/health` stayed 200. Used the inline bundled Worker, as the temporary external script-path setup could not start.
-- One local Chrome journey: home → get started → button docs → request board → home. Navigation stayed under `/ui` and install commands used the new canonical URL. The board showed its connection error; loopback is not an allowed production page origin, and new-origin reporting requires the deployment check above. No report was submitted.
+```text
+concat("https://cojeev.com/ui", wildcard_replace(http.request.uri.path, "/ui/*", "/${1}"))
+```
 
-Check-running time was about 86 s for the final passing typecheck, focused tests, reporting tests and production build, plus the affected triage rerun. This excludes test writing, diagnosis, source review, packaging and the manual browser journey. No gate or browser suite was run.
+Use status **301** and enable **Preserve query string**. The wildcard replacement leaves unprefixed paths unchanged. The rule is optional because these old-host static URLs may continue serving assets during transition; the Worker handles requests that reach it. [Static asset routing](https://developers.cloudflare.com/workers/static-assets/routing/worker-script/) describes the Worker bypass.
 
-## Changed files
+## Rollback across the cutover
 
-- Release and operations: `scripts/release-config.mjs`, `scripts/release.mjs`, `scripts/release-manifest.mjs`, `scripts/release-install.mjs`, `scripts/operations.mjs`, `scripts/verify-install.mjs`.
-- Hosting: `workers/registry-host/wrangler.jsonc`, `workers/registry-host/src/index.mjs`, `workers/registry-host/src/headers.mjs`. Reporting: `workers/reporting/wrangler.jsonc`.
-- CI and triage: `.github/workflows/verify.yml`, `scripts/triage/judge.ts`, `apps/triage/fixtures.ts`.
-- Documentation: `README.md`, `docs/README.md`, `docs/guides/INSTALLATION.md`, this guide.
-- Tests: `tests/release.test.mjs`, `tests/release-live.test.mjs`, `tests/operations.test.mjs`, `tests/reporting-browser-fixture.test.mjs`, `tests/structured-data.test.ts`, all three `workers/registry-host/test/*.test.mjs` files, `workers/reporting/test/integration.test.mjs`.
+The rollback workflow downloads the retained release artifact and verifies its original manifest digest, commit, environment and every file before deployment. It selects the contract from the artifact's homepage: `site/index.html` means the legacy root layout; `site/ui/index.html` means the new layout. Missing or simultaneous homepages are refused. No artifact bytes or manifest are rewritten.
+
+A pre-cutover artifact restores its original root pages, root `release.json`, custom-domain-only website routes, root static bypasses, reporting `SITE_URL` and CORS list. Legacy production is `https://000h.cojeev.com`; legacy beta is `https://beta.000h.cojeev.com`. Older reporting code has no website service binding, so only root-layout validation permits its absence. New `/ui` artifacts must carry the matching binding and current routes/origins. Account, Worker names, D1/R2 targets, release identity and integrity checks remain enforced in both layouts.
+
+Rollback remains code-only: it requires the reviewed `0002_safe_delivery.sql` schema acknowledgment and neither applies migrations nor restores data. Its post-deploy live command receives the downloaded artifact directory and probes that artifact's address and layout, including root health/release/registry paths for pre-cutover releases. A root rollback restores the old host, not an apex `/ui` application; release routes return to those stored in the artifact.
+
+If the optional legacy-host dashboard redirect was enabled, disable it before a root-layout rollback, or it would redirect visitors and live probes away from the restored root site. No dashboard action is needed when the optional rule was never enabled. The www-to-apex rule remains untouched in either case.
+
+## Publication acceptance
+
+After an authorized publication, verify direct apex `/ui/health`, beta `/ui/health`, legacy `/health`, legacy homepage/docs/registry redirects with queries, `/ui` → `/ui/`, a real component JSON install, a missing URL (404), and reporting from apex through component resolution. Beta/admin pages and their RSC text must remain noindex. Verify optional static redirects only if that optional rule was enabled. Local checks do not establish live acceptance.
+
+## Local verification (2026-10-08 fix batch)
+
+- Typecheck: pass (4.25 s). Focused release/live/operations/registry tests: 68/68 pass (0.37 s); explicit redirect expectations then passed 7/7 (0.06 s).
+- Reporting tests: 95/95 pass (13.75 s), including service-binding success, missing binding, redirects, missing pages, wrong content type and unavailable service.
+- Production build with `buildEnvironment` and `prepareStaticOutput`: pass (20.79 s build). Layout is `out/ui` plus root `_headers` and `404.html`; canonical, sitemap, robots and registry URLs use apex `/ui`. Zero `www.cojeev.com`, `000h.cojeev.com` or `luv-jeri.github.io` matches in `out/`.
+- Passing check-running time: about 39 s, separate from test writing, debugging and diff review. Initial failing checks exposed a missing test import, an overly narrow beta fixture assertion and a service-binding type mismatch; all were corrected. No gate, browser suite, remote API call or deployment was run. Output is local validation evidence, not a clean-source promotion artifact.

@@ -12,7 +12,7 @@ const host = {
     const response = pathname === '/health' || health && !legacy
       ? Response.json({status:'ok',environment:env.ENVIRONMENT ?? 'unconfigured',release:env.RELEASE ?? 'unconfigured'})
       : legacy
-        ? Response.redirect(`${environmentConfig('production').site}${pathname}${url.search}`,301)
+        ? Response.redirect(`${environmentConfig('production').site}${localPath}${url.search}`,301)
       : pathname === '/ui' || pathname === '/' && env.ENVIRONMENT === 'beta'
         ? Response.redirect(`${url.origin}/ui/${url.search}`,301)
       : /^\/(?:media|backups|private|v1)(?:\/|$)/.test(localPath)

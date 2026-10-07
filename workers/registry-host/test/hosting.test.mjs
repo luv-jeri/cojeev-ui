@@ -27,10 +27,15 @@ test('health reveals only identity and private media never reaches website asset
 });
 
 test('legacy host redirects every application path and query to the release target, but root health stays available',async()=>{
-  for(const path of ['/','/docs/button/?from=old','/r/button.json?install=1','/ui/health','/ui/_next/static/app.js']) {
+  for(const [path,target] of [
+    ['/','/ui/'],['/docs/button/?from=old','/ui/docs/button/?from=old'],
+    ['/r/button.json?install=1','/ui/r/button.json?install=1'],['/ui/health','/ui/health'],
+    ['/ui/_next/static/app.js','/ui/_next/static/app.js'],['/ui/r/button.json?install=1','/ui/r/button.json?install=1'],
+    ['/ui/docs/button/','/ui/docs/button/'],['/ui?from=old','/ui/?from=old'],['/ui/','/ui/'],['/uiform','/ui/uiform'],
+  ]) {
     const response=await host.fetch(new Request(`https://000h.cojeev.com${path}`),env('production'));
     assert.equal(response.status,301,path);
-    assert.equal(response.headers.get('location'),`https://www.cojeev.com/ui${path}`,path);
+    assert.equal(response.headers.get('location'),`https://cojeev.com${target}`,path);
   }
   const response=await host.fetch(new Request('https://000h.cojeev.com/health'),env('production'));
   assert.equal(response.status,200);

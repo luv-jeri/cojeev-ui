@@ -405,7 +405,7 @@ jobs:
           node scripts/release-csp.mjs production artifacts/release/production
       - name: Validate rendered structured data
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_seo == 'true'
-        run: node scripts/check-structured-data.mjs --dir artifacts/release/production/site
+        run: node scripts/check-structured-data.mjs --dir artifacts/release/production/site/ui
       - name: Build manual Pages compatibility fixture for existing browser gates
         if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
         run: npm run build
@@ -652,7 +652,7 @@ jobs:
     timeout-minutes: 20
     environment:
       name: production
-      url: https://www.cojeev.com/ui
+      url: https://cojeev.com/ui
     concurrency:
       group: deploy-production
       cancel-in-progress: false

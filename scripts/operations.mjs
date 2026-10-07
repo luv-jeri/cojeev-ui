@@ -5,7 +5,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
-import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig,reportingOrigins,websiteRoutes} from './release-config.mjs';
+import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig,reportingOrigins,websiteRoutes,reportingServices} from './release-config.mjs';
 import {deploymentDiagnostic,recordDeploymentEvent} from './deployment-diagnostics.mjs';
 
 const maxBytes=25*1024*1024;
@@ -79,9 +79,9 @@ export async function cloudflare(endpoint) {
   if(!data.success) throw new Error('Cloudflare preflight refused');
   return data.result;
 }
-export function validateDeploymentConfig(environment,config,kind) {
-  const target=environmentConfig(environment),api=kind==='api';
-  const allowed=api?reportingOrigins(environment):[];
+export function validateDeploymentConfig(environment,config,kind,layout='ui') {
+  const target=environmentConfig(environment,layout),api=kind==='api';
+  const allowed=api?reportingOrigins(environment,layout):[];
   // This guardrail exists to catch an environment mixup minutes before a deploy,
   // so it names the field that failed instead of one undifferentiated refusal.
   const checks=[
@@ -91,19 +91,20 @@ export function validateDeploymentConfig(environment,config,kind) {
     ['vars.ENVIRONMENT',config.vars?.ENVIRONMENT===environment],
     ['workers_dev',config.workers_dev===false],
     ['preview_urls',config.preview_urls===false],
-    ['routes',api?config.routes?.length===1&&config.routes[0].pattern===new URL(target.api).hostname&&config.routes[0].custom_domain===true:JSON.stringify(config.routes)===JSON.stringify(websiteRoutes(environment))],
+    ['routes',api?config.routes?.length===1&&config.routes[0].pattern===new URL(target.api).hostname&&config.routes[0].custom_domain===true:JSON.stringify(config.routes)===JSON.stringify(websiteRoutes(environment,layout))],
     ...(api?[
       ['d1_databases',config.d1_databases?.length===1&&config.d1_databases[0].database_id===target.databaseId],
       ['r2_buckets',config.r2_buckets?.length===1&&config.r2_buckets[0].bucket_name===target.media],
       ['vars.LOCAL_MODE',config.vars?.LOCAL_MODE==='false'],
       ['vars.SITE_URL',config.vars?.SITE_URL===target.site],
+      ['services',layout==='root'?!config.services?.length:JSON.stringify(config.services)===JSON.stringify(reportingServices(environment))],
       ['vars.ALLOWED_ORIGINS',JSON.stringify(config.vars?.ALLOWED_ORIGINS?.split(',').sort())===JSON.stringify(allowed.sort())],
     ]:[
       ['website d1_databases',!config.d1_databases?.length],
       ['website r2_buckets',!config.r2_buckets?.length],
       ['assets.directory',config.assets?.directory==='../site'],
       // Static files skip the Worker so they stay free; `true` is what releases before that change carry.
-      ['assets.run_worker_first',config.assets?.run_worker_first===true||JSON.stringify(config.assets?.run_worker_first)===JSON.stringify(STATIC_FILES_SKIP_WORKER)],
+      ['assets.run_worker_first',config.assets?.run_worker_first===true||JSON.stringify(config.assets?.run_worker_first)===JSON.stringify(layout==='root'?['/*','!/_next/*','!/*.txt']:STATIC_FILES_SKIP_WORKER)],
       ['assets.not_found_handling',config.assets?.not_found_handling==='404-page'],
     ]),
   ];
