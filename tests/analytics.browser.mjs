@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { chromium } from "playwright";
 import { preview as previewServer } from "vite";
@@ -182,6 +183,25 @@ if (expectSilent) {
 
 const browser = await chromium.launch();
 try {
+  await test("optional_capture_requires_new_origin_consent", async () => {
+    for (const homepageTheme of [null, "dark"]) {
+      const { context, attempts } = await analyticsContext(browser, undefined, null);
+      if (homepageTheme) await context.addInitScript(value => {
+        localStorage.setItem("cojeev-coming-soon-theme", value);
+      }, homepageTheme);
+      const page = await context.newPage();
+      await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+      await page.getByRole("button", { name: "Analytics choices", exact: true }).click();
+      await page.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
+      await copyInstallCommand(page);
+      await delay(1_200);
+      assert.equal(attempts.length, 0, "empty storage and homepage theme each require UI consent");
+      assert.equal(await page.evaluate(key => localStorage.getItem(key), consentKey), null);
+      if (homepageTheme) assert.equal(await page.evaluate(() => localStorage.getItem("cojeev-coming-soon-theme")), homepageTheme);
+      await context.close();
+    }
+  });
+
   // The actual exported application's visitor choice, not a test-only client.
   {
     const { context, captures, attempts } = await analyticsContext(browser, undefined, null);
@@ -469,43 +489,53 @@ try {
     await context.close();
   }
 
-  for (const [name, init] of [
-    ["Do Not Track", () => Object.defineProperty(Navigator.prototype, "doNotTrack", { configurable: true, get: () => "1" })],
-    ["Global Privacy Control", () => Object.defineProperty(Navigator.prototype, "globalPrivacyControl", { configurable: true, get: () => true })],
-  ]) {
-    const { context, captures, attempts } = await analyticsContext(browser, init);
-    const page = await context.newPage();
-    await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
-    await page.getByText("Your browser privacy signal is preventing PostHog analytics.", { exact: false }).waitFor();
-    await delay(400);
-    assert.equal(captures.length, 0, `${name} suppresses every event`);
-    assert.equal(attempts.length, 0, `${name} overrides stored allowance without PostHog requests`);
-    await context.close();
-  }
+  await test("dnt_gpc_and_opt_out_remain_effective", async () => {
+    for (const [name, init] of [
+      ["Do Not Track", () => Object.defineProperty(Navigator.prototype, "doNotTrack", { configurable: true, get: () => "1" })],
+      ["Global Privacy Control", () => Object.defineProperty(Navigator.prototype, "globalPrivacyControl", { configurable: true, get: () => true })],
+    ]) {
+      const { context, captures, attempts } = await analyticsContext(browser, init);
+      const page = await context.newPage();
+      await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
+      await page.getByText("Your browser privacy signal is preventing PostHog analytics.", { exact: false }).waitFor();
+      await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+      await copyInstallCommand(page);
+      await delay(1_200);
+      assert.equal(captures.length, 0, `${name} suppresses every event`);
+      assert.equal(attempts.length, 0, `${name} overrides stored allowance without PostHog requests`);
+      await context.close();
+    }
 
-  {
-    const { context, captures } = await analyticsContext(browser, () => {
-      localStorage.setItem("000h.analytics-opt-out", "true");
-    }, null);
-    const page = await context.newPage();
-    await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
-    await page.getByText("Analytics is off in this browser.", { exact: false }).waitFor();
-    assert.equal(captures.length, 0);
-    await page.getByRole("button", { name: "Allow analytics", exact: true }).click();
-    await page.getByRole("button", { name: "Turn analytics off", exact: true }).waitFor();
-    await delay(300);
-    assert.equal(captures.length, 0, "opting in does not flush suppressed history");
-    await page.getByRole("link", { name: "Get started", exact: true }).first().click();
-    await page.waitForURL(/\/getting-started\/?$/);
-    await waitFor(
-      captures,
-      (payload) => payload.event === "page_viewed" && payload.properties.route === "/getting-started/",
-      "first event after opt-in",
-    );
-    assert.equal(events(captures, "page_viewed").length, 1);
-    assertSafeCaptures(captures);
-    await context.close();
-  }
+    {
+      const { context, captures, attempts } = await analyticsContext(browser, () => {
+        localStorage.setItem("000h.analytics-opt-out", "true");
+      }, null);
+      const page = await context.newPage();
+      await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
+      await page.getByText("Analytics is off in this browser.", { exact: false }).waitFor();
+      assert.equal(captures.length, 0);
+      await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+      await copyInstallCommand(page);
+      await delay(1_200);
+      assert.equal(attempts.length, 0, "legacy opt-out suppresses page, preview and copy on /ui");
+      await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
+      await page.getByRole("button", { name: "Allow analytics", exact: true }).click();
+      await page.getByRole("button", { name: "Turn analytics off", exact: true }).waitFor();
+      await delay(300);
+      assert.equal(captures.length, 0, "opting in does not flush suppressed history");
+      await page.getByRole("link", { name: "Get started", exact: true }).first().click();
+      await page.waitForURL(/\/getting-started\/?$/);
+      await waitFor(
+        captures,
+        (payload) => payload.event === "page_viewed" && payload.properties.route === "/getting-started/",
+        "first event after opt-in",
+      );
+      assert.equal(events(captures, "page_viewed").length, 1);
+      assertSafeCaptures(captures);
+      await context.close();
+    }
+
+  });
 
   for (const consent of [null, "allowed"]) {
     const { context, captures, attempts } = await analyticsContext(browser, undefined, consent);
