@@ -80,10 +80,13 @@ export async function promoteApi(directory, environment, commit, digest, expecte
     if (!/^0x[A-Za-z0-9_-]{20,}$/.test(secrets.TURNSTILE_SITE_KEY ?? artifact.config.vars.TURNSTILE_SITE_KEY ?? ''))
       throw new Error('Production Turnstile site key missing');
   }
-  if (rollback && (process.env.ROLLBACK_SCHEMA_ACK !== '0002_safe_delivery.sql' ||
-      !artifact.manifest.files['api/migrations/0002_safe_delivery.sql'] ||
-      Object.keys(artifact.manifest.files).some(file => file.startsWith('api/migrations/') && !/^api\/migrations\/000[12]_/.test(file))))
-    throw new Error('Code rollback requires reviewed compatible schema 0002');
+  const migrations = Object.keys(artifact.manifest.files)
+    .filter(file => /^api\/migrations\/[^/]+\.sql$/.test(file))
+    .map(file => path.basename(file)).sort();
+  if (rollback && (!migrations.includes('0002_safe_delivery.sql') ||
+      process.env.ROLLBACK_SCHEMA_ACK !== migrations.at(-1)))
+    throw new Error('Code rollback requires reviewed compatible schema' +
+      (migrations.length ? ' ' + migrations.at(-1) : ''));
   if (!rollback) {
     await backupDatabase(environment, config);
     await run(['d1', 'migrations', 'apply', target.database, '--remote', '--config', config]);

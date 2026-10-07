@@ -207,6 +207,33 @@ test('api_promotion_does_not_deploy_website', async t => {
   assert.deepEqual(h.order, ['deploy']);
 });
 
+// An acknowledgement of an older schema must never permit a code-only rollback.
+test('rollback_ack_must_name_newest_packaged_migration', async t => {
+  const h = await harness(t), artifact = await h.target('api', 'linked'), peer = await h.peer('website', 'mounted');
+  const repackage = async () => {
+    artifact.manifest = await createManifest(artifact.directory, 'beta', commit, artifact.manifest);
+    artifact.digest = manifestDigest(artifact.manifest);
+    await write(artifact.directory, 'manifest.json', JSON.stringify(artifact.manifest));
+  };
+  for (const name of ['0004_status_key.sql', '0001_reporting.sql', '0003_triage.sql'])
+    await write(artifact.directory, 'api/migrations/' + name, '-- additive fixture');
+  await repackage();
+  process.env.ROLLBACK_SCHEMA_ACK = '0004_status_key.sql';
+  await h.invoke(artifact, peer.manifest.deploymentId, {peer, rollback: true});
+  assert.deepEqual(h.order, ['deploy'], 'code rollback must not back up or migrate D1');
+  h.calls.length = 0; h.order.length = 0;
+  process.env.ROLLBACK_SCHEMA_ACK = '0002_safe_delivery.sql';
+  await h.stopped(() => h.invoke(artifact, peer.manifest.deploymentId, {peer, rollback: true}), /Code rollback requires reviewed compatible schema 0004_status_key\.sql/);
+  await write(artifact.directory, 'api/migrations/0005_x.sql', '-- additive fixture');
+  await repackage();
+  process.env.ROLLBACK_SCHEMA_ACK = '0004_status_key.sql';
+  await h.stopped(() => h.invoke(artifact, peer.manifest.deploymentId, {peer, rollback: true}), /Code rollback requires reviewed compatible schema 0005_x\.sql/);
+  process.env.ROLLBACK_SCHEMA_ACK = '0005_x.sql';
+  await fs.rm(path.join(artifact.directory, 'api/migrations/0002_safe_delivery.sql'));
+  await repackage();
+  await h.stopped(() => h.invoke(artifact, peer.manifest.deploymentId, {peer, rollback: true}), /Code rollback requires reviewed compatible schema 0005_x\.sql/);
+});
+
 test('website_promotion_cannot_revert_or_prematurely_switch_site_url', async t => {
   const h = await harness(t), artifact = await h.target('website', 'regenerated'), peer = await h.peer('api', 'linked');
   await write(artifact.directory, 'api/wrangler.jsonc', '{"vars":{"SITE_URL":"stale"}}');
