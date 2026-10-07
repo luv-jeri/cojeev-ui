@@ -7,5 +7,5 @@ export default [
   // This hook owns mutable DOM/SVG nodes and forwards React object refs.
   // Those mutations occur in ref callbacks and effects, never during render.
   { files: ["registry/cojeev/motion/use-morph.ts", "registry/cojeev/motion/flow-press.ts"], rules: { "react-hooks/immutability": "off" } },
-  { ignores: ["reference/**", "public/**", "out/**", "artifacts/**", "output/**", ".work/**", ".next/**", "next-env.d.ts"] },
+  { ignores: ["reference/**", "public/**", "out/**", "artifacts/**", "output/**", ".work/**", ".next/**", "tests/fixtures/release-baseline/**", "next-env.d.ts"] },
 ];

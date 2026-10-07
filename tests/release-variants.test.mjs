@@ -165,8 +165,8 @@ test('additive_artifact_preserves_pinned_same_environment_old_site',async()=>{
     const result=await releases.buildVariants(root,commit,path.join(temporary,'valid'),{});
     for(const env of environments) {
       const record=await json(path.join(fixtures,'release-baseline.json'));
-      const module=await import('../scripts/release-variants.mjs');
-      const old=await module.readBaseline(env,{record:path.join(root,'scripts/release-baseline.json'),directory:path.join(baseline,env)});
+      const mod=await import('../scripts/release-variants.mjs');
+      const old=await mod.readBaseline(env,{record:path.join(root,'scripts/release-baseline.json'),directory:path.join(baseline,env)});
       assert.equal(old.commit,record[env].commit); assert.equal(old.digest,record[env].digest);
       assert.equal(old.runId,record[env].runId); assert.equal(old.siteRoot,path.join(baseline,env,'site'));
       assert.equal(old.websiteVersionId,record[env].websiteVersionId); assert.equal(old.apiVersionId,record[env].apiVersionId);

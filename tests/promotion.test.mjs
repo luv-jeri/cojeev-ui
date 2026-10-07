@@ -19,11 +19,11 @@ const rows = {mounted: {migrationStage: 'additive', registryGraph: 'baseline'}, 
 const hosts = {beta: ['https://beta.000h.cojeev.com', 'https://beta.000h.cojeev.com/ui', 'https://feedback-beta.cojeev.com'], production: ['https://000h.cojeev.com', 'https://cojeev.com/ui', 'https://feedback.cojeev.com']};
 const id = (side, phase) => `${side}-${phase}-aaaaaaaaaaaa-12345678`;
 async function promotion(side) {
-  const module = await import('../scripts/release-promote.mjs').catch(error => {
+  const mod = await import('../scripts/release-promote.mjs').catch(error => {
     if (error.code !== 'ERR_MODULE_NOT_FOUND') throw error;
     return {};
   });
-  const fn = module[side === 'api' ? 'promoteApi' : 'promoteWebsite'];
+  const fn = mod[side === 'api' ? 'promoteApi' : 'promoteWebsite'];
   assert.equal(typeof fn, 'function', `targeted ${side} promotion must exist`);
   return fn;
 }

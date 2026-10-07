@@ -9,9 +9,9 @@ const link = '<a href="https://cojeev.com/" class="explore-cojeev">Explore Cojee
 const attribution = '<a href="https://cojeev.com/">by Cojeev</a>';
 
 test("every_exported_html_page_has_one_bottom_cojeev_link", async t => {
-  const module = new URL("../scripts/check-funnel-links.mjs", import.meta.url);
-  await assert.doesNotReject(readFile(module), "the funnel checker must exist");
-  const { funnelLinkProblems } = await import(module);
+  const mod = new URL("../scripts/check-funnel-links.mjs", import.meta.url);
+  await assert.doesNotReject(readFile(mod), "the funnel checker must exist");
+  const { funnelLinkProblems } = await import(mod);
   const fixtures = {
     "index.html": `<header><a href="/ui/">000h</a>${attribution}</header><main>Landing content</main><footer>${link}</footer>`,
     "docs/button/index.html": `<header><a href="/ui/docs/">000h</a>${attribution}</header><div id="docs-main"><article>Button</article>${link}</div>`,

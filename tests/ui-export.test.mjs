@@ -13,9 +13,9 @@ async function fixture(t) {
 }
 
 async function checker() {
-  const module = new URL("../scripts/check-ui-export.mjs", import.meta.url);
-  await assert.doesNotReject(readFile(module), "export checker must exist");
-  return (await import(module)).checkUiExport;
+  const mod = new URL("../scripts/check-ui-export.mjs", import.meta.url);
+  await assert.doesNotReject(readFile(mod), "export checker must exist");
+  return (await import(mod)).checkUiExport;
 }
 
 test("ui_font_preload_matches_css_resource", async t => {

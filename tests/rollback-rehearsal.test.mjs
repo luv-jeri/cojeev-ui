@@ -68,12 +68,12 @@ await fs.cp('exports/'+process.env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT,'out',{rec
   return root;
 }
 const moduleUnderTest = async () => {
-  const module = await import('../scripts/rollback-rehearsal.mjs').catch(error => {
+  const mod = await import('../scripts/rollback-rehearsal.mjs').catch(error => {
     if (error.code === 'ERR_MODULE_NOT_FOUND') return {};
     throw error;
   });
-  assert.equal(typeof module.rehearseRollback, 'function', 'rehearseRollback must implement the packaged local sequence');
-  return module;
+  assert.equal(typeof mod.rehearseRollback, 'function', 'rehearseRollback must implement the packaged local sequence');
+  return mod;
 };
 
 // Skipping post-deploy checks, running a refused deploy, or using live network
