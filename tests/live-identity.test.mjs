@@ -20,7 +20,7 @@ const rscHash=createHash('sha256').update('RSC').digest('hex');
 const files={'site/ui/docs/button/index.txt':{sha256:rscHash,origin:'build'},'site/docs/button/index.txt':{sha256:rscHash,origin:'baseline'},'site/_next/chunk.js':{sha256:createHash('sha256').update('chunk').digest('hex'),origin:'baseline'}};
 const expected={website:{kind:'variant',manifest:{...website,commit,side:'website',files}},api:{kind:'variant',manifest:{...apiIdentity,commit:apiCommit,side:'api'}}};
 const baseline={kind:'baseline',commit,versionId:'baseline-version'};
-function edge({health=website,uiHealth=health,uiRelease={...health,analyticsEnabled:false},apiHealth=apiIdentity,registry,legacyHealth}={}) {
+function edge({health=website,uiHealth=health,uiRelease={...health,analyticsEnabled:false},apiHealth={...apiIdentity,reportingBase:site+'/ui'},registry,legacyHealth}={}) {
   return async(url,options)=>{
     if(url===`${site}/health`) return legacyHealth?.()??Response.json({status:'ok',...health},{headers});
     if(url===`${site}/ui/health`) return Response.json({status:'ok',...uiHealth},{headers:{...headers,'cache-control':'no-store'}});
@@ -220,4 +220,29 @@ test('live_and_health_clis_resolve_baselines_and_print_only_fixed_results',async
   assert.throws(()=>run(releaseScript,['live','beta',commit]),error=>{
     assert.equal(error.status,1);assert.match(error.stderr,/--website=/);return true;
   });
+});
+
+// A manifest label is not the SITE_URL emitted by the actual Worker.
+test('api_identity_accepts_real_health_site_url_for_manifest_label',async()=>{
+  for(const environment of ['beta','production']) for(const label of ['canonical','legacy']) {
+    const origin=environment==='beta'?'https://beta.000h.cojeev.com':'https://cojeev.com';
+    const legacy=environment==='beta'?origin:'https://000h.cojeev.com';
+    const wanted={...expected,api:{kind:'variant',manifest:{...expected.api.manifest,reportingBase:label}}};
+    const observed=await release.readIdentities(environment,{fetcher:async url=>Response.json({
+      ...(url.includes('feedback')?{...apiIdentity,reportingBase:label==='canonical'?origin+'/ui':legacy}:website),
+      environment,analyticsEnabled:false,
+    })});
+    assert.deepEqual(release.identityProblems(environment,wanted,observed),[]);
+    wanted.api.manifest.reportingBase=label==='canonical'?'legacy':'canonical';
+    assert.deepEqual(release.identityProblems(environment,wanted,observed),['stale-identity']);
+  }
+});
+
+test('contract_budget_starts_after_identity_propagation',async()=>{
+  let now=0;
+  const fetcher=async(url,options)=>{
+    if(url===site+'/ui/') now+=1000;
+    return edge({apiHealth:{...apiIdentity,reportingBase:site+'/ui'}})(url,options);
+  };
+  assert.deepEqual(await release.checkLiveRelease('beta',expected,{token,fetcher,clock:()=>now,budgetMs:500,log:()=>{}}),[]);
 });

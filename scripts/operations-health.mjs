@@ -1,6 +1,6 @@
 import {pathToFileURL} from 'node:url';
 import {environmentConfig} from './release-config.mjs';
-import {readIdentities,expectedId} from './release.mjs';
+import {readIdentities,expectedId} from './release-identity.mjs';
 import {pairOf,readBaselineRecord} from './release-phases.mjs';
 
 const codes=new Set(['http-health','release-mismatch','identity-malformed','website-identity-split','unlisted-pair','expected-identity-mismatch','legacy-registry','legacy-health','invalid-delivery-health','delivery-stalled','delivery-review','email-quota','provider-unconfigured','deployment-failed','recovery-failed']);

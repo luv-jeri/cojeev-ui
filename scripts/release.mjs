@@ -9,13 +9,15 @@ import {buildEnvironment,environmentConfig} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,verifyManifest} from './release-manifest.mjs';
 import {composeSecretBundles,validateSecrets} from './operations.mjs';
 import {assessHealth} from './operations-health.mjs';
-import {readBaselineRecord,WEBSITE_PHASES,API_PHASES} from './release-phases.mjs';
+import {readBaselineRecord} from './release-phases.mjs';
 import {readBaseline,packageEnvironment,readVariant} from './release-variants.mjs';
 import {livePairCli} from './release-pair.mjs';
 import {contractProblems} from './live-contracts.mjs';
 import {promoteApi,promoteWebsite} from './release-promote.mjs';
 export {promoteApi,promoteWebsite};
 export {readVariant};
+import {readIdentities,identityProblems,expectedId} from './release-identity.mjs';
+export {readIdentities,identityProblems,expectedId};
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
 export function releaseMetadata(environment,commit,publicEnv) {
@@ -101,93 +103,13 @@ export async function expectedFrom(environment,side,argument) {
   if(manifest.side!==side) throw new Error('Expected artifact side mismatch');
   return {kind:'variant',manifest};
 }
-export function expectedId(expected) {
-  return expected.kind==='variant'?expected.manifest.deploymentId:`baseline:${expected.versionId}`;
-}
-
-// Keep each endpoint's identity separate: an agreeing peer must never repair a
-// malformed or stale response. Absent deployment metadata denotes a baseline.
-async function readIdentity(url,side,{fetcher,releaseFile=false,onDeploymentId}) {
-  let response;
-  try {response=await fetcher(url,{redirect:'manual',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
-  catch {return {ok:false,reason:'http-0'};}
-  if(!response.ok||response.headers.get('location')) return {ok:false,reason:`http-${response.status}`};
-  let value;
-  try {value=await response.json();} catch {return {ok:false,reason:'not-json'};}
-  const missing=field=>({ok:false,reason:`missing-${field}`});
-  if(!value||typeof value!=='object'||Array.isArray(value)) return missing('environment');
-  if(Object.hasOwn(value,'deploymentId')) onDeploymentId?.();
-  if(typeof value.environment!=='string'||!value.environment.trim()) return missing('environment');
-  if(typeof value.release!=='string'||!/^[a-f0-9]{40}$/.test(value.release)) return missing('release');
-  const observation={ok:true,environment:value.environment,release:value.release,deploymentId:null,phase:null};
-  const variant=Object.hasOwn(value,'deploymentId')||Object.hasOwn(value,'phase');
-  if(variant) {
-    const phases=side==='website'?WEBSITE_PHASES:API_PHASES;
-    if(typeof value.deploymentId!=='string'||!new RegExp(`^${side}-(?:${Object.keys(phases).join('|')})-[a-f0-9]{12}-[a-f0-9]{8}$`).test(value.deploymentId)) return missing('deploymentId');
-    if(typeof value.phase!=='string'||!Object.hasOwn(phases,value.phase)) return missing('phase');
-    observation.deploymentId=value.deploymentId;observation.phase=value.phase;
-    for(const [field,allowed] of side==='website'
-      ? [['migrationStage',['additive','redirect']],['registryGraph',['baseline','canonical']]]
-      : [['reportingBase',null]]) {
-      if(allowed?!allowed.includes(value[field]):typeof value[field]!=='string'||!value[field].trim()) return missing(field);
-      observation[field]=value[field];
-    }
-    if(releaseFile&&typeof value.analyticsEnabled!=='boolean') return missing('analyticsEnabled');
-  }
-  // Preserve only identity fields actually supplied by this endpoint.
-  for(const field of ['migrationStage','registryGraph','reportingBase','analyticsEnabled'])
-    if(Object.hasOwn(value,field)) observation[field]=value[field];
-  return observation;
-}
-export async function readIdentities(environment,{fetcher=fetch}={}) {
-  const target=environmentConfig(environment);
-  let hasDeploymentId=false;
-  const health=await readIdentity(`${target.legacySite}/health`,'website',{fetcher,onDeploymentId:()=>{hasDeploymentId=true;}});
-  let uiHealth=null,uiRelease=null;
-  if(hasDeploymentId) {
-    uiHealth=await readIdentity(`${target.canonicalSite}/health`,'website',{fetcher});
-    uiRelease=await readIdentity(`${target.canonicalSite}/release.json`,'website',{fetcher,releaseFile:true});
-  }
-  const apiHealth=await readIdentity(`${target.api}/health`,'api',{fetcher});
-  return {website:{health,uiHealth,uiRelease},api:{health:apiHealth}};
-}
-export function identityProblems(environment,{website,api},observed) {
-  const problems=[];
-  const compare=(expected,observation,side)=>{
-    if(!observation) {problems.push('identity-malformed');return;}
-    if(!observation.ok) {
-      problems.push(observation.reason.startsWith('http-')?'http-health':'identity-malformed');return;
-    }
-    if(observation.environment!==environment) {problems.push('identity-malformed');return;}
-    const commit=expected.kind==='variant'?expected.manifest.commit:expected.commit;
-    if(observation.release!==commit) problems.push('release-mismatch');
-    if(expected.kind==='baseline') {
-      if(observation.deploymentId!==null) problems.push('stale-identity');
-      return;
-    }
-    if(observation.deploymentId===null||observation.phase===null) {problems.push('identity-malformed');return;}
-    const fields=side==='website'?['deploymentId','phase','migrationStage','registryGraph']:['deploymentId','phase','reportingBase'];
-    if(fields.some(field=>observation[field]!==expected.manifest[field])) problems.push('stale-identity');
-  };
-  compare(website,observed.website.health,'website');
-  if(website.kind==='variant'&&observed.website.health.ok&&observed.website.health.deploymentId!==null) {
-    compare(website,observed.website.uiHealth,'website');compare(website,observed.website.uiRelease,'website');
-  }
-  compare(api,observed.api.health,'api');
-  const fields=['environment','release','deploymentId','phase','migrationStage','registryGraph'];
-  for(const value of [observed.website.uiHealth,observed.website.uiRelease]) {
-    if(!value) continue;
-    if(!value.ok) problems.push(value.reason.startsWith('http-')?'http-health':'identity-malformed');
-    else if(value.environment!==environment) problems.push('identity-malformed');
-    else if(observed.website.health.ok&&observed.website.health.environment===environment&&fields.some(field=>value[field]!==observed.website.health[field])) problems.push('stale-identity');
-  }
-  return [...new Set(problems)].sort();
-}
 // Retry propagation and HTTP outages only. A malformed identity, missing token,
 // failed delivery queue or contract defect cannot be repaired by waiting.
 export const TRANSIENT_LIVE_PROBLEMS=new Set(['analytics-config-mismatch','http-health','release-mismatch','stale-identity','site-unreachable','site-release-mismatch']);
 export const LIVE_RETRY_WAITS=[4000,8000,12000,16000];
 export const LIVE_BUDGET_MS=60000;
+// Full catalogues and page contracts get their own five-minute budget after propagation.
+export const CONTRACT_BUDGET_MS=300000;
 const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   const remaining=deadline-clock();
   if(remaining<=0) throw new Error('Live check budget exhausted');
@@ -195,7 +117,7 @@ const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   return fetcher(url,{...options,signal:AbortSignal.any(signals)});
 };
 /** Sanitized fixed codes and independent observations for one live read. */
-export async function liveProblems(environment,{website,api,token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch,baseline,robotsBefore}) {
+export async function liveProblems(environment,{website,api,token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch,contractFetcher=()=>fetcher,baseline,robotsBefore}) {
   const observed=await readIdentities(environment,{fetcher});
   const identities=identityProblems(environment,{website,api},observed);
   let problems=[...identities];
@@ -214,18 +136,19 @@ export async function liveProblems(environment,{website,api,token=process.env.HE
   const result=()=>({problems:[...new Set(problems)].sort(),observed});
   if(identities.length) return result();
   if(website.kind==='variant'&&expectedAnalyticsEnabled!==undefined&&observed.website.uiRelease.analyticsEnabled!==expectedAnalyticsEnabled) problems.push('analytics-config-mismatch');
-  problems.push(...await contractProblems(environment,{website,api},{fetcher,baseline,robotsBefore}));
+  problems.push(...await contractProblems(environment,{website,api},{fetcher:contractFetcher(),baseline,robotsBefore}));
   return result();
 }
-/** Bounded propagation retries: at most five reads inside one wall-clock budget. */
+/** Identity propagation retries are bounded separately from successful-identity contracts. */
 export async function checkLiveRelease(environment,expected,{
-  waits=LIVE_RETRY_WAITS,budgetMs=LIVE_BUDGET_MS,clock=Date.now,
+  waits=LIVE_RETRY_WAITS,budgetMs=LIVE_BUDGET_MS,contractBudgetMs=CONTRACT_BUDGET_MS,clock=Date.now,
   sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),log=console.log,fetcher=fetch,...options
 }={}) {
   const deadline=clock()+budgetMs;
   const bounded=boundedFetcher(fetcher,deadline,clock);
   for(let attempt=0;;attempt++) {
-    const {problems}=await liveProblems(environment,{...expected,...options,fetcher:bounded});
+    const {problems}=await liveProblems(environment,{...expected,...options,fetcher:bounded,
+      contractFetcher:()=>boundedFetcher(fetcher,clock()+contractBudgetMs,clock)});
     if(!problems.length) return problems;
     const transient=problems.every(code=>TRANSIENT_LIVE_PROBLEMS.has(code));
     // Another attempt must be permitted, and must still fit in the budget.

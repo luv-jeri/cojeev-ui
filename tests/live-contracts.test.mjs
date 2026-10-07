@@ -62,7 +62,7 @@ function fixture(environment='production',stage='additive') {
   }
   for(const url of [legacy+'/health',canonical+'/health']) put(url,JSON.stringify({status:'ok',...website}),200,{'content-type':'application/json','cache-control':'no-store'});
   put(canonical+'/release.json',JSON.stringify({...website,analyticsEnabled:false}),200,{'content-type':'application/json','cache-control':'no-store'});
-  put(api+'/health',JSON.stringify({status:'ok',...apiIdentity}),200,{'content-type':'application/json'});
+  put(api+'/health',JSON.stringify({status:'ok',...apiIdentity,reportingBase:canonical}),200,{'content-type':'application/json'});
   put(api+'/v1/admin/health',JSON.stringify(delivery),200,{'content-type':'application/json'});
   const fetcher=async(input,options={})=>{
     const url=typeof input==='string'?input:input.url,method=options.method??'GET';requests.push({url,method});
@@ -235,6 +235,28 @@ test('live_rsc_chains_stay_under_their_own_prefix',async()=>{
   const g=fixture();g.put(g.legacy+'/docs/button/__next.tree.txt','',301,{location:'/docs/button/__next.final.txt'});g.put(g.legacy+'/docs/button/__next.final.txt','legacy RSC',200,{'content-type':'text/x-component'});assert.deepEqual(await problems(g),[]);
 });
 
+// Absent headers and charset parameters must preserve the recorded media type.
+test('apex_probe_compares_media_type_and_absent_header',async t=>{
+  for(const pathname of ['/robots.txt','/uikit?x=1']) {
+    for(const [name,status,recorded,header,passes] of [
+      ['absent header',404,'',null,true],
+      ['parameterized media type',200,'text/html','text/html; charset=utf-8',true],
+      ['wrong media type',200,'text/html','text/plain',false],
+    ]) await t.test(pathname+' '+name,async()=>{
+      const f=fixture(),response=f.responses.get('GET '+f.origin+pathname);
+      const body='apex page';
+      f.baseline.apexProbes[pathname]={status,contentType:recorded,
+        ...(pathname==='/robots.txt'?{robots:'absent'}:{sha256:hash(body)})};
+      // A string Response body adds text/plain automatically; bytes preserve no header.
+      response.status=status;response.body=Buffer.from(body);
+      if(header===null) delete response.headers['content-type'];
+      else response.headers['content-type']=header;
+      const code=pathname==='/robots.txt'?'apex-robots':'apex-probe:'+pathname;
+      assert.deepEqual(await problems(f),passes?[]:[code]);
+    });
+  }
+});
+
 // Admitting arbitrary robots edits or leaking UI security headers onto siblings breaks these checks.
 test('apex_robots_transition_is_accepted_only_as_reviewed',async()=>{
   const f=fixture();assert.deepEqual(await problems(f),[]);
@@ -249,4 +271,28 @@ test('apex_robots_transition_is_accepted_only_as_reviewed',async()=>{
   delete g.responses.get('GET '+g.origin+'/uikit?x=1').headers['x-robots-tag'];
   g.responses.get('GET '+g.origin+'/ui-other.txt').headers['content-security-policy']=securityHeaders('production')['content-security-policy'];
   assert.deepEqual(await problems(g),['apex-probe:/ui-other.txt']);
+});
+
+// Real catalogue size and real 20ms timers reproduce the sequential bottleneck.
+test('catalogue_contract_check_fits_budget_at_20ms_per_request',async()=>{
+  const f=fixture('beta'),names=(await fs.readdir(new URL('../public/r/',import.meta.url))).filter(name=>name.endsWith('.json'));
+  assert.ok(names.length>=1877,'use the complete real catalogue');
+  const bytes='{"catalogue":"valid"}';
+  for(const name of names) for(const mount of ['r/','ui/r/']) {
+    f.expected.website.manifest.files['site/'+mount+name]={sha256:hash(bytes),origin:'build'};
+    f.put((mount.startsWith('ui/')?f.origin:f.legacy)+'/'+mount+name,bytes,200,{'content-type':'application/json'});
+  }
+  let active=0,peak=0,calls=0;
+  const start=Date.now(),deadline=start+10000;
+  const fetcher=async(url,options)=>{
+    if(Date.now()>=deadline) throw new Error('Catalogue budget exhausted');
+    active++;peak=Math.max(peak,active);calls++;
+    try {await new Promise(resolve=>setTimeout(resolve,20));return await f.fetcher(url,options);}
+    finally {active--;}
+  };
+  const {contractProblems}=await import('../scripts/live-contracts.mjs');
+  assert.deepEqual(await contractProblems('beta',f.expected,{fetcher,baseline:f.baseline}),[]);
+  assert.ok(Date.now()-start<10000);
+  assert.ok(peak>1&&peak<=16,`bounded concurrency: ${peak}`);
+  assert.ok(calls>=names.length*2);
 });

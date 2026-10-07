@@ -104,7 +104,7 @@ test("beta_queued_admin_query_and_component_links_survive_cutover", async t => {
 test("ui_live_search_reload_and_console_are_clean", async t => {
   // Exercise the browser gate as a subprocess, including its exit status and
   // diagnostics, against an HTTP boundary that can introduce known faults.
-  for (const fault of ["clean", "ranked", "missing-button", "cancelled", "cancelled-outside-ui", "console", "404", "500", "network"]) {
+  for (const fault of ["clean", "ranked", "missing-button", "cancelled", "cancelled-unmarked", "cancelled-outside-ui", "console", "404", "500", "network"]) {
     await t.test(fault, async t => {
       const server = createServer((request, response) => {
         const path = new URL(request.url, "http://fixture.invalid").pathname;
@@ -124,7 +124,7 @@ test("ui_live_search_reload_and_console_are_clean", async t => {
 <a hidden role="option" href="/ui/docs/button/"><span class="docs-search-result"><strong>${fault === "missing-button" ? "Button Group" : "Button"}</strong><small>Actions</small></span></a>`;
         const script = fault.startsWith("cancelled") ? `
 const controller = new AbortController();
-fetch('${fault === "cancelled" ? "/ui" : ""}/__gate_cancelled__?gate=gate-0000#gate-0000', {signal: controller.signal})
+fetch('${fault === "cancelled-outside-ui" ? "" : "/ui"}/__gate_cancelled__?gate=gate-0000#gate-0000', {signal: controller.signal${fault === "cancelled" ? ', headers: {rsc: "1", "next-router-prefetch": "1"}' : ''}})
   .then(response => { const body = response.text(); controller.abort(); return body; }).catch(() => {});`
           : fault === "console" ? "console.error('fictional gate failure');"
           : ["404", "500", "network"].includes(fault) ? "fetch('/ui/__gate_failure__').catch(() => {});" : "";

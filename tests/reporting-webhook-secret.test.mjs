@@ -48,6 +48,6 @@ test('rollback_workflow_passes_admin_token_override',()=>{
   const read=file=>readFileSync(new URL(`../.github/workflows/${file}`,import.meta.url),'utf8');
   const steps=read('promote.yml').split(/^ {6}- /m).filter(step=>/^ +REPORTING_SECRETS_JSON:/m.test(step));
   assert.ok(steps.length>0,'promote.yml has no deploy step');
-  for(const step of steps) assert.match(step,/^ +REPORTING_ADMIN_TOKEN: \$\{\{ secrets\.REPORTING_ADMIN_TOKEN \}\}$/m,'promote.yml step lacks REPORTING_ADMIN_TOKEN');
+  for(const step of steps) assert.match(step,/^ +REPORTING_ADMIN_TOKEN: \$\{\{ inputs\.side == 'api' && secrets\.REPORTING_ADMIN_TOKEN \|\| '' \}\}$/m,'promote.yml step lacks REPORTING_ADMIN_TOKEN');
   assert.match(read('rollback.yml'),/^ {4}uses: \.\/\.github\/workflows\/promote\.yml\n(?: {6}.*\n| {4}with:\n)*? {4}secrets: inherit$/m,'rollback.yml must reuse promote.yml with secrets: inherit');
 });

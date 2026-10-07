@@ -38,6 +38,7 @@ export function decide(url, method, env) {
   const canonical = canonicalHost(environment);
   const path = url.pathname;
 
+  if (url.port) return {kind: 'not-found'};
   if (url.hostname !== legacyHost && url.hostname !== canonical) return {kind: 'not-found'};
   if (environment === 'production' && url.hostname === canonical && path !== '/ui' && !path.startsWith('/ui/')) return {kind: 'delegate'};
   if (method !== 'GET' && method !== 'HEAD') return {kind: 'method-not-allowed'};

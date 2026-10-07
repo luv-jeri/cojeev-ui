@@ -117,14 +117,20 @@ export async function contractProblems(environment,{website},{fetcher=fetch,base
     }
   }
 
-  for(const [file,digest] of entries.filter(([file])=>/^site\/(?:ui\/)?r\//.test(file))) {
-    const pathname='/'+file.slice(5),url=(file.startsWith('site/ui/')?origin:legacySite)+pathname;
-    await check(url,'registry-response:'+pathname,async response=>{
-      if(!direct(response)||response.status!==200||!jsonType(response)) return false;
-      try {if(hash(Buffer.from(await response.arrayBuffer()))!==digest) add('registry-hash-mismatch:'+pathname);} catch {return false;}
-      return true;
-    });
-  }
+  const catalogue=entries.filter(([file])=>/^site\/(?:ui\/)?r\//.test(file));
+  let next=0;
+  // Ponytail: 16 catalogue readers bound origin load while both full mounts fit the contract budget.
+  await Promise.all(Array.from({length:Math.min(16,catalogue.length)},async()=>{
+    while(next<catalogue.length) {
+      const [file,digest]=catalogue[next++];
+      const pathname='/'+file.slice(5),url=(file.startsWith('site/ui/')?origin:legacySite)+pathname;
+      await check(url,'registry-response:'+pathname,async response=>{
+        if(!direct(response)||response.status!==200||!jsonType(response)) return false;
+        try {if(hash(Buffer.from(await response.arrayBuffer()))!==digest) add('registry-hash-mismatch:'+pathname);} catch {return false;}
+        return true;
+      });
+    }
+  }));
   await check(legacySite+'/r/button.json','registry-head',async response=>direct(response)&&response.status===200&&(await response.arrayBuffer()).byteLength===0,{method:'HEAD'});
   for(const base of variant?[legacySite,canonicalSite]:[legacySite]) await check(base+'/r/cojeev-missing-probe.json','registry-missing:'+new URL(base+'/r/cojeev-missing-probe.json').pathname,response=>direct(response)&&response.status===404);
   if(variant&&website.manifest.migrationStage==='redirect') {
@@ -145,10 +151,10 @@ export async function contractProblems(environment,{website},{fetcher=fetch,base
         if(response.headers.get('content-security-policy')===securityHeaders('production')['content-security-policy']||response.headers.has('x-robots-tag')) return false;
         if(pathname==='/robots.txt') {
           const body=await response.text(),before=probe.robots==='absent'?'':robotsBefore;
-          return response.status===probe.status&&response.headers.get('content-type')===probe.contentType&&(probe.robots==='absent'||body===before)||
+          return response.status===probe.status&&media(response)===probe.contentType&&(probe.robots==='absent'||body===before)||
             response.status===200&&media(response)==='text/plain'&&robotsProblems(before,body).length===0;
         }
-        return response.status===probe.status&&response.headers.get('content-type')===probe.contentType&&(!probe.sha256||hash(Buffer.from(await response.arrayBuffer()))===probe.sha256);
+        return response.status===probe.status&&media(response)===probe.contentType&&(!probe.sha256||hash(Buffer.from(await response.arrayBuffer()))===probe.sha256);
       });
     }
   }
