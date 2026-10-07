@@ -42,29 +42,18 @@ How task PRs merged (ruling in the ledger):
 1. `gh pr merge N --squash --match-head-commit <full sha>`.
 2. Cancel the PR's `Verify and release` run. The full suite runs at the integration-to-main PR (B2).
 
-## State at 2026-10-01 (latest update)
+## State at 2026-10-07 (latest update)
 
-- **Merged into the integration branch:**
-  - A5 #105, A21 #106, A2 #107, A3 #108, A24 #109, A1 #110;
-  - fix #111 (7f9509a), which types `REGISTRY_SITE` as `{ fetch: typeof fetch }` and fixed a root `tsc` break left by A3.
-- **New merge gate (ruling):** before merging any task PR, run `npx next typegen && npx tsc --noEmit` locally.
-- **B1:** steps 1–4 are DONE.
-  - C0 = 2337a6b, R0 = 36891631881.
-  - The `migration-baseline` prerelease is published.
-  - **`main` is frozen for release-scope merges until B2.**
-  - Steps 5–15 are delegated to Sol in `.worktrees/t-b1` (branch `chore/b1-baseline-record`, brief `task-B1-brief.md`). It uses the wrangler OAuth read session.
-  - Afterwards, check the "Needs owner token" list in its README, then open the PR into integration and merge it.
-- **In flight:**
-  - A6: Gemini then Astra review.
-  - A11: Astra then Gemini review. Afterwards, create the A11b task (ruling in the ledger); A17, A19 and A22 depend on A11b.
-  - A7: re-runs the checks the type break blocked.
-  - A8 and A10: resume their builds after the type fix.
-  - A9: building.
-- **Gemini seat:** works through the allow-rules in `~/.gemini/antigravity-cli/settings.json`. It must run with no `--effort` flag and a prompt that limits it to single read-only commands. Gemini findings that contradict ledger rulings are overruled with a recorded ruling.
-- **Resume steps:**
-  1. For each in-flight task, read `task-ID-final.md`, `task-ID-fix-r1-final.md` and the review files in the SDD workspace.
-  2. Continue the loop: review, fix, re-review, then PR, the tsc gate and the merge.
-  3. Then the next waves, per the plan's task table.
+- **Owner rule (2026-10-07):** "compete all the task then do the review at last please". No per-task reviews. Build each task with Sol, run the tsc gate, and merge. After the last task, run ONE Astra review over the whole integration diff, then fix its findings in one wave. Gemini is skipped.
+- **Merged into the integration branch (19 of 27 code tasks, plus the main sync):**
+  - A5 #105, A21 #106, A2 #107, A3 #108, A24 #109, A1 #110, fix #111, A7 #112, A10 #113;
+  - A11 #119, A9 #120, A12 #121, A6 #122, A18 #123, main-sync M1 #124, A8 #125, A11b #126, A13 #127, A15a #128, A14 #129 (b21d7a8).
+- **Seams to check in the final review** (listed in the ledger): the A14-over-A15a hand merge of `scripts/release.mjs`; the M1 test fix for optional `source`; the A8 merge of the docs-search aliases.
+- **Known red on M1:** `tests/ci-affected-ids.test.mjs` and `tests/icon-pack-retry.test.ts` fail with `ERR_MODULE_NOT_FOUND` on the `@/registry/cojeev/lib/lucide-icon-data` alias. Both already fail on pre-merge main (d43561a). Settle them at B2.
+- **Wave 3 building (Sol, worktrees `.worktrees/t-<id>`):** A16a, A15b, A17, A19, all on b21d7a8.
+- **Briefs ready:** A16b (needs A16a), A22, A23, A20. Dispatch each with `dispatch.sh` as soon as its dependencies merge. A25 runs after B10 only.
+- **Merging:** `merge.sh ID "TITLE"` in the SDD workspace pushes, opens the PR, squash-merges at the head, and cancels PR CI. Parallel siblings: rebase onto `origin/feat/move-to-cojeev-ui`, hand-merge conflicts by checking which names each side actually uses, then run the tsc gate and the affected tests.
+- **Production:** unchanged at 16a3d05; cojeev.com/ui still returns 404. B1 needs re-baselining (production moved off C0). B2–B10 each need owner go.
 
 ## Standing rules
 
