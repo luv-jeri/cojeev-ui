@@ -3,20 +3,82 @@ import { after, before, test } from "node:test";
 import { chromium } from "playwright";
 import { preview } from "vite";
 
-let server, browser, base, origin;
+const searchCheck = "ui_live_search_reload_and_console_are_clean";
+const diagnostics = [];
+const ignoredCancellations = [];
+const reportingOrigins = new Set(["https://feedback.cojeev.com", "https://feedback-beta.cojeev.com"]);
+let server, browser, base, origin, readOnly;
 before(async () => {
-  server = await preview({ configFile: false, base: "/ui/", build: { outDir: "out" }, preview: { host: "127.0.0.1", port: 0, strictPort: true } });
-  origin = `http://127.0.0.1:${server.httpServer.address().port}`;
-  base = `${origin}/ui`;
+  if (process.env.UI_BROWSER_URL) {
+    const url = new URL(process.env.UI_BROWSER_URL);
+    if (!["http:", "https:"].includes(url.protocol) || url.pathname.replace(/\/$/, "") !== "/ui" || url.search || url.hash || url.username || url.password) throw new Error(`FAIL ${searchCheck} /ui/`);
+    origin = url.origin;
+    base = `${origin}/ui`;
+    readOnly = !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+  } else {
+    server = await preview({ configFile: false, base: "/ui/", build: { outDir: "out" }, preview: { host: "127.0.0.1", port: 0, strictPort: true } });
+    origin = `http://127.0.0.1:${server.httpServer.address().port}`;
+    base = `${origin}/ui`;
+    readOnly = false;
+  }
   browser = await chromium.launch();
 });
-after(async () => { await browser?.close(); await server?.close(); });
+after(async () => {
+  await browser?.close(); await server?.close();
+  console.log(`IGNORED ui_request_cancellations ${ignoredCancellations.length}${ignoredCancellations.length ? ` ${ignoredCancellations.join(" ")}` : ""}`);
+  if (diagnostics.length) throw new Error(`FAIL ${searchCheck} ${diagnostics[0]}`);
+});
+
+function observe(context) {
+  const ignored = new Set();
+  const path = url => { try { return new URL(url).pathname; } catch { return "/ui/"; } };
+  context.on("request", request => {
+    if (path(request.url()).includes("/ui/ui/")) diagnostics.push(path(request.url()));
+  });
+  context.on("requestfailed", request => {
+    if (ignored.has(request.url())) return;
+    try {
+      const url = new URL(request.url());
+      const pageOrigin = new URL(request.frame().page().url()).origin;
+      if (request.failure()?.errorText === "net::ERR_ABORTED" && url.origin === pageOrigin && url.pathname.startsWith("/ui/")) {
+        ignoredCancellations.push(url.pathname);
+        return;
+      }
+    } catch { /* Requests without a page origin are still failures. */ }
+    diagnostics.push(path(request.url()));
+  });
+  context.on("response", response => {
+    if (response.status() >= 400 && !ignored.has(response.url())) diagnostics.push(path(response.url()));
+  });
+  context.on("page", page => {
+    page.on("console", message => {
+      if (message.type() === "error" && !ignored.has(message.location().url)) diagnostics.push(path(message.location().url || page.url()));
+    });
+    page.on("framenavigated", frame => {
+      if (path(frame.url()).includes("/ui/ui/")) diagnostics.push(path(frame.url()));
+    });
+  });
+  return ignored;
+}
 
 async function openPage(t, path, width = 1280) {
-  const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
+  const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce", serviceWorkers: "block" });
   t.after(() => context.close());
-  // These tests may follow links, but must never contact a live reporting API or apex site.
-  await context.route(/^https?:\/\//, route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+  const ignored = observe(context);
+  await context.route(/^https?:\/\//, route => {
+    const request = route.request(), url = new URL(request.url());
+    if (url.href === "https://cojeev.com/") {
+      ignored.add(request.url());
+      return route.fulfill({ contentType: "text/html", body: "<p>Intercepted apex navigation</p>" });
+    }
+    if (reportingOrigins.has(url.origin) && request.method() === "POST") {
+      ignored.add(request.url());
+      return route.abort();
+    }
+    if (readOnly || url.origin === origin) return route.continue();
+    if (reportingOrigins.has(url.origin)) return route.fulfill({ contentType: "application/json", headers: { "access-control-allow-origin": origin }, body: JSON.stringify({ local: true, emailEnabled: false, turnstileSiteKey: "", requests: [], total: 0, status: "received" }) });
+    return route.abort();
+  });
   const page = await context.newPage();
   page.setDefaultTimeout(10000);
   await page.goto(`${base}${path}`, { waitUntil: "networkidle" });
@@ -173,6 +235,11 @@ test("next_navigation_adds_ui_once", async t => {
   await click(page.locator('.story-footer a[href="/ui/privacy/"]'), "/privacy/");
   await click(page.locator('.story-header a.story-brand'), "/");
 
+  assert.ok(requests.length > 0, "navigation exercised prefetch/RSC requests");
+  assert.ok(requests.every(path => path.startsWith("/ui/") && !path.includes("/ui/ui/")));
+  assert.equal(context.pages().length, 1);
+  if (readOnly) return;
+
   // A disposable browser receipt exposes the actual track Link without sending a report.
   await page.evaluate(() => new Promise((resolve, reject) => {
     const open = indexedDB.open("cojeev-reporting-v1", 1);
@@ -192,6 +259,30 @@ test("next_navigation_adds_ui_once", async t => {
   await click(page.getByRole("link", { name: "Track this report", exact: true }), "/track/");
   await page.waitForLoadState("networkidle");
   assert.ok(requests.length > 0, "navigation exercised prefetch/RSC requests");
-  assert.ok(requests.every(path => path.startsWith("/ui/") && !path.includes("/ui/ui/")), JSON.stringify(requests));
+  assert.ok(requests.every(path => path.startsWith("/ui/") && !path.includes("/ui/ui/")));
   assert.equal(context.pages().length, 1);
+});
+
+test("ui_live_search_reload_and_console_are_clean", async t => {
+  let page;
+  try {
+    ({ page } = await openPage(t, "/docs/"));
+    await page.getByRole("button", { name: "Search components", exact: true }).first().click();
+    await page.getByRole("combobox", { name: "Search documentation", exact: true }).fill("button");
+    const buttonResult = page.getByRole("option").filter({
+      has: page.locator(".docs-search-result strong").filter({ hasText: /^Button$/ }),
+    });
+    await buttonResult.waitFor({ state: "visible" });
+    await buttonResult.click();
+    await page.waitForURL(url => url.pathname === "/ui/docs/button/");
+    assert.equal(new URL(page.url()).pathname, "/ui/docs/button/");
+    await page.reload({ waitUntil: "networkidle" });
+    assert.equal(new URL(page.url()).pathname, "/ui/docs/button/");
+    assert.equal(await page.getByRole("heading", { name: "Button", exact: true }).first().isVisible(), true);
+    if (diagnostics.length) throw new Error("Browser diagnostics");
+    console.log(`PASS ${searchCheck}`);
+  } catch {
+    const path = diagnostics[0] ?? (page ? new URL(page.url()).pathname : "/ui/docs/");
+    throw new Error(`FAIL ${searchCheck} ${path}`);
+  }
 });
