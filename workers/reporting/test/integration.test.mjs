@@ -1472,3 +1472,44 @@ test('app_report_global_window_bounds_rotating_ips_and_installs',async()=>{
     assert.equal((await directApp(refused,'198.51.100.200',env)).fresh,true,'global ceiling resets next window');
   });
 });
+
+test('app_report_rejection_does_not_allocate_or_increment_counters',async()=>{
+  await inAppWindow(30,async time=>{
+    const snapshot=async()=>(await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results;
+    const ip='192.0.2.210';
+    for(let i=0;i<10;i++) assert.equal((await directApp(appPayload(),ip)).fresh,true);
+    const before=await snapshot();
+    for(let i=0;i<40;i++) {
+      const p=appPayload();await assert.rejects(directApp(p,ip),error=>error.status===429);
+      assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+      assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+    }
+    assert.deepEqual(await snapshot(),before,'IP refusals cannot allocate install rows or increment any budget');
+    const installId=randomUUID();
+    for(let i=0;i<5;i++) assert.equal((await directApp(appPayload({installId}),`198.51.100.${i+10}`)).fresh,true);
+    const installBefore=await snapshot();
+    await assert.rejects(directApp(appPayload({installId}),'198.51.100.19'),error=>error.status===429);
+    assert.deepEqual(await snapshot(),installBefore,'install refusal cannot allocate a fresh IP row');
+    const globalKey=createHmac('sha256',ipSecret).update(`app-rate:${Math.floor(time/600000)}:global`).digest('hex');
+    await db.prepare('UPDATE rate_limits SET count=100 WHERE key=?').bind(globalKey).run();
+    const globalBefore=await snapshot();
+    for(let i=0;i<10;i++) await assert.rejects(directApp(appPayload(),`2001:db8:${i+300}:1::1`),error=>error.status===429);
+    assert.deepEqual(await snapshot(),globalBefore,'global refusals cannot allocate install/IP rows or increment any budget');
+  });
+});
+
+test('app_report_concurrent_global_budget_allocates_only_the_winner',async()=>{
+  await inAppWindow(40,async time=>{
+    const slot=Math.floor(time/600000),key=value=>createHmac('sha256',ipSecret).update(`app-rate:${slot}:${value}`).digest('hex');
+    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,99,?)').bind(key('global'),time+600000).run();
+    const a=appPayload(),b=appPayload();
+    const results=await Promise.allSettled([directApp(a,'192.0.2.211'),directApp(b,'192.0.2.212')]);
+    assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
+    assert.equal(results.filter(r=>r.status==='rejected'&&r.reason.status===429).length,1);
+    for(const [index,p] of [a,b].entries()) {
+      const counter=await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key(`install:${p.installId}`)).first();
+      assert.deepEqual(counter,results[index].status==='fulfilled'?{count:1}:null);
+    }
+    assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key('global')).first()).count,100);
+  });
+});

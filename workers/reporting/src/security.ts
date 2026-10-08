@@ -68,15 +68,16 @@ function appIPBudget(ip: string): string {
   return `${words.slice(0,4).map(n=>n.toString(16)).join(":")}::/64`;
 }
 export const APP_WINDOW_LIMIT=100;
-export async function appAdmission(request: Request, env: Env, installId: string) {
+export async function appAdmission(request: Request, env: Env, installId: string, reportId: string, tokenHash: string) {
   const isLocal=env.LOCAL_MODE==="true"&&["localhost","127.0.0.1","[::1]"].includes(new URL(request.url).hostname);
   const ip=request.headers.get("CF-Connecting-IP");
   if(!isLocal&&(!ip||!env.IP_HASH_SECRET||env.IP_HASH_SECRET.length<32)) throw new HttpError(503,"Reporting protection is not configured yet.");
   const time=Date.now(),slot=Math.floor(time/600000),expires=(slot+1)*600000;
   const keys=await Promise.all([`install:${installId}`,`ip:${ip?appIPBudget(ip):"local"}`,"global"].map(value=>keyedDigest(env.IP_HASH_SECRET??"local-only",`app-rate:${slot}:${value}`)));
-  // These statements run in the same transaction as report/outbox insertion.
-  // A racing duplicate's unique-ID failure rolls back its quota increments.
-  return {keys,retryAfter:Math.max(1,Math.ceil((expires-time)/1000)),statements:keys.map(key=>env.DB.prepare("INSERT INTO rate_limits(key,count,expires_at) VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1").bind(key,expires))};
+  // The report is conditionally inserted first in this same atomic batch.
+  // Its unique random token hash binds counters to this admission only, including races.
+  // Rejection inserts no report, so none of these statements allocates or increments a row.
+  return {keys,retryAfter:Math.max(1,Math.ceil((expires-time)/1000)),statements:keys.map(key=>env.DB.prepare("INSERT INTO rate_limits(key,count,expires_at) SELECT ?,1,? WHERE EXISTS (SELECT 1 FROM reports WHERE id=? AND token_hash=?) ON CONFLICT(key) DO UPDATE SET count=count+1").bind(key,expires,reportId,tokenHash))};
 }
 export async function verifyWebhook(request: Request, env: Env, body: ArrayBuffer) {
   if(!env.GITHUB_WEBHOOK_SECRET) throw new HttpError(503,"GitHub webhook is not configured.");

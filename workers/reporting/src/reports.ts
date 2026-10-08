@@ -68,19 +68,19 @@ export async function acceptApp(request: Request, env: Env): Promise<{receipt:Ap
   if(existing) return retry(existing);
   const destination=env.APP_GITHUB_REPOSITORY;
   if(!destination||!/^[\w.-]+\/[\w.-]+$/.test(destination)) throw new HttpError(503,"App reporting destination is not configured yet.");
-  const admission=await appAdmission(request,env,report.installId);
-  const timestamp=now(),installHash=await keyedDigest(env.IP_HASH_SECRET??"local-only",`app-install:${report.installId}`);
-  const title=`[${report.category}] Cojeev ${redact(report.appVersion,64)} (${report.platform})`;
   // No client credential: legacy receipt endpoints cannot authorize an app report.
   const tokenHash=await digest(crypto.randomUUID());
+  const admission=await appAdmission(request,env,report.installId,report.id,tokenHash);
+  const timestamp=now(),installHash=await keyedDigest(env.IP_HASH_SECRET??"local-only",`app-install:${report.installId}`);
+  const title=`[${report.category}] Cojeev ${redact(report.appVersion,64)} (${report.platform})`;
   try {
     const results=await env.DB.batch([
-      ...admission.statements,
-      env.DB.prepare("INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,created_at,updated_at,triage_state,source,app_category,destination_repository) SELECT ?,?,?,'bug',?,?,'',?,'[]',?,'[]',?,?,'approved','app',?,? WHERE (SELECT count FROM rate_limits WHERE key=?)<=5 AND (SELECT count FROM rate_limits WHERE key=?)<=10 AND (SELECT count FROM rate_limits WHERE key=?)<=?")
+      env.DB.prepare("INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,created_at,updated_at,triage_state,source,app_category,destination_repository) SELECT ?,?,?,'bug',?,?,'',?,'[]',?,'[]',?,?,'approved','app',?,? WHERE COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<5 AND COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<10 AND COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<?")
         .bind(report.id,tokenHash,payloadHash,title,redact(report.message,2000),installHash,report.diagnostics===null?null:JSON.stringify(redact(report.diagnostics,1600)),timestamp,timestamp,report.category,destination,...admission.keys,APP_WINDOW_LIMIT),
+      ...admission.statements,
       env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) SELECT ?,?,'github',?,?,? FROM reports WHERE id=? AND payload_hash=?").bind(`${report.id}:github`,report.id,timestamp,timestamp,timestamp,report.id,payloadHash)
     ]);
-    if(!results[admission.statements.length].meta.changes) throw new HttpError(429,"Too many reports right now. Please try again later.",admission.retryAfter);
+    if(!results[0].meta.changes) throw new HttpError(429,"Too many reports right now. Please try again later.",admission.retryAfter);
   } catch(error) {
     const saved=await env.DB.prepare("SELECT * FROM reports WHERE id=?").bind(report.id).first<ReportRow>();
     if(saved) return retry(saved);
