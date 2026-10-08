@@ -1113,7 +1113,8 @@ test('email_html_escapes_every_value',()=>{
 
 // These fixtures exercise real intake, D1, outbox and delivery; only GitHub HTTP is fake.
 const appPayload = (more={}) => ({id:randomUUID(),installId:randomUUID(),category:'crash',message:'The window closed unexpectedly.',diagnostics:'Redacted synthetic export',appVersion:'0.1.0',platform:'macos',...more});
-const submitApp = (p, ip=p.installId) => mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(p)});
+const fixtureIP = value => {const hex=hash(value);return `${hex.slice(0,4)}:${hex.slice(4,8)}:${hex.slice(8,12)}:${hex.slice(12,16)}::1`;};
+const submitApp = (p, ip=fixtureIP(p.installId)) => mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(p)});
 const appEnv = (more={}) => backendEnv({GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev',...more});
 const fakeAppGitHub = () => {
   const issues=[]; let uncertain=false, posts=0;
@@ -1215,9 +1216,9 @@ test('app_report_rate_limited_per_install',async()=>{
   // Catches missing install/IP budgets, charging safe retries, and leaking raw keys.
   const installId=randomUUID();let accepted;
   for(let i=0;i<5;i++) {
-    accepted=appPayload({installId});assert.equal((await submitApp(accepted,`synthetic-install-ip-${i}`)).status,201);
+    accepted=appPayload({installId});assert.equal((await submitApp(accepted,`198.51.100.${i+1}`)).status,201);
   }
-  const refused=appPayload({installId}),limited=await submitApp(refused,'synthetic-new-ip');
+  const refused=appPayload({installId}),limited=await submitApp(refused,'198.51.100.99');
   assert.equal(limited.status,429,'sixth new report from one install must be rate limited');
   const body=await limited.json();assert.ok(body.retryAfter>0&&body.retryAfter<=600);assert.equal(limited.headers.get('Retry-After'),String(body.retryAfter));
   assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(refused.id).first(),null);
@@ -1433,4 +1434,41 @@ test('app_report_requires_exact_json_and_absent_origin_before_writes',async()=>{
   // Website admission remains origin-based.
   assert.equal((await submit(payload())).status,201);
   assert.equal((await request('/v1/reports','POST',{report:payload(),token},null,{Origin:'https://evil.example'})).status,403);
+});
+
+const directApp = (p,ip,env=appEnv()) => backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(p)}),env);
+const inAppWindow = async (offset,run) => {
+  const original=Date.now, time=(Math.floor(original()/600000)+offset)*600000+1000;
+  Date.now=()=>time;
+  try {await run(time);} finally {Date.now=original;}
+};
+test('app_report_ipv6_prefix_and_address_aliases_share_budgets',async()=>{
+  await inAppWindow(10,async()=>{
+    const addresses=['2001:0DB8:0001:0002:0000:0000:0000:0001','2001:db8:1:2::1',
+      ...Array.from({length:8},(_,i)=>`2001:db8:1:2::${i+2}`)];
+    for(const ip of addresses) assert.equal((await directApp(appPayload(),ip)).fresh,true);
+    await assert.rejects(directApp(appPayload(),'2001:db8:1:2:ffff:ffff:ffff:ffff'),error=>error.status===429,'one IPv6 /64 has ten admissions');
+    assert.equal((await directApp(appPayload(),'2001:db8:1:3::1')).fresh,true,'a distinct /64 has its own budget');
+    for(let i=0;i<10;i++) assert.equal((await directApp(appPayload(),i%2?'::ffff:192.0.2.201':'192.0.2.201')).fresh,true);
+    await assert.rejects(directApp(appPayload(),'::FFFF:c000:2c9'),error=>error.status===429,'mapped IPv4 and IPv4 share a budget');
+    await assert.rejects(directApp(appPayload(),'not-an-ip'),error=>error.status===503);
+  });
+});
+test('app_report_global_window_bounds_rotating_ips_and_installs',async()=>{
+  await inAppWindow(20,async time=>{
+    const gh=fakeAppGitHub(),env=appEnv();
+    // Unrelated website rate rows cannot consume the app ceiling.
+    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,999,?)').bind('synthetic-website-global-control',time+600000).run();
+    for(let i=0;i<100;i++) {
+      const p=appPayload();assert.equal((await directApp(p,`2001:db8:${i.toString(16)}:1::1`,env)).fresh,true);
+      await backend.drain(env,p.id,gh.send);
+    }
+    const refused=appPayload();
+    await assert.rejects(directApp(refused,'198.51.100.200',env),error=>error.status===429&&error.retryAfter>0);
+    assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(refused.id).first(),null);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(refused.id).first()).n,0);
+    assert.equal(gh.posts,100,'issue creation is bounded even with unlimited install/address rotation');
+    Date.now=()=>time+600000;
+    assert.equal((await directApp(refused,'198.51.100.200',env)).fresh,true,'global ceiling resets next window');
+  });
 });

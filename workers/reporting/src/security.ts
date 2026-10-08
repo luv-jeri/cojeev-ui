@@ -49,12 +49,31 @@ export async function checkAbuse(request: Request, env: Env, token: unknown, id:
   const hosts = origins(env).map(v=>new URL(v).hostname);
   if(!result.success || !result.hostname || !hosts.includes(result.hostname) || result.action !== "reporting") throw new HttpError(403,"The security check expired. Please try again.");
 }
+// Canonical address budgets: IPv4 /32, IPv6 /64, mapped IPv4 shares /32.
+function appIPBudget(ip: string): string {
+  const invalid=()=>new HttpError(503,"Reporting protection requires a valid edge IP.");
+  if(/^\d{1,3}(?:\.\d{1,3}){3}$/.test(ip)) {
+    const octets=ip.split(".").map(Number);
+    if(octets.some(n=>n>255)) throw invalid();
+    return `${octets.join(".")}/32`;
+  }
+  if(!/^[0-9a-f:.]+$/i.test(ip)||!ip.includes(":")) throw invalid();
+  let address:string;
+  try {address=new URL(`http://[${ip}]/`).hostname.slice(1,-1);} catch {throw invalid();}
+  const [left,right]=address.split("::"),a=left?left.split(":"):[],b=right?right.split(":"):[];
+  const words=(right===undefined?a:[...a,...Array(8-a.length-b.length).fill("0"),...b]).map(v=>parseInt(v,16));
+  if(words.slice(0,5).every(n=>n===0)&&words[5]===0xffff) {
+    return `${[words[6]>>8,words[6]&255,words[7]>>8,words[7]&255].join(".")}/32`;
+  }
+  return `${words.slice(0,4).map(n=>n.toString(16)).join(":")}::/64`;
+}
+export const APP_WINDOW_LIMIT=100;
 export async function appAdmission(request: Request, env: Env, installId: string) {
   const isLocal=env.LOCAL_MODE==="true"&&["localhost","127.0.0.1","[::1]"].includes(new URL(request.url).hostname);
   const ip=request.headers.get("CF-Connecting-IP");
   if(!isLocal&&(!ip||!env.IP_HASH_SECRET||env.IP_HASH_SECRET.length<32)) throw new HttpError(503,"Reporting protection is not configured yet.");
   const time=Date.now(),slot=Math.floor(time/600000),expires=(slot+1)*600000;
-  const keys=await Promise.all([`install:${installId}`,`ip:${ip??"local"}`].map(value=>keyedDigest(env.IP_HASH_SECRET??"local-only",`app-rate:${slot}:${value}`)));
+  const keys=await Promise.all([`install:${installId}`,`ip:${ip?appIPBudget(ip):"local"}`,"global"].map(value=>keyedDigest(env.IP_HASH_SECRET??"local-only",`app-rate:${slot}:${value}`)));
   // These statements run in the same transaction as report/outbox insertion.
   // A racing duplicate's unique-ID failure rolls back its quota increments.
   return {keys,retryAfter:Math.max(1,Math.ceil((expires-time)/1000)),statements:keys.map(key=>env.DB.prepare("INSERT INTO rate_limits(key,count,expires_at) VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1").bind(key,expires))};
