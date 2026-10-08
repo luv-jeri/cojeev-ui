@@ -46,6 +46,15 @@ try {
   await page.waitForFunction(()=>!document.querySelector('.contact-form button[type="submit"]').disabled);
   const verificationRetry=form.getByRole('button',{name:'Retry verification'});
   assert.equal(await verificationRetry.count(),0,'No retry before a verification failure.');
+  // The provider can recover on its own: success must clear errors without a remount.
+  await page.evaluate(()=>{window.mountedContactChallenge=window.contactChallenge;window.contactChallenge['error-callback']();});
+  await form.getByRole('alert').filter({hasText:'Verification failed'}).waitFor();
+  await verificationRetry.waitFor();
+  await page.evaluate(()=>window.contactChallenge.callback('fixture-only-recovered-verification'));
+  await page.waitForFunction(()=>!document.querySelector('.contact-form button[type="submit"]').disabled);
+  assert.equal(await form.getByRole('alert').count(),0,'Successful verification clears the widget error.');
+  assert.equal(await verificationRetry.count(),0);
+  assert.equal(await page.evaluate(()=>window.contactChallenge===window.mountedContactChallenge),true,'Recovery uses the same mounted widget.');
   for(const callback of ['error-callback','expired-callback']) {
     await page.evaluate(key=>window.contactChallenge[key](),callback);
     await verificationRetry.waitFor();await verificationRetry.click();
@@ -84,8 +93,11 @@ try {
   await form.scrollIntoViewIfNeeded();
   await page.screenshot({path:`${output}/1440-light.png`});
   await name.fill('About Visitor');await email.fill('about@example.com');await message.fill('Writing from the about page in the local fixture.');await send.click();
-  await page.locator('.contact-status').filter({hasText:'Thanks, About Visitor. Your message is saved and will reach me shortly.'}).waitFor();
+  await page.locator('.contact-status').filter({hasText:"Thanks, About Visitor. Your message is saved, but email is slow right now. It will keep trying for the next day. If it's urgent, use Email me below."}).waitFor();
   assert.equal((await db.prepare('SELECT page FROM contact_messages WHERE email=?').bind('about@example.com').first()).page,'/cojeev-ui/about/');
   assert.equal((await db.prepare('SELECT delivery_status FROM contact_messages WHERE email=?').bind('about@example.com').first()).delivery_status,'needs_review');
+  const queuedFallback=page.locator('.creator-practice').getByRole('link',{name:'Email me',exact:true});
+  await queuedFallback.waitFor({state:'visible'});
+  assert.equal(await queuedFallback.getAttribute('href'),'mailto:hellosanjaygautam@gmail.com');
   assert.deepEqual(errors,[]);console.log('PASS: both maker routes, config retry, native validation, accessible empty status, error/expiry/403-only security retry, queued acknowledgement, hero anchor, rate limit, retained draft, lost-response UUID retry, one email attempt, secondary email links, 360px dark and desktop light.');
 } finally {await browser?.close();await mf.dispose();}

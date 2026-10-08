@@ -4,7 +4,8 @@ import { sendContactResend } from './resend';
 import { checkAbuse, HttpError, readJSON } from './security';
 import { emailEnabled, now, type Env } from './types';
 
-type ContactMessage={id:string;name:string;email:string;message:string;page:string;created_at:number;delivery_status:string;provider_id:string|null};
+type ContactMessage={id:string;name:string;email:string;message:string;page:string;created_at:number;delivery_status:string;provider_id:string|null;lease_until:number|null;payload_json:string|null};
+const LEASE=15*60*1000,RETRY_WINDOW=23*60*60*1000;
 const ADDRESS=/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/;
 function outcome(row:ContactMessage) {
   if(row.delivery_status==='accepted') return {ok:true};
@@ -26,16 +27,18 @@ export async function contact(request:Request,env:Env,send=fetch) {
   if(existing) { assertSameDraft(existing,values);return outcome(existing); }
   await checkAbuse(request,env,turnstileToken,id);
   // Only the request that wins the insert can send, including simultaneous submissions.
-  const row=await env.DB.prepare("INSERT OR IGNORE INTO contact_messages(id,created_at,name,email,message,page,delivery_status) VALUES(?,?,?,?,?,?,'sending') RETURNING *").bind(id,now(),...values).first<ContactMessage>();
+  const row=await env.DB.prepare("INSERT OR IGNORE INTO contact_messages(id,created_at,name,email,message,page,lease_until,delivery_status) VALUES(?,?,?,?,?,?,?,'sending') RETURNING *").bind(id,now(),...values,now()+LEASE).first<ContactMessage>();
   if(!row) {
     const saved=(await env.DB.prepare('SELECT * FROM contact_messages WHERE id=?').bind(id).first<ContactMessage>())!;
     assertSameDraft(saved,values);return outcome(saved);
   }
   if(!emailEnabled(env)) {
-    await env.DB.prepare("UPDATE contact_messages SET delivery_status='disabled' WHERE id=?").bind(id).run();
+    await env.DB.prepare("UPDATE contact_messages SET delivery_status='disabled',lease_until=NULL WHERE id=?").bind(id).run();
     return outcome({...row,delivery_status:'disabled'});
   }
-  return deliverContact(env,row,send);
+  const result=await deliverContact(env,row,send);
+  if(!result) throw new HttpError(503,'Your message is saved, but email is unavailable. Please use Email me to get in touch.');
+  return result;
 }
 function assertSameDraft(row:ContactMessage,values:string[]) {
   if([row.name,row.email,row.message,row.page].some((value,i)=>value!==values[i])) throw new HttpError(409,'This message was already saved with different details. Retry the original draft.');
@@ -43,30 +46,37 @@ function assertSameDraft(row:ContactMessage,values:string[]) {
 async function deliverContact(env:Env,row:ContactMessage,send:typeof fetch) {
   const id=row.id;
   const text=`Name: ${row.name}\nEmail: ${row.email}\nPage: ${row.page}\n\n${row.message}`;
-  const body=JSON.stringify({from:env.EMAIL_FROM,to:env.CONTACT_NOTIFICATION_EMAIL,reply_to:row.email,subject:`000h contact from ${row.name}`,text,html:`<pre>${escapeHTML(text)}</pre>`});
+  const body=row.payload_json??JSON.stringify({from:env.EMAIL_FROM,to:env.CONTACT_NOTIFICATION_EMAIL,reply_to:row.email,subject:`000h contact from ${row.name}`,text,html:`<pre>${escapeHTML(text)}</pre>`});
+  // Preserve the exact serialized request across configuration changes and retries.
+  // Reading through the owned lease also rechecks the live status after a cron claim.
+  const saved=await env.DB.prepare("UPDATE contact_messages SET payload_json=COALESCE(payload_json,?) WHERE id=? AND delivery_status='sending' AND lease_until=? RETURNING *").bind(body,id,row.lease_until).first<ContactMessage>();
+  if(!saved) return null;
+  if(now()-saved.created_at>=RETRY_WINDOW) {
+    await env.DB.prepare("UPDATE contact_messages SET delivery_status='expired',lease_until=NULL WHERE id=? AND delivery_status='sending' AND lease_until=?").bind(id,row.lease_until).run();
+    return null;
+  }
   let providerId:string;
-  try {providerId=await sendContactResend(env,id,body,send);}
+  try {providerId=await sendContactResend(env,id,saved.payload_json!,send);}
   catch(error) {
     const status=error instanceof DeliveryFailure&&error.quota?'limited':'needs_review';
-    await env.DB.prepare("UPDATE contact_messages SET delivery_status=? WHERE id=? AND delivery_status NOT IN ('accepted','expired')").bind(status,id).run();
+    await env.DB.prepare("UPDATE contact_messages SET delivery_status=?,lease_until=NULL WHERE id=? AND delivery_status='sending' AND lease_until=?").bind(status,id,row.lease_until).run();
     return outcome({...row,delivery_status:status});
   }
-  await env.DB.prepare("UPDATE contact_messages SET delivery_status='accepted',provider_id=? WHERE id=?").bind(providerId,id).run();
+  await env.DB.prepare("UPDATE contact_messages SET delivery_status='accepted',provider_id=?,lease_until=NULL WHERE id=? AND delivery_status='sending' AND lease_until=?").bind(providerId,id,row.lease_until).run();
   return {ok:true};
 }
 
 export async function retryContacts(env:Env,send=fetch) {
-  const time=now(),cutoff=time-23*60*60*1000;
+  const time=now(),cutoff=time-RETRY_WINDOW;
   // Stop before Resend's 24-hour idempotency window can lapse.
-  await env.DB.prepare("UPDATE contact_messages SET delivery_status='expired' WHERE delivery_status IN ('limited','needs_review','sending') AND created_at<=?").bind(cutoff).run();
+  await env.DB.prepare("UPDATE contact_messages SET delivery_status='expired',lease_until=NULL WHERE delivery_status IN ('limited','needs_review','sending') AND created_at<=?").bind(cutoff).run();
   if(!emailEnabled(env)||!env.CONTACT_NOTIFICATION_EMAIL||!ADDRESS.test(env.CONTACT_NOTIFICATION_EMAIL)) return;
-  const pending=await env.DB.prepare("SELECT * FROM contact_messages WHERE created_at>? AND (delivery_status IN ('limited','needs_review') OR (delivery_status='sending' AND created_at<?)) ORDER BY created_at").bind(cutoff,time-15*60*1000).all<ContactMessage>();
+  const pending=await env.DB.prepare("SELECT * FROM contact_messages WHERE created_at>? AND (delivery_status IN ('limited','needs_review') OR (delivery_status='sending' AND ((lease_until IS NOT NULL AND lease_until<=?) OR (lease_until IS NULL AND created_at<?)))) ORDER BY created_at").bind(cutoff,time,time-LEASE).all<ContactMessage>();
   for(const row of pending.results) {
-    // A slow earlier send must not carry the next message beyond the retry window.
-    if(now()-row.created_at>=23*60*60*1000) {
-      await env.DB.prepare("UPDATE contact_messages SET delivery_status='expired' WHERE id=? AND delivery_status IN ('limited','needs_review','sending')").bind(row.id).run();
-      continue;
-    }
-    await deliverContact(env,row,send);
+    const claimTime=now();
+    // Snapshots may overlap. Only the atomic claim can authorize a provider attempt.
+    // Unleased legacy sends retain the original fifteen-minute recovery delay.
+    const claimed=await env.DB.prepare("UPDATE contact_messages SET delivery_status='sending',lease_until=? WHERE id=? AND delivery_status IN ('limited','needs_review','sending') AND (lease_until IS NULL OR lease_until<=?) AND (delivery_status!='sending' OR lease_until IS NOT NULL OR created_at<?) RETURNING *").bind(claimTime+LEASE,row.id,claimTime,claimTime-LEASE).first<ContactMessage>();
+    if(claimed) await deliverContact(env,claimed,send);
   }
 }

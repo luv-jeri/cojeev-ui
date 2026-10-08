@@ -1317,3 +1317,90 @@ test('scheduled contact recovery expires old pending messages and health exposes
   for(const row of health.contacts) assert.deepEqual(Object.keys(row).sort(),['count','delivery_status']);
   assert.ok(!JSON.stringify(health).includes('@'));
 });
+
+
+test('overlapping contact cron snapshots claim once, reserve once, and cannot resend an accepted row',async()=>{
+  const p=await seedContact('needs_review',60000);
+  let snapshots=0,releaseSnapshots,releaseSecondClaim,firstClaim;
+  const bothSnapshots=new Promise(resolve=>{releaseSnapshots=resolve;});
+  const secondClaim=new Promise(resolve=>{releaseSecondClaim=resolve;});
+  let claims=0,sends=0;
+  const racingDB={prepare(sql){
+    const statement=db.prepare(sql);
+    return {bind(...values){
+      const bound=statement.bind(...values);
+      if(sql.startsWith('SELECT * FROM contact_messages WHERE created_at>')) return {async all(){
+        const result=await bound.all();
+        // Force both crons to read the same pending snapshot before either claims.
+        result.results=result.results.filter(row=>row.id===p.id);
+        if(++snapshots===2) releaseSnapshots();
+        await bothSnapshots;return result;
+      }};
+      if(sql.startsWith("UPDATE contact_messages SET delivery_status='sending',lease_until=")) return {async first(){
+        if(++claims===1) {firstClaim=await bound.first();return firstClaim;}
+        // Delay the second stale claim until the first cron has accepted the email.
+        await secondClaim;return bound.first();
+      }};
+      return bound;
+    }};
+  }};
+  const provider=async()=>{
+    sends++;
+    assert.equal((await contactRow(p.id)).delivery_status,'sending');
+    assert.ok(firstClaim.lease_until>Date.now());
+    return Response.json({id:'overlap-once'});
+  };
+  const env=contactEnv({DB:racingDB});
+  await Promise.all([backend.retryContacts(env,provider).finally(releaseSecondClaim),backend.retryContacts(env,provider).finally(releaseSecondClaim)]);
+  assert.equal(snapshots,2);assert.equal(claims,2);assert.equal(sends,1);
+  assert.equal((await contactRow(p.id)).delivery_status,'accepted');
+  assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_attempts WHERE job_id=?').bind(`contact:${p.id}`).first()).n,1);
+});
+
+test('contact retries preserve the serialized provider body when EMAIL_FROM changes',async()=>{
+  const p=contactPayload(),calls=[];
+  await backend.contact(contactRequest(p),contactEnv(),async(_url,init)=>{calls.push(init);throw new Error('Response lost');});
+  assert.equal((await contactRow(p.id)).payload_json,calls[0].body,'Persisted before the uncertain provider attempt.');
+  await backend.retryContacts(contactEnv({EMAIL_FROM:'changed@example.com',CONTACT_NOTIFICATION_EMAIL:'changed-owner@example.com'}),async(_url,init)=>{calls.push(init);return Response.json({id:'original-body-accepted'});});
+  assert.equal(calls.length,2);
+  assert.equal(calls[1].body,calls[0].body);
+  for(const call of calls) assert.equal(call.headers['Idempotency-Key'],`cojeev/contact:${p.id}`);
+  assert.equal(JSON.parse(calls[1].body).from,'hello@cojeev.com');
+  assert.equal((await contactRow(p.id)).payload_json,calls[0].body);
+});
+
+test('contact retry rechecks live status and the 23-hour cutoff after claiming',async()=>{
+  for(const change of ['accepted','expired']) {
+    const p=await seedContact('needs_review',60000);
+    let claimed=false;
+    const changingDB={prepare(sql){
+      const statement=db.prepare(sql);
+      if(!sql.startsWith("UPDATE contact_messages SET delivery_status='sending',lease_until=")) return statement;
+      return {bind(...values){const bound=statement.bind(...values);return {async first(){
+        const row=await bound.first();
+        if(row?.id===p.id) {
+          claimed=true;
+          if(change==='accepted') await db.prepare("UPDATE contact_messages SET delivery_status='accepted' WHERE id=?").bind(p.id).run();
+          else await db.prepare('UPDATE contact_messages SET created_at=? WHERE id=?').bind(Date.now()-23*3600000,p.id).run();
+        }
+        return row;
+      }}}};
+    }};
+    await backend.retryContacts(contactEnv({DB:changingDB}),noContactSend);
+    assert.equal(claimed,true);assert.equal((await contactRow(p.id)).delivery_status,change);
+    assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_attempts WHERE job_id=?').bind(`contact:${p.id}`).first()).n,0);
+  }
+});
+
+test('contact cron respects active leases and recovers expired leases',async()=>{
+  const active=await seedContact('sending',16*60000),expired=await seedContact('sending',60000);
+  await db.prepare('UPDATE contact_messages SET lease_until=? WHERE id=?').bind(Date.now()+60000,active.id).run();
+  await db.prepare('UPDATE contact_messages SET lease_until=? WHERE id=?').bind(Date.now()-1000,expired.id).run();
+  const calls=[];
+  await backend.retryContacts(contactEnv(),async(_url,init)=>{calls.push(init);return Response.json({id:'expired-lease-recovered'});});
+  assert.equal(calls.length,1);assert.equal(calls[0].headers['Idempotency-Key'],`cojeev/contact:${expired.id}`);
+  assert.equal((await contactRow(active.id)).delivery_status,'sending');
+  assert.equal((await contactRow(expired.id)).delivery_status,'accepted');
+  // Keep the shared fixture from creating another eligible row in later tests.
+  await db.prepare("UPDATE contact_messages SET delivery_status='disabled' WHERE id=?").bind(active.id).run();
+});

@@ -21,7 +21,7 @@ export function Turnstile({ siteKey, onToken, attempt, onError, onExpire }: { si
     callback.current("");
     loadTurnstile().then(() => {
       if (!active || !container.current) return;
-      id = window.turnstile?.render(container.current, { sitekey: siteKey, action: "reporting", theme: "auto", size: "flexible", callback: (token: string) => callback.current(token), "expired-callback": () => { callback.current(""); expiry.current?.(); }, "error-callback": () => { callback.current(""); setError("Verification failed. Use Retry verification below."); errors.current?.(); } });
+      id = window.turnstile?.render(container.current, { sitekey: siteKey, action: "reporting", theme: "auto", size: "flexible", callback: (token: string) => { if (token) setError(""); callback.current(token); }, "expired-callback": () => { callback.current(""); expiry.current?.(); }, "error-callback": () => { callback.current(""); setError("Verification failed. Use Retry verification below."); errors.current?.(); } });
     }).catch(cause => { if (active) { setError(cause.message); errors.current?.(); } });
     return () => { active = false; if (id) window.turnstile?.remove(id); };
   }, [siteKey, attempt]);
