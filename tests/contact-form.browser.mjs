@@ -93,10 +93,10 @@ try {
   await form.scrollIntoViewIfNeeded();
   await page.screenshot({path:`${output}/1440-light.png`});
   await name.fill('About Visitor');await email.fill('about@example.com');await message.fill('Writing from the about page in the local fixture.');await send.click();
-  await page.locator('.contact-status').filter({hasText:"Thanks, About Visitor. Your message is saved, but email is slow right now. It will keep trying for the next day. If it's urgent, use Email me below."}).waitFor();
+  await page.locator('.contact-status').filter({hasText:"Thanks, About Visitor. Your message is saved, but email is slow right now. It will keep trying for the next day. If it's urgent, use Email me instead."}).waitFor();
   assert.equal((await db.prepare('SELECT page FROM contact_messages WHERE email=?').bind('about@example.com').first()).page,'/cojeev-ui/about/');
   assert.equal((await db.prepare('SELECT delivery_status FROM contact_messages WHERE email=?').bind('about@example.com').first()).delivery_status,'needs_review');
-  const queuedFallback=page.locator('.creator-practice').getByRole('link',{name:'Email me',exact:true});
+  const queuedFallback=page.locator('.maker-write').getByRole('link',{name:'Email me',exact:true});
   await queuedFallback.waitFor({state:'visible'});
   assert.equal(await queuedFallback.getAttribute('href'),'mailto:hellosanjaygautam@gmail.com');
   assert.deepEqual(errors,[]);console.log('PASS: both maker routes, config retry, native validation, accessible empty status, error/expiry/403-only security retry, queued acknowledgement, hero anchor, rate limit, retained draft, lost-response UUID retry, one email attempt, secondary email links, 360px dark and desktop light.');
