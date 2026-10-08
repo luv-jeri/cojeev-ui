@@ -38,7 +38,91 @@ test('health fetch pins origins, verifies matching release, refuses redirects an
   assert.equal(seen[2].url,'https://feedback-beta.cojeev.com/v1/admin/health');
   assert.equal(seen[2].options.redirect,'error');
   assert.equal(seen[2].options.headers.Authorization,'Bearer test-token');
+  assert.equal(seen.length,3,'beta does not probe the production registry');
   await assert.rejects(checkHealth('wrong',{token:'test-token'}),/environment/);
+});
+const registrySite=environmentConfig('production','ui').site;
+const listedRegistry='https://000h.cojeev.com/r/registry.json';
+const directRegistry=`${registrySite}/r/registry.json`;
+const registryIndex={name:'000h-cojeev',items:Array.from({length:500},(_,i)=>({name:`item-${i}`}))};
+function registryFetcher(overrides={},seen=[]) {
+  return async(url,options)=>{
+    seen.push({url,options});
+    if(Object.hasOwn(overrides,url)) return overrides[url](url,options);
+    if(url.endsWith('/v1/admin/health')) return Response.json(healthy);
+    if(url.endsWith('/health')) return Response.json({status:'ok',environment:'production',release:'a'.repeat(40)});
+    if(url===listedRegistry||url===directRegistry) return Response.json(registryIndex);
+    for(const name of ['item-0','item-250','item-499']) if(url===`${registrySite}/r/${name}.json`) return Response.json({name,files:[{path:`${name}.tsx`}]});
+    throw new Error('Unexpected health request');
+  };
+}
+test('production registry checks both indexes and deterministic first, middle and last items',async()=>{
+  const seen=[];
+  const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({},seen)});
+  assert.deepEqual(result.problems,[]);
+  const requests=seen.filter(({url})=>url.includes('/r/'));
+  assert.deepEqual(requests.map(({url})=>url),[listedRegistry,directRegistry,...['item-0','item-250','item-499'].map(name=>`${registrySite}/r/${name}.json`)]);
+  for(const {options} of requests) {
+    assert.equal(options.redirect,'manual');
+    assert.deepEqual(options.headers,{'User-Agent':'cojeev-health-monitor'});
+    assert.ok(options.signal instanceof AbortSignal);
+  }
+});
+test('release live checks never probe the registry unless the monitor asks',async()=>{
+  const seen=[];
+  const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher({},seen)});
+  assert.deepEqual(result.problems,[]);
+  assert.ok(seen.every(({url})=>!url.includes('/r/')));
+});
+test('registry follows the directory-listed 301 redirect before checking the direct index',async()=>{
+  const seen=[];
+  const result=await checkHealth('production',{registry:true,fetcher:registryFetcher({[listedRegistry]:()=>new Response(null,{status:301,headers:{location:directRegistry}})},seen)});
+  assert.deepEqual(result.problems,['invalid-delivery-health']);
+  assert.deepEqual(seen.filter(({url})=>url.includes('/r/')).slice(0,3).map(({url})=>url),[listedRegistry,directRegistry,directRegistry]);
+});
+test('registry accepts five redirects and refuses a sixth',async()=>{
+  for(const count of [5,6]) {
+    const overrides={[listedRegistry]:()=>new Response(null,{status:302,headers:{location:'/r/redirect-1'}})};
+    for(let i=1;i<=count;i++) overrides[`https://000h.cojeev.com/r/redirect-${i}`]=()=>i===count?Response.json(registryIndex):new Response(null,{status:307,headers:{location:`/r/redirect-${i+1}`}});
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher(overrides)});
+    assert.deepEqual(result.problems,count===5?[]:['registry-unavailable']);
+  }
+});
+test('registry reports a missing item file',async()=>{
+  const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[`${registrySite}/r/item-250.json`]:()=>new Response('not found',{status:404})})});
+  assert.deepEqual(result.problems,['registry-unavailable']);
+});
+test('registry rejects wrong index and item names',async()=>{
+  for(const url of [listedRegistry,directRegistry,`${registrySite}/r/item-499.json`]) {
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[url]:()=>Response.json({...registryIndex,name:'wrong',files:[{}]})})});
+    assert.deepEqual(result.problems,['registry-unavailable'],url);
+  }
+});
+test('registry rejects an index with fewer than 500 entries on either path',async()=>{
+  for(const url of [listedRegistry,directRegistry]) {
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[url]:()=>Response.json({...registryIndex,items:registryIndex.items.slice(0,499)})})});
+    assert.deepEqual(result.problems,['registry-unavailable'],url);
+  }
+});
+test('registry requires exactly 200, JSON content and non-empty item files',async()=>{
+  const item={name:'item-0',files:[{}]};
+  for(const response of [
+    ()=>Response.json(item,{status:201}),
+    ()=>new Response(JSON.stringify(item),{headers:{'content-type':'text/html'}}),
+    ()=>new Response('invalid JSON',{headers:{'content-type':'application/json'}}),
+    ()=>Response.json({name:'item-0',files:[]}),
+  ]) {
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[`${registrySite}/r/item-0.json`]:response})});
+    assert.deepEqual(result.problems,['registry-unavailable']);
+  }
+});
+test('registry failures retain their fixed code in operations alerts',async()=>{
+  const writes=[];
+  await updateAlert('production',['registry-unavailable'],async(endpoint,options={})=>{
+    if(!options.method) return [];
+    writes.push({endpoint,...options});return {};
+  });
+  assert.ok(writes.find(write=>write.endpoint==='issues').body.body.includes('Checks: registry-unavailable.'));
 });
 test('alerts contain only fixed reason codes and mention owner; repeated failures update and recovery closes',async()=>{
   const writes=[];
