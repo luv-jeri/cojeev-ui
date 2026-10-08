@@ -136,8 +136,8 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     if(!issue.number||!issue.node_id||!issue.html_url) throw new DeliveryFailure("GitHub issue receipt incomplete.",true);
     if(row.source==="app"&&!row.issue_number) {
       const returned=(issue as GitHubIssue).labels;
-      const labels=Array.isArray(returned)?returned.map(label=>typeof label==="string"?label:label?.name):[];
-      if(!["user-report",row.app_category].every(label=>labels.includes(label??""))) throw new DeliveryFailure("GitHub issue labels require maintainer review.",false,true);
+      const labels=Array.isArray(returned)?returned.map(label=>(typeof label==="string"?label:label?.name)?.toLowerCase()):[];
+      if(!["user-report",row.app_category].every(label=>labels.includes((label??"").toLowerCase()))) throw new DeliveryFailure("GitHub issue labels require maintainer review.",false,true);
     }
     const statements=[env.DB.prepare("UPDATE reports SET issue_number=?,issue_node_id=?,issue_url=? WHERE id=?").bind(issue.number,issue.node_id,issue.html_url,row.id)];
     if(row.source!=="app") {

@@ -1676,6 +1676,21 @@ test('app_report_issue_creation_budget_is_shared_atomic_and_queues_without_failu
   });
 });
 
+test('app_report_labels_match_github_case_insensitively',async()=>{
+  for(const reconcile of [false,true]) {
+    const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+    const send=async(url,init)=>{
+      const response=await gh.send(url,init),body=await response.json();
+      const recase=issue=>({...issue,labels:['USER-REPORT',{name:'Crash'}]});
+      return Response.json(Array.isArray(body)?body.map(recase):body.number?recase(body):body,{status:response.status});
+    };
+    if(reconcile) {gh.loseNextResponse();await backend.drain(appEnv(),p.id,send);await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(p.id).run();}
+    await backend.drain(appEnv(),p.id,send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+    assert.equal(gh.posts,1);assert.equal((await db.prepare('SELECT issue_number FROM reports WHERE id=?').bind(p.id).first()).issue_number,1);
+  }
+});
+
 test('app_report_default_issue_ceiling_bounds_every_rolling_hour_and_reconciles_at_capacity',async()=>{
   await inAppWindow(100,async time=>{
     const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'999'}),posted=[];
