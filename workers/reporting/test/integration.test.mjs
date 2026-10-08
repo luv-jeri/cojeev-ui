@@ -21,7 +21,7 @@ before(async()=>{
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, acceptApp, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { default as worker } from "./workers/reporting/src/index.ts"; export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, acceptApp, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 // GitHub drains now share a FIFO queue; retire previous tests' unfinished fixtures.
@@ -1951,7 +1951,7 @@ test('app_report_github_secondary_limit_deadline_survives_a_stale_drain_snapshot
     const staleDB=new Proxy(db,{get(target,key){
       if(key==='prepare') return sql=>{
         const statement=target.prepare(sql);
-        if(sql.startsWith('SELECT * FROM outbox WHERE state=')) return {bind(...args){
+        if(sql.startsWith('SELECT * FROM outbox WHERE state=')||sql.startsWith('WITH available AS (')) return {bind(...args){
           const bound=statement.bind(...args);return {all:async()=>{const result=await bound.all();selected();await resume;return result;}};
         }};
         return statement;
@@ -2044,7 +2044,11 @@ test('fixes4_throttle_pauses_entire_drain_and_new_intake',async()=>{
     for(let i=0;i<3;i++) {const p=appPayload();reports.push(p);await directApp(p,`192.0.${i+2}.1`,env);}
     await backend.drain(env,undefined,send);assert.equal(posts,1,'first throttle stops the current drain');
     const paused=await db.prepare('SELECT due_at,last_error FROM outbox WHERE report_id=?').bind(reports[0].id).first();
-    assert.equal((await request(`/v1/admin/deliveries/${encodeURIComponent(`${reports[0].id}:github`)}/retry`,'POST',{},admin)).status,200);
+    // Run the route on the same fake clock as the direct drain. Miniflare's
+    // separate isolate uses the real clock and would call this deadline stale.
+    const retryTasks=[];
+    assert.equal((await backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${reports[0].id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),{...env,GITHUB_TOKEN:undefined,ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin},{waitUntil:promise=>retryTasks.push(promise)})).status,200);
+    await Promise.all(retryTasks);
     const retried=await db.prepare('SELECT due_at,last_error FROM outbox WHERE report_id=?').bind(reports[0].id).first();
     assert.deepEqual(retried,paused,'manual retry must preserve the provider pause and its visible reason');
     Date.now=()=>time+1000;const fresh=appPayload();await directApp(fresh,'198.51.100.1',env);
@@ -2086,5 +2090,172 @@ test('fixes4_throttles_back_off_with_provider_floor_and_end_in_visible_review',a
     await backend.drain(env,p.id,send);assert.equal(calls,8,'exhausted throttle retries stop automatically');
     const detail=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).json();
     assert.equal(detail.deliveries[0].state,'needs_review');assert.equal(detail.deliveries[0].delivery_status,'throttled');assert.equal(detail.deliveries[0].last_error,job.last_error);
+  });
+});
+
+// Fifth-recheck regressions: all traffic is local and every provider is synthetic.
+for(const [i,headers] of [
+  {'Retry-After':'315360000'},
+  {'Retry-After':'1e14'},
+  {'Retry-After':'1e400'},
+  {'Retry-After':'Thu, 01 Jan 2099 00:00:00 GMT'},
+  {'Retry-After':'not-a-deadline'},
+  {'x-ratelimit-reset':'1e14'},
+  {'x-ratelimit-reset':'1e400'},
+  {'x-ratelimit-reset':'not-a-timestamp'},
+  {'Retry-After':'-1'},
+  {'Retry-After':''},
+  {'Retry-After':'1.5'},
+  {'x-ratelimit-reset':'-1'}
+].entries()) test(`fixes5_N1_provider_hint_${i}_is_bounded_and_visible`,async()=>{
+  await inAppWindow(600+i*10,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    await backend.drain(env,p.id,async()=>Response.json({message:'Too many requests'},{status:429,headers}));
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.due_at,time+3600000,'implausible provider hints have at most a one-hour cooldown');
+    assert.equal(job.state,'needs_review','invalid hints require named review without a stranded lease');
+    assert.equal(job.attempts,0);assert.equal(job.delivery_status,'throttled');assert.equal(job.lease_token,null);
+    assert.match(job.last_error,/invalid or excessive.*cooldown.*review/i);
+    const detail=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).json();
+    assert.equal(detail.deliveries[0].last_error,job.last_error);
+    Date.now=()=>time+3600000;
+    const fresh=appPayload(),gh=fakeAppGitHub();await directApp(fresh,'198.51.100.1',env);
+    await backend.drain(env,fresh.id,gh.send);assert.equal(gh.posts,1,'the shared cooldown ends even while the offending job awaits review');
+    if(i===0) {
+      const pending=[],originalFetch=globalThis.fetch;globalThis.fetch=gh.send;
+      try {
+        const response=await backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${p.id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),{...env,ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin},{waitUntil:promise=>pending.push(promise)});
+        assert.equal(response.status,200);await Promise.all(pending);
+      } finally {globalThis.fetch=originalFetch;}
+      assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done','the new review condition also has a working manual recovery path after cooldown');
+      assert.equal(gh.posts,2);
+    }
+  });
+});
+
+test('fixes5_N1_admin_retry_clears_stale_shared_pause_and_reconciles',async()=>{
+  await inAppWindow(690,async time=>{
+    const env=appEnv({ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin}),p=appPayload(),gh=fakeAppGitHub();
+    await directApp(p,'192.0.2.1',env);
+    // An old version may already have persisted a poisoned deadline after a POST.
+    gh.loseNextResponse();await backend.drain(env,p.id,gh.send);
+    await db.prepare("UPDATE outbox SET state='needs_review',delivery_status='throttled',due_at=?,last_error='Old excessive pause',payload_json=? WHERE report_id=?").bind(time+315360000000,JSON.stringify({keep:'unchanged',githubThrottles:1}),p.id).run();
+    const pending=[],originalFetch=globalThis.fetch;
+    globalThis.fetch=gh.send;
+    try {
+      const response=await backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${p.id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),env,{waitUntil:promise=>pending.push(promise)});
+      assert.equal(response.status,200);await Promise.all(pending);
+    } finally {globalThis.fetch=originalFetch;}
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'done','manual retry clears the poisoned pause and adopts the original issue');
+    assert.equal(gh.posts,1,'recovery must reconcile rather than create a duplicate');
+    assert.equal(job.last_error,null);assert.equal(JSON.parse(job.payload_json).keep,'unchanged');
+    assert.equal(JSON.parse(job.payload_json).githubThrottles,undefined);
+  });
+});
+
+test('fixes5_N1_retention_cleanup_cannot_leave_a_shared_pause',async()=>{
+  await inAppWindow(700,async time=>{
+    const env=appEnv(),old=appPayload();await directApp(old,'192.0.2.1',env);
+    await db.prepare('UPDATE reports SET created_at=? WHERE id=?').bind(time-181*86400000,old.id).run();
+    await db.prepare("UPDATE outbox SET delivery_status='throttled',due_at=? WHERE report_id=?").bind(time+315360000000,old.id).run();
+    await backend.cleanup(env);
+    const expired=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(old.id).first();
+    assert.equal(expired.state,'needs_review');assert.equal(expired.payload_json,null);
+    const p=appPayload(),gh=fakeAppGitHub();await directApp(p,'198.51.100.1',env);
+    await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,1,'an expired report cannot pause the active GitHub queue');
+    // Even a previously valid deadline is ineligible after retention cleanup.
+    await db.prepare('UPDATE outbox SET due_at=? WHERE report_id=?').bind(time+120000,old.id).run();
+    const other=appPayload();await directApp(other,'203.0.113.1',env);
+    await backend.drain(env,other.id,gh.send);assert.equal(gh.posts,2);
+  });
+});
+
+test('fixes5_N2_github_pause_delivers_email_in_current_and_backlogged_drains',async()=>{
+  await inAppWindow(710,async time=>{
+    await db.prepare("UPDATE outbox SET state='held' WHERE state='pending'").run();
+    const env=resendEnv({GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev'});
+    const first=appPayload();await directApp(first,'192.0.2.1',env);
+    const email=payload();await acceptLocal(env,email);
+    let posts=0,emails=0;
+    const send=async(url,init)=>{
+      if(url.startsWith('https://api.github.com/')) {posts++;return Response.json({message:'secondary rate limit'},{status:429,headers:{'Retry-After':'3600'}});}
+      assert.equal(url,'https://api.resend.com/emails');emails++;return Response.json({id:`synthetic-email-${emails}`});
+    };
+    await backend.drain(env,undefined,send);
+    assert.equal(posts,1);assert.equal(emails,1,'a new GitHub pause must not stop email already in the batch');
+    for(let i=0;i<21;i++) await directApp(appPayload(),`192.0.${i+3}.1`,env);
+    const later=payload();await acceptLocal(env,later);
+    Date.now=()=>time+1000;await backend.drain(env,later.id,send);
+    assert.equal(emails,2,'paused GitHub backlog must not occupy an intake email batch');
+    const scheduled=payload();await acceptLocal(env,scheduled);
+    Date.now=()=>time+2000;await backend.drain(env,undefined,send);
+    assert.equal(emails,3,'paused GitHub backlog must not occupy a scheduled email batch');assert.equal(posts,1);
+    assert.equal((await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='email_received'").bind(scheduled.id).first()).state,'done');
+  });
+});
+
+for(const [i,message] of [
+  'You have triggered an abuse detection mechanism. Please wait a few minutes before you try again.',
+  'API rate limit exceeded',
+  'You have exceeded a secondary rate limit.'
+].entries()) test(`fixes5_N3_throttle_wording_${i}_remains_retryable`,async()=>{
+  await inAppWindow(720+i*10,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    await backend.drain(env,p.id,async()=>Response.json({message},{status:403}));
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'pending','recognized throttle wording must not become a permission failure');
+    assert.equal(job.delivery_status,'throttled');assert.equal(job.attempts,0);assert.equal(job.due_at,time+60000);
+    assert.match(job.last_error,/GitHub throttled delivery/);
+    const fresh=appPayload();await directApp(fresh,'198.51.100.1',env);let calls=0;
+    await backend.drain(env,fresh.id,async()=>{calls++;throw new Error('paused provider must not be called');});
+    assert.equal(calls,0);
+  });
+});
+
+test('fixes5_m8_intake_waitUntil_bounds_work_and_scheduled_drain_owns_backlog',async()=>{
+  await inAppWindow(760,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub(),reports=[];
+    for(let i=0;i<25;i++) {const p=appPayload();reports.push(p);await directApp(p,`192.0.${i+2}.1`,env);}
+    const fresh=appPayload(),pending=[],originalFetch=globalThis.fetch;
+    globalThis.fetch=gh.send;
+    try {
+      const response=await backend.worker.fetch(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':'198.51.100.1'},body:JSON.stringify(fresh)}),env,{waitUntil:promise=>pending.push(promise)});
+      assert.equal(response.status,201);assert.deepEqual(await response.json(),{id:fresh.id,status:'accepted'});
+      assert.equal(pending.length,1,'delivery is attached to waitUntil');
+      const [result]=await Promise.all(pending);
+      assert.ok(result.processed<=3,`intake claims at most its own job plus two others; got ${result.processed}`);
+      assert.equal(gh.posts,2,'only two older FIFO jobs may POST inside intake waitUntil');
+      assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(fresh.id).first()).state,'pending','fresh job cannot jump the older queue');
+      const cron=[];Date.now=()=>time+1000;
+      await backend.worker.scheduled({},env,{waitUntil:promise=>cron.push(promise)});await Promise.all(cron);
+      assert.equal(gh.posts,22,'the scheduled drain retains its twenty-job batch');
+      Date.now=()=>time+2000;await backend.drain(env,undefined,gh.send);
+      assert.equal(gh.posts,26);assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(fresh.id).first()).state,'done');
+      assert.equal(gh.issues[0].body.includes(reports[0].id),true,'bounded intake still serves FIFO');
+    } finally {globalThis.fetch=originalFetch;}
+  });
+});
+
+test('fixes5_m8_website_waitUntil_reserves_own_email_and_two_backlog_jobs',async()=>{
+  await inAppWindow(770,async time=>{
+    await db.prepare("UPDATE outbox SET state='held' WHERE state='pending'").run();
+    const env=ownerEnv({GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev',ALLOWED_ORIGINS:origin}),gh=fakeAppGitHub();
+    for(let i=0;i<25;i++) await directApp(appPayload(),`192.0.${i+2}.1`,env);
+    const p=payload(),pending=[],emails=[],originalFetch=globalThis.fetch;
+    globalThis.fetch=async(url,init)=>{
+      if(url.startsWith('https://api.github.com/')) return gh.send(url,init);
+      assert.equal(url,'https://api.resend.com/emails');emails.push(JSON.parse(init.body));return Response.json({id:`synthetic-website-${emails.length}`});
+    };
+    try {
+      const response=await backend.worker.fetch(new Request('http://localhost/v1/reports',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json','CF-Connecting-IP':p.id},body:JSON.stringify({report:p,token})}),env,{waitUntil:promise=>pending.push(promise)});
+      assert.equal(response.status,201);const [result]=await Promise.all(pending);
+      assert.equal(result.processed,3,'website intake selects one own email plus only two backlog jobs');
+      assert.equal(gh.posts,2);assert.equal(emails.length,1);assert.deepEqual(emails[0].to,[p.email]);
+      assert.equal((await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='email_owner_received'").bind(p.id).first()).state,'pending','additional own jobs also stay within the intake bound');
+      Date.now=()=>time+1000;await backend.drain(env,undefined,globalThis.fetch);
+      Date.now=()=>time+2000;await backend.drain(env,undefined,globalThis.fetch);
+      assert.equal(gh.posts,25);assert.equal(emails.length,2);assert.deepEqual(emails[1].to,['owner@example.com']);
+    } finally {globalThis.fetch=originalFetch;}
   });
 });

@@ -246,3 +246,62 @@ Result — the full Worker suite ran once after all production/test edits: `lock
 | Final full Worker suite | 445.81 s | 137/137 passed |
 
 Total check-running time: **460.01 s**. Times are instrumented inside the compile lock, excluding queue waiting, test writing, implementation/debugging, review, documentation and commits. Two queued check commands were cancelled before lock acquisition and ran no check process. No packaging or installation was performed. The branch remains local; no GitHub, Cloudflare or deployed Worker contact, push, merge or deployment occurred.
+
+## Fifth-review corrections (2026-10-08)
+
+Scope: N1, N2, N3 and m8 from `/Volumes/CojeevBuild/lanes/core/r2-recheck4-astra.md`, read in full, starting at `198dd57ff7580a6d67be8b19bdd8ec998540364a` on local `task/core-r-2`. Supplied owner/builder rules apply; no repository/ancestor AGENTS.md was found. Verification uses synthetic reports, local D1/Miniflare and intercepted providers.
+
+Changed — N1: Retry-After seconds/HTTP dates and reset timestamps are validated before formatting or persistence. All provider cooldowns are bounded to one hour. Excessive, non-finite, negative, empty or malformed hints produce needs_review/throttled with a named invalid/excessive-cooldown reason, refund the failure attempt and clear the lease. The shared pause and atomic POST reservation ignore legacy oversized deadlines, finished/held jobs and expired or purged reports. An admin retry atomically clears an oversized stored deadline/status/reason while preserving a legitimate bounded provider pause; the SQL evaluates the current deadline rather than trusting an earlier read. Reconciliation and unrelated payload fields survive recovery. The new invalid-hint review path is manually recoverable after its bounded cooldown.
+
+Changed — N2: paused GitHub jobs are excluded before selecting the batch, so twenty or more paused jobs cannot hide an eligible email. If a GitHub response starts a pause mid-batch, the loop continues independent email delivery while subsequent GitHub jobs remain paused. The mixed-provider regression covers both the first throttled drain and later targeted/scheduled email drains behind 21 GitHub jobs.
+
+Changed — N3: headerless abuse-detection and rate-limit-exceeded 403 messages again count as throttles, alongside modern secondary-limit wording and the existing header markers. Permission denial remains a named permanent failure, covered by the retained PL6 negative case.
+
+Changed — m8: both app and website intake routes explicitly request a bounded drain through waitUntil. It selects at most one eligible job belonging to the submitted report and two other GitHub jobs, preserving FIFO creation reservations. Extra own emails and the remaining backlog wait for scheduled drains, which retain a twenty-job batch. Direct administrative drains keep their existing batch behavior. Tests exercise the actual router and captured waitUntil promises, then scheduled draining through completion. The app fixture delivers two older jobs, keeps the fresh report pending behind FIFO, then eventually delivers it once; the website fixture sends its reporter acknowledgment plus two backlog jobs and later sends the owner alert.
+
+Tests — the initial synthetic RED ran against unchanged `198dd57` production source: 15 cases, 14 failed, with only the existing modern-secondary-limit control passing. Four additional negative/empty/fractional header cases and the website intake case ran against a local git-archive copy of `198dd57` with the new tests: all five failed. In total, 19 of the 20 added cases fail on the starting source; the modern-wording case is an explicit preservation control. All prior named tests are retained.
+
+Before quotes from `r2-fixes5-red.log`:
+
+```text
+not ok 1 - fixes5_N1_provider_hint_0_is_bounded_and_visible
+not ok 9 - fixes5_N1_admin_retry_clears_stale_shared_pause_and_reconciles
+not ok 10 - fixes5_N1_retention_cleanup_cannot_leave_a_shared_pause
+not ok 11 - fixes5_N2_github_pause_delivers_email_in_current_and_backlogged_drains
+not ok 12 - fixes5_N3_throttle_wording_0_remains_retryable
+not ok 15 - fixes5_m8_intake_waitUntil_bounds_work_and_scheduled_drain_owns_backlog
+```
+
+The app intake failure was “intake claims at most its own job plus two others; got 20”; the separate website failure was “20 !== 3.” Email delivery after the first throttle was 0 rather than 1, the abuse-detection 403 entered needs_review rather than pending, and admin recovery remained pending rather than done. Large numeric hints also reproduced the original invalid-Date throw.
+
+Focused verification: the first GREEN passed 22/23; its one failure identified an older test's split clocks. A direct drain used simulated future time but the admin route ran in Miniflare's separate real-time isolate, correctly making that simulated deadline look excessive. The retained test now runs that route on the same fake clock with background providers disabled, preserving its assertion that an ordinary 120-second pause survives admin retry. The next focused run passed 21/21, including the new cases, ordinary-pause preservation and the stale-snapshot regression. The final suite additionally checks manual recovery from the new review condition and the website journey.
+
+Review/Notes: the combined source and regression diff was reviewed locally, including SQL bindings, pause selection, the atomic retry update, FIFO protection, provider independence and request limits. No table, column, migration, dependency or package script changed. All provider calls in the new journeys are intercepted and their pending work is awaited before restoring fetch. No real report/home-data fixture or agent memory was used; no GitHub, Cloudflare or deployed Worker contact, push or deployment occurred. No packaging was performed.
+
+After quotes from the final full-suite log:
+
+```text
+✔ fixes5_N1_provider_hint_0_is_bounded_and_visible (568.0875ms)
+✔ fixes5_N1_admin_retry_clears_stale_shared_pause_and_reconciles (324.099ms)
+✔ fixes5_N1_retention_cleanup_cannot_leave_a_shared_pause (474.888041ms)
+✔ fixes5_N2_github_pause_delivers_email_in_current_and_backlogged_drains (1536.635542ms)
+✔ fixes5_N3_throttle_wording_0_remains_retryable (248.579667ms)
+✔ fixes5_m8_intake_waitUntil_bounds_work_and_scheduled_drain_owns_backlog (3095.751542ms)
+✔ fixes5_m8_website_waitUntil_reserves_own_email_and_two_backlog_jobs (3367.52025ms)
+```
+
+Result: the full Worker suite ran **once** after the final production/test edits: `lockf -k /Volumes/CojeevBuild/lanes/compile.lock /usr/bin/time -p npm run reporting:test`, exit 0, **157 tests, 157 passed, 0 failed, 0 cancelled, 0 skipped**. Runner duration **315.254 s**, command wall time **315.72 s**. This includes the complete local Miniflare intake -> waitUntil -> issue receipt -> idempotent retry journey, the six-hour/1,440-intake flood, all retained website/migration/pacing regressions and the twenty new cases. The final source snapshot also verifies that a legitimate provider pause survives admin retry, that a poisoned pause is cleared and reconciled without another POST, and that email and both bounded intake routes complete through later drains. Only documentation and commit work follow this run.
+
+### Fifth-fix check-running time
+
+| Check | Command wall time | Result |
+|---|---:|---|
+| Initial RED on 198dd57 source | 6.54 s | 1/15 passed; 14 expected regressions failed |
+| Four additional hint RED cases on archived 198dd57 | 3.47 s | 0/4; four expected failures |
+| First focused GREEN | 16.15 s | 22/23; split-clock fixture corrected afterward |
+| Corrected focused GREEN | 16.74 s | 21/21 passed |
+| Website intake RED on archived 198dd57 | 5.18 s | expected 20-versus-3 failure |
+| Final full Worker suite | 315.72 s | 157/157 passed |
+| **Total check-running time** | **363.80 s** | Includes the failed checks above |
+
+Logs are `/Volumes/CojeevBuild/lanes/core/r2-fixes5-{red,extra-red,green,green2,website-red,full}.log`. Command wall times were measured inside the compile lock. Lock queue waiting, test writing, source editing/debugging, local diff review, documentation and commits are excluded; no packaging was performed. No root test/typecheck or browser/deployment runner was used. The existing Node module-type warning in the triage fixture remains advisory; its test passed. The branch remains local.
