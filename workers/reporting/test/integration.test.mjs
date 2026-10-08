@@ -20,7 +20,7 @@ before(async()=>{
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { contact } from "./workers/reporting/src/contact.ts"; export { default as worker } from "./workers/reporting/src/index.ts"; export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { contact, retryContacts } from "./workers/reporting/src/contact.ts"; export { default as worker } from "./workers/reporting/src/index.ts"; export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 after(async()=>{await mf?.dispose();});
@@ -1206,17 +1206,17 @@ test('contact shares the per-IP ten-per-ten-minutes limit',async()=>{
 });
 test('contact daily and monthly email quotas retain the message without sending',async()=>{
   for(const more of [{EMAIL_DAILY_LIMIT:'0'},{EMAIL_MONTHLY_LIMIT:'0'}]) {
-    const p=contactPayload();await assert.rejects(backend.contact(contactRequest(p),contactEnv(more),noContactSend),error=>error.status===503);
+    const p=contactPayload();assert.deepEqual(await backend.contact(contactRequest(p),contactEnv(more),noContactSend),{ok:true,queued:true});
     assert.equal((await contactRow(p.id)).delivery_status,'limited');assert.equal((await contactRow(p.id)).message,p.message);
     assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_attempts WHERE job_id=?').bind(`contact:${p.id}`).first()).n,0);
   }
 });
-test('contact provider failures retain private content and never resend uncertain outcomes',async()=>{
+test('contact provider failures acknowledge saved content and POST retries never resend',async()=>{
   for(const provider of [async()=>{throw new Error('Provider response lost');},async()=>new Response(null,{status:500}),async()=>Response.json({}),async()=>new Response(null,{status:429})]) {
     const p=contactPayload();let sends=0;
-    await assert.rejects(backend.contact(contactRequest(p),contactEnv(),async(...args)=>{sends++;return provider(...args);}),error=>error.status===503);
+    assert.deepEqual(await backend.contact(contactRequest(p),contactEnv(),async(...args)=>{sends++;return provider(...args);}),{ok:true,queued:true});
     const row=await contactRow(p.id);assert.ok(['needs_review','limited'].includes(row.delivery_status));assert.equal(row.message,p.message);assert.equal(row.provider_id,null);
-    await assert.rejects(backend.contact(contactRequest(p),contactEnv(),noContactSend),error=>error.status===503);assert.equal(sends,1);
+    assert.deepEqual(await backend.contact(contactRequest(p),contactEnv(),noContactSend),{ok:true,queued:true});assert.equal(sends,1);
   }
   const p=contactPayload();await assert.rejects(backend.contact(contactRequest(p),contactEnv({EMAIL_ENABLED:'false'}),noContactSend),error=>error.status===503);assert.equal((await contactRow(p.id)).delivery_status,'disabled');
 });
@@ -1238,4 +1238,82 @@ test('cleanup deletes contact content older than ninety days and keeps fresh mes
   for(const p of [old,fresh]) await backend.contact(contactRequest(p),contactEnv(),async()=>Response.json({id:`retention-${p.id}`}));
   await db.prepare('UPDATE contact_messages SET created_at=? WHERE id=?').bind(Date.now()-91*86400000,old.id).run();
   await backend.cleanup(backendEnv());assert.equal(await contactRow(old.id),null);assert.equal((await contactRow(fresh.id)).message,fresh.message);
+});
+
+// Both initial reads complete before either INSERT, guaranteeing the losing-insert path.
+test('concurrent contact drafts with the same id conflict for every differing field',async()=>{
+  for(const difference of [{name:'Another Visitor'},{email:'another@example.com'},{message:'A different message for this same id.'},{page:'/cojeev-ui/about/'}]) {
+    const p=contactPayload();let reads=0,release,sends=0;
+    const gate=new Promise(resolve=>{release=resolve;});
+    const racingDB={prepare(sql){
+      const statement=db.prepare(sql);
+      if(sql!=='SELECT * FROM contact_messages WHERE id=?') return statement;
+      return {bind(...values){const bound=statement.bind(...values);return {async first(){
+        const row=await bound.first();
+        if(++reads<=2) {assert.equal(row,null);if(reads===2) release();await gate;}
+        return row;
+      }};}};
+    }};
+    const env=contactEnv({DB:racingDB}),provider=async()=>{sends++;return Response.json({id:'race-accepted'});};
+    const results=await Promise.allSettled([backend.contact(contactRequest(p),env,provider),backend.contact(contactRequest({...p,...difference}),env,provider)]);
+    assert.equal(results.filter(result=>result.status==='fulfilled').length,1);
+    const failure=results.find(result=>result.status==='rejected');
+    assert.equal(failure.reason.status,409);assert.equal(failure.reason.message,'This message was already saved with different details. Retry the original draft.');
+    assert.equal(sends,1);assert.equal(reads,3);
+  }
+});
+test('contact POST returns 202 for limited and uncertain delivery, including duplicates',async()=>{
+  const original=globalThis.fetch;
+  try {
+    for(const more of [{EMAIL_DAILY_LIMIT:'0'},{}]) {
+      const p=contactPayload(),env=contactEnv(more);let sends=0;
+      globalThis.fetch=async()=>{sends++;return new Response(null,{status:500});};
+      for(let attempt=0;attempt<2;attempt++) {
+        const response=await backend.worker.fetch(contactRequest(p),env,{waitUntil(){}});
+        assert.equal(response.status,202);assert.deepEqual(await response.json(),{ok:true,queued:true});
+      }
+      assert.equal(sends,more.EMAIL_DAILY_LIMIT?0:1);
+    }
+  } finally {globalThis.fetch=original;}
+});
+const seedContact=async(status,age)=>{
+  const p=contactPayload();await db.prepare('INSERT INTO contact_messages(id,created_at,name,email,message,page,delivery_status) VALUES(?,?,?,?,?,?,?)').bind(p.id,Date.now()-age,p.name.trim(),p.email,p.message,p.page,status).run();return p;
+};
+test('contact retries reserve shared quotas and recover limited, uncertain and stale sending messages',async()=>{
+  const minute=60000;
+  const retry=await Promise.all(['limited','needs_review','sending'].map(status=>seedContact(status,16*minute)));
+  const recent=await seedContact('sending',14*minute),disabled=await seedContact('disabled',16*minute);
+  const lost=contactPayload();let originalRequest;
+  assert.deepEqual(await backend.contact(contactRequest(lost),contactEnv(),async(_url,init)=>{originalRequest=init;throw new Error('Response lost');}),{ok:true,queued:true});
+  retry.push(lost);
+  await backend.retryContacts(contactEnv({EMAIL_DAILY_LIMIT:'0'}),noContactSend);
+  for(const p of retry) assert.equal((await contactRow(p.id)).delivery_status,'limited');
+  const calls=[];
+  await backend.retryContacts(contactEnv(),async(_url,init)=>{calls.push(init);return Response.json({id:'retried-contact'});});
+  for(const p of retry) {
+    const row=await contactRow(p.id);assert.equal(row.delivery_status,'accepted');assert.equal(row.provider_id,'retried-contact');
+    const sent=calls.filter(init=>init.headers['Idempotency-Key']===`cojeev/contact:${p.id}`);assert.equal(sent.length,1);
+    if(p.id===lost.id) assert.equal(sent[0].body,originalRequest.body,'Provider retry uses the same body as the uncertain send.');
+    assert.equal(JSON.parse(sent[0].body).reply_to,p.email);
+    assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_attempts WHERE job_id=?').bind(`contact:${p.id}`).first()).n,p.id===lost.id?2:1);
+  }
+  assert.equal((await contactRow(recent.id)).delivery_status,'sending');assert.equal((await contactRow(disabled.id)).delivery_status,'disabled');
+  await backend.retryContacts(contactEnv(),noContactSend);
+});
+test('scheduled contact recovery expires old pending messages and health exposes status counts only',async()=>{
+  const hour=3600000,original=globalThis.fetch,pending=[];
+  for(const status of ['limited','needs_review','sending']) pending.push(await seedContact(status,23*hour+1000));
+  const accepted=await seedContact('accepted',24*hour),disabled=await seedContact('disabled',24*hour),fresh=await seedContact('needs_review',22*hour);
+  const work=[];globalThis.fetch=async()=>Response.json({id:'scheduled-contact'});
+  try {await backend.worker.scheduled({},contactEnv({GITHUB_TOKEN:undefined}),{waitUntil(promise){work.push(promise);}});await Promise.all(work);}
+  finally {globalThis.fetch=original;}
+  for(const p of pending) assert.equal((await contactRow(p.id)).delivery_status,'expired');
+  assert.equal((await contactRow(accepted.id)).delivery_status,'accepted');assert.equal((await contactRow(disabled.id)).delivery_status,'disabled');
+  assert.equal((await contactRow(fresh.id)).provider_id,'scheduled-contact');
+  const response=await backend.worker.fetch(new Request('http://localhost/v1/admin/health',{headers:{Authorization:`Bearer ${healthToken}`}}),contactEnv({HEALTH_TOKEN:healthToken}),{waitUntil(){}});
+  assert.equal(response.status,200);const health=await response.json();
+  const expected=(await db.prepare('SELECT delivery_status,COUNT(*) AS count FROM contact_messages GROUP BY delivery_status').all()).results;
+  assert.deepEqual(health.contacts,expected);
+  for(const row of health.contacts) assert.deepEqual(Object.keys(row).sort(),['count','delivery_status']);
+  assert.ok(!JSON.stringify(health).includes('@'));
 });

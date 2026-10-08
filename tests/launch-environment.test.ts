@@ -110,6 +110,12 @@ test("the maker's contact form renders only when contact is enabled", () => {
     assert.doesNotMatch(disabled, new RegExp(`name="${name}"`));
   }
   assert.match(enabled, /Send message/);
-  assert.match(enabled, /role="status"/);
+  assert.match(enabled, /class="contact-status sr-only" role="status"><\/p>/);
+  assert.match(enabled, /id="contact"/);
+  const enabledHero = enabled.split('class="creator-art"')[0];
+  const disabledHero = disabled.split('class="creator-art"')[0];
+  assert.match(enabledHero, /class="[^"]*story-link-primary[^"]*"[^>]*href="#contact"|href="#contact"[^>]*class="[^"]*story-link-primary/);
+  assert.match(disabledHero, /class="[^"]*story-link-primary[^"]*"[^>]*href="https:\/\/github.com\/luv-jeri"|href="https:\/\/github.com\/luv-jeri"[^>]*class="[^"]*story-link-primary/);
+  assert.doesNotMatch(disabled, /id="contact"|href="#contact"/);
   assert.doesNotMatch(disabled, /Send me a message|Send message|<form/);
 });

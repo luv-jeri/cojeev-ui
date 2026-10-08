@@ -16,6 +16,7 @@ export function ContactForm() {
   const [error, setError] = React.useState(""), [success, setSuccess] = React.useState("");
   const [busy, setBusy] = React.useState(false), [locked, setLocked] = React.useState(false);
   const [token, setToken] = React.useState(""), [attempt, setAttempt] = React.useState(0), [configAttempt, setConfigAttempt] = React.useState(0);
+  const [verificationFailed, setVerificationFailed] = React.useState(false);
   const submission = React.useRef<Submission | null>(null), sending = React.useRef(false);
   React.useEffect(() => {
     if (!REPORTING_API) return;
@@ -39,20 +40,21 @@ export function ContactForm() {
     const frozen = submission.current ?? { ...draft, name: draft.name.trim(), message: draft.message.trim(), id: crypto.randomUUID(), page: window.location.pathname };
     submission.current = frozen; sending.current = true; setBusy(true); setLocked(true); setError("");
     try {
-      await reportingFetch<{ ok: boolean }>("/v1/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...frozen, turnstileToken: token }) });
-      setSuccess(`Thanks, ${frozen.name}. Your message is on its way. I'll reply to ${frozen.email}.`);
+      const result = await reportingFetch<{ ok: boolean; queued?: boolean }>("/v1/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...frozen, turnstileToken: token }) });
+      setSuccess(result.queued ? `Thanks, ${frozen.name}. Your message is saved and will reach me shortly.` : `Thanks, ${frozen.name}. Your message is on its way. I'll reply to ${frozen.email}.`);
     } catch (cause) {
       if (!previouslyAttempted && cause instanceof ReportingError && cause.status >= 400 && cause.status < 500 && ![408, 409].includes(cause.status)) {
         submission.current = null; setLocked(false);
       }
       setError(cause instanceof ReportingError && cause.status ? cause.message : "The connection was interrupted. Your draft is still here. Retry sends the same message.");
+      setVerificationFailed(cause instanceof ReportingError && cause.status === 403 && /security check/i.test(cause.message));
       setToken(""); setAttempt(current => current + 1);
     } finally { sending.current = false; setBusy(false); }
   }
   const siteKey = REPORTING_SITE_KEY || config?.turnstileSiteKey;
-  return <section className="contact-block" aria-labelledby={heading}>
+  return <section id="contact" className="contact-block" aria-labelledby={heading}>
     <h3 id={heading}>Send me a message</h3>
-    <p className="contact-status" role="status">{success}</p>
+    <p className={`contact-status${success ? "" : " sr-only"}`} role="status">{success}</p>
     {!success && <form className="contact-form" onSubmit={send}>
       <Field><FieldLabel>Name</FieldLabel><FieldControl><Input name="name" autoComplete="name" required maxLength={100} value={draft.name} readOnly={locked} onChange={event => change("name", event.target.value)} /></FieldControl></Field>
       <Field><FieldLabel>Email</FieldLabel><FieldControl><Input name="email" type="email" autoComplete="email" required maxLength={254} value={draft.email} readOnly={locked} onChange={event => change("email", event.target.value)} /></FieldControl></Field>
@@ -61,7 +63,7 @@ export function ContactForm() {
       {!REPORTING_API && <p>Contact is not connected yet. You can use Email me below.</p>}
       {configError && <div><p role="alert">{configError}</p><Button type="button" variant="outline" size="sm" onClick={() => setConfigAttempt(current => current + 1)}>Retry connection</Button></div>}
       {config && !config.emailEnabled && <p>Email is temporarily unavailable. You can use Email me below.</p>}
-      {config && !config.local && (siteKey ? <div className="contact-verification"><Turnstile key={attempt} siteKey={siteKey} onToken={setToken} attempt={attempt} /><Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => { setToken(""); setAttempt(current => current + 1); }}>Retry verification</Button></div> : <p role="alert">The security check is unavailable. You can use Email me below.</p>)}
+      {config && !config.local && (siteKey ? <div className="contact-verification"><Turnstile key={attempt} siteKey={siteKey} onToken={value => { setToken(value); if (value) setVerificationFailed(false); }} onError={() => setVerificationFailed(true)} onExpire={() => setVerificationFailed(true)} attempt={attempt} />{verificationFailed && <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => { setVerificationFailed(false); setToken(""); setAttempt(current => current + 1); }}>Retry verification</Button>}</div> : <p role="alert">The security check is unavailable. You can use Email me below.</p>)}
       {error && <p role="alert">{error}</p>}
       {locked && <p>Your draft is kept as sent. Retry checks the same message so it cannot send twice.</p>}
       <Button type="submit" loading={busy} disabled={busy || !config?.emailEnabled || (!config.local && !token)}>Send message</Button>
