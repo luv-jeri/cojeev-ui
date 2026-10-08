@@ -1,4 +1,4 @@
-import { test, before, after } from 'node:test';
+import { test, before, beforeEach, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { createHash, randomUUID, createHmac } from 'node:crypto';
@@ -23,6 +23,13 @@ before(async()=>{
   media=await mf.getR2Bucket('MEDIA');
   const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, acceptApp, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
+});
+// GitHub drains now share a FIFO queue; retire previous tests' unfinished fixtures.
+// Reports/receipts remain available; each test owns its queue and pacing state.
+// Fake clocks can move backwards between fixtures, so future reservations cannot leak.
+beforeEach(async()=>{
+  await db.prepare("UPDATE outbox SET state='held' WHERE kind='github' AND state IN ('pending','processing')").run();
+  await db.prepare('DELETE FROM github_issue_attempts').run();
 });
 after(async()=>{await mf?.dispose();});
 test('saves first, returns stable receipt, refuses changed retry and wrong token',async()=>{
@@ -171,6 +178,7 @@ test('GitHub reconciliation binds markers to the report actor and creation windo
   const p=payload({title:'Private bug title',description:'Private description',email:'private-address@example.com',references:['https://private.example.com/secret']});
   await submit(p);const row={...await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first(),triage_title:'Public verdict title',triage_body:'Verdict body'};
   const env=backendEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
+  await queueGitHub(p.id);
   let original;
   await backend.mirrorIssue(env,row,async(url,init)=>{
     if(url==='https://api.github.com/user') return Response.json(githubActor);
@@ -818,7 +826,7 @@ const fakeGitHub = (log,extra=()=>undefined) => async (url,init={}) => {
   const method=init.method??'GET';log.push({url,method,body:init.body});
   const custom=extra(url,method,init);if(custom) return custom;
   if(url==='https://api.github.com/user') return Response.json(githubActor);
-  if(method==='POST'&&url.endsWith('/issues')) return Response.json({number:314,node_id:'I_314',html_url:'https://github.com/owner/library/issues/314',body:JSON.parse(init.body).body,user:githubActor,created_at:new Date().toISOString()},{status:201});
+  if(method==='POST'&&url.endsWith('/issues')) return Response.json({number:314,node_id:'I_314',html_url:'https://github.com/owner/library/issues/314',body:JSON.parse(init.body).body,user:githubActor,created_at:new Date(Date.now()).toISOString()},{status:201});
   if(method==='GET') return Response.json([]);
   return Response.json({});
 };
@@ -1125,7 +1133,7 @@ const fakeAppGitHub = () => {
     assert.equal(u.pathname,'/repos/luv-jeri/cojeev/issues','app delivery must never reach website repository');
     if(init.method!=='POST') return Response.json(issues);
     posts++;
-    const issue={...JSON.parse(init.body),number:issues.length+1,node_id:`APP_${issues.length+1}`,html_url:`https://github.com/luv-jeri/cojeev/issues/${issues.length+1}`,user:githubActor,created_at:new Date().toISOString()};
+    const issue={...JSON.parse(init.body),number:issues.length+1,node_id:`APP_${issues.length+1}`,html_url:`https://github.com/luv-jeri/cojeev/issues/${issues.length+1}`,user:githubActor,created_at:new Date(Date.now()).toISOString()};
     issues.push(issue);
     if(uncertain){uncertain=false;throw new Error('Synthetic response lost after GitHub persisted issue');}
     return Response.json(issue,{status:201});
@@ -1716,6 +1724,8 @@ test('app_report_default_issue_ceiling_bounds_every_rolling_hour_and_reconciles_
       Date.now=()=>time+3599999;
       await assert.rejects(backend.mirrorIssue({...env,GITHUB_ISSUE_HOURLY_LIMIT:undefined},next,send));assert.equal(posted.length,200);
       const recovered=row();
+      await directApp(appPayload({id:recovered.id}), '198.51.100.1', env);
+      await db.prepare('UPDATE outbox SET first_attempt_at=? WHERE report_id=?').bind(time,recovered.id).run();
       // Reconciliation of an existing signed issue must not reserve a creation slot.
       const saved={...recovered,body:`<!-- cojeev-report:${recovered.id}:${createHmac('sha256',ipSecret).update(`github-report:${recovered.id}`).digest('hex')} -->`,number:501,node_id:'I_501',html_url:'https://github.com/luv-jeri/cojeev/issues/501',user:githubActor,created_at:new Date(time).toISOString()};
       const issue=await backend.mirrorIssue(env,recovered,async(url)=>url.endsWith('/user')?Response.json(githubActor):Response.json([saved]));
@@ -1728,5 +1738,117 @@ test('app_report_default_issue_ceiling_bounds_every_rolling_hour_and_reconciles_
     } finally {
       await db.prepare('DELETE FROM github_issue_attempts WHERE attempted_at IN (?,?)').bind(time,time+3600000).run();
     }
+  });
+});
+
+
+test('app_report_fifo_serves_older_due_queue_before_fresh_intake_P2',async()=>{
+  await inAppWindow(120,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'1'}),gh=fakeAppGitHub();
+    await db.prepare('INSERT INTO github_issue_attempts VALUES(?,?)').bind(randomUUID(),time).run();
+    const old=appPayload();await directApp(old,'192.0.2.1',env);
+    await backend.drain(env,old.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(old.id).first()).state,'pending');
+    Date.now=()=>time+3600000;
+    const fresh=appPayload();await directApp(fresh,'198.51.100.1',env);
+    await backend.drain(env,fresh.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(old.id).first()).state,'done','next intake drain must serve the oldest due report');
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(fresh.id).first()).state,'pending');
+    assert.equal(gh.posts,1);assert.ok(gh.issues[0].body.includes(old.id));
+  });
+});
+
+test('app_report_never_posted_old_queue_skips_reconciliation_P1',async()=>{
+  for(const [offset,crashed] of [[130,false],[135,true]]) await inAppWindow(offset,async time=>{
+    const env=appEnv(),old=appPayload(),gh=fakeAppGitHub();
+    await directApp(old,'192.0.2.1',env);
+    if(crashed) await db.prepare("UPDATE outbox SET state='processing',lease_until=?,attempts=1 WHERE report_id=?").bind(time-1,old.id).run();
+    Date.now=()=>time+6*3600000;
+    let reads=0;
+    const send=async(url,init={})=>{
+      if(init.method!=='POST') {
+        reads++;
+        if(url.endsWith('/user')) return Response.json(githubActor);
+        return Response.json(Array.from({length:100},(_,i)=>({number:i+1,body:'Unrelated issue or PR'})));
+      }
+      return gh.send(url,init);
+    };
+    await backend.drain(env,old.id,send);
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(old.id).first();
+    assert.equal(job.state,'done','queue age and a busy repo cannot fail a never-posted report');
+    assert.notEqual(job.delivery_status,'failed');assert.equal(gh.posts,1);assert.equal(reads,0);
+    assert.equal(job.first_attempt_at,time+6*3600000);
+  });
+});
+
+test('app_report_reconciliation_window_starts_at_first_post_not_intake',async()=>{
+  await inAppWindow(140,async time=>{
+    const env=appEnv(),p=appPayload(),gh=fakeAppGitHub();await directApp(p,'192.0.2.1',env);
+    Date.now=()=>time+6*3600000;gh.loseNextResponse();await backend.drain(env,p.id,gh.send);
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    Date.now=()=>job.due_at;
+    const send=async(url,init={})=>{
+      if(url.includes('since=')) assert.equal(new URL(url).searchParams.get('since'),new Date(time+6*3600000-60000).toISOString());
+      return gh.send(url,init);
+    };
+    await backend.drain(env,p.id,send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+    assert.equal(gh.posts,1,'lost response is adopted without another POST');
+    await backend.cleanup(env);
+    assert.equal((await db.prepare('SELECT first_attempt_at FROM outbox WHERE report_id=?').bind(p.id).first()).first_attempt_at,time+6*3600000,'reservation cleanup does not erase POST history');
+  });
+});
+
+test('app_report_two_network_flood_six_hours_eventually_delivers_oldest_once',async()=>{
+  await inAppWindow(150,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub();
+    await db.prepare("WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM n WHERE x<200) INSERT INTO github_issue_attempts SELECT 'flood-seed-'||x,?-3600000+x*18000 FROM n").bind(time).run();
+    const creationTimes=Array.from({length:200},(_,i)=>time-3600000+(i+1)*18000);
+    const old=appPayload();await directApp(old,'203.0.113.1',env);
+    const send=async(url,init={})=>{
+      // A repo this busy exceeds the old creation-time scan after five hours.
+      const since=new URL(url).searchParams.get('since');
+      if(since&&Date.now()-Date.parse(since)>5*3600000) return Response.json(Array.from({length:100},(_,i)=>({number:10000+i,body:'Flood issue or PR'})));
+      const response=await gh.send(url,init);
+      if(init.method==='POST') creationTimes.push(Date.now());
+      return response;
+    };
+    await backend.drain(env,old.id,send);
+    let admitted=0;
+    for(let window=1;window<=36;window++) {
+      Date.now=()=>time+window*600000;
+      let newest;
+      for(let network=0;network<2;network++) for(let i=0;i<20;i++) {
+        newest=appPayload();assert.equal((await directApp(newest,`192.0.${network+2}.${i<10?1:2}`,env)).fresh,true);admitted++;
+        // Exercise every available slot through fresh intake. Once full,
+        // another intake cannot create an issue; cron pins that queued wait.
+        if(creationTimes.filter(at=>at>Date.now()-3600000).length<200) await backend.drain(env,newest.id,send);
+      }
+      // Fresh-intake and five-minute-cron paths compete for the same budget.
+      await backend.drain(env,undefined,send);
+      const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(old.id).first();
+      assert.ok(['pending','done'].includes(job.state));assert.notEqual(job.delivery_status,'failed');
+      if(job.state==='pending') assert.equal(job.attempts,0);
+    }
+    assert.equal(admitted,1440,'two /24s each admit 120 per hour for six simulated hours');
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(old.id).first()).state,'done');
+    assert.equal(gh.issues.filter(issue=>issue.body.includes(old.id)).length,1,'old report eventually posts exactly once');
+  });
+});
+
+
+test('app_report_fifo_reservation_cannot_jump_an_older_due_lease',async()=>{
+  await inAppWindow(220,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub(),old=appPayload({id:'ffffffff-ffff-4fff-8fff-ffffffffffff'}),fresh=appPayload({id:'00000000-0000-4000-8000-000000000001'});
+    await directApp(old,'192.0.2.1',env);await directApp(fresh,'198.51.100.1',env);
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(fresh.id).first();
+    for(const state of ['pending','processing']) {
+      await db.prepare('UPDATE outbox SET state=? WHERE report_id=?').bind(state,old.id).run();
+      await assert.rejects(backend.mirrorIssue(env,row,gh.send),'an older due job owns creation priority even during another drain');
+      assert.equal(gh.posts,0);
+      assert.equal((await db.prepare('SELECT first_attempt_at FROM outbox WHERE report_id=?').bind(fresh.id).first()).first_attempt_at,null);
+    }
+    await db.prepare("UPDATE outbox SET state='held' WHERE report_id=?").bind(old.id).run();
+    await backend.drain(env,fresh.id,gh.send);assert.equal(gh.posts,1,'held jobs do not starve the active queue');
   });
 });

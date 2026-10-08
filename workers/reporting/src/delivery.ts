@@ -11,16 +11,27 @@ export class DeliveryFailure extends Error {
 class IssueCapacityWait extends Error {
   constructor(public retryAt:number) {super("Issue creation capacity is queued.");}
 }
-async function reserveIssueCreation(env:Env) {
+async function reserveIssueCreation(env:Env,row:ReportRow,queuedAt:number) {
   const time=now(),configured=Number(env.GITHUB_ISSUE_HOURLY_LIMIT);
   const limit=Number.isSafeInteger(configured)&&configured>=1&&configured<=200?configured:200;
   // One conditional write serializes reservations across repositories and concurrent leases.
   // Count attempts, including lost responses and failures, so retries cannot bypass the ceiling.
-  const reservation=await env.DB.prepare("INSERT INTO github_issue_attempts(id,attempted_at) SELECT ?,? WHERE (SELECT count(*) FROM github_issue_attempts WHERE attempted_at>?)<? RETURNING id")
-    .bind(crypto.randomUUID(),time,time-3600000,limit).first();
+  const id=crypto.randomUUID();
+  const [reserved]=await env.DB.batch([
+    env.DB.prepare(`INSERT INTO github_issue_attempts(id,attempted_at) SELECT ?,? WHERE (SELECT count(*) FROM github_issue_attempts WHERE attempted_at>?)<?
+      AND NOT EXISTS (SELECT 1 FROM outbox o JOIN reports r ON r.id=o.report_id
+        WHERE o.kind='github' AND o.state IN ('pending','processing') AND o.due_at<=? AND o.report_id<>?
+        AND (o.created_at<? OR (o.created_at=? AND o.rowid<(SELECT rowid FROM outbox WHERE id=?)))
+        AND ((r.source='website' AND ?=1) OR (r.source='app' AND ?=1))) RETURNING id`)
+      .bind(id,time,time-3600000,limit,time,row.id,queuedAt,queuedAt,`${row.id}:github`,Number(githubEnabled(env)),Number(!!env.GITHUB_TOKEN&&/^[\w.-]+\/[\w.-]+$/.test(env.APP_GITHUB_REPOSITORY??""))),
+    // Keep POST history on the durable job, independently of reservation cleanup.
+    env.DB.prepare("UPDATE outbox SET first_attempt_at=COALESCE(first_attempt_at,?) WHERE id=? AND EXISTS (SELECT 1 FROM github_issue_attempts WHERE id=?)")
+      .bind(time,`${row.id}:github`,id)
+  ]);
+  const reservation=reserved.results[0];
   if(!reservation) {
-    const oldest=await env.DB.prepare("SELECT MIN(attempted_at) AS time FROM github_issue_attempts WHERE attempted_at>?").bind(time-3600000).first<{time:number|null}>();
-    throw new IssueCapacityWait(Math.max(time+1000,(oldest?.time??time)+3600000));
+    const usage=await env.DB.prepare("SELECT count(*) AS count,MIN(attempted_at) AS time FROM github_issue_attempts WHERE attempted_at>?").bind(time-3600000).first<{count:number;time:number|null}>();
+    throw new IssueCapacityWait(usage&&usage.count>=limit?(usage.time??time)+3600000:time+1000);
   }
 }
 export const escapeHTML = (v:string) => v.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
@@ -96,27 +107,33 @@ export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
   const repository=row.source==="app"?row.destination_repository:env.GITHUB_REPOSITORY;
   if(!githubEnabled({...env,GITHUB_REPOSITORY:repository??undefined})) throw new DeliveryFailure("GitHub setup required.",false,true);
   if(row.issue_number) return {number:row.issue_number,node_id:row.issue_node_id,html_url:row.issue_url};
-  const actor=await github(env,"/user",{},send);
-  if(typeof actor.id!=="number"||!Number.isSafeInteger(actor.id)||actor.id<=0) throw new DeliveryFailure("GitHub token owner could not be verified.",false,true);
+  const job=await env.DB.prepare("SELECT created_at,first_attempt_at FROM outbox WHERE id=?").bind(`${row.id}:github`).first<Pick<Delivery,"first_attempt_at">&{created_at:number}>();
+  // Queue waits and expired pre-POST leases have no remote receipt to scan for.
+  // Only the timestamp recorded with a POST reservation authorizes reconciliation.
+  const firstPost=job?.first_attempt_at??null;
   // A signed marker prevents a different contributor from spoofing a receipt.
   const marker=`<!-- cojeev-report:${row.id}:${await keyedDigest(env.IP_HASH_SECRET??env.GITHUB_TOKEN!,`github-report:${row.id}`)} -->`;
   const repo=`/repos/${repository}`;
-  const since=new Date(row.created_at-60000).toISOString();
-  let original:GitHubIssue|undefined;
-  for(let page=1;page<=10;page++) {
-    const issues=await github(env,`${repo}/issues?state=all&sort=created&direction=desc&since=${encodeURIComponent(since)}&per_page=100&page=${page}`,{},send) as unknown as GitHubIssue[];
-    // Public markers can be copied into older issues. Bind adoption to the token
-    // owner's immutable ID and this report's creation window, then choose the first.
-    for(const issue of issues) if(!issue.pull_request&&issue.user?.id===actor.id&&Date.parse(issue.created_at??"")>=row.created_at-60000&&issue.body?.includes(marker)&&(!original||issue.number<original.number)) original=issue;
-    if(issues.length<100) { if(original) return original; break; }
-    if(page===10) throw new DeliveryFailure("Issue reconciliation needs a maintainer: too many matching pages.",false,true);
+  if(firstPost!==null) {
+    const actor=await github(env,"/user",{},send);
+    if(typeof actor.id!=="number"||!Number.isSafeInteger(actor.id)||actor.id<=0) throw new DeliveryFailure("GitHub token owner could not be verified.",false,true);
+    const since=new Date(firstPost-60000).toISOString();
+    let original:GitHubIssue|undefined;
+    for(let page=1;page<=10;page++) {
+      const issues=await github(env,`${repo}/issues?state=all&sort=created&direction=desc&since=${encodeURIComponent(since)}&per_page=100&page=${page}`,{},send) as unknown as GitHubIssue[];
+      // Public markers can be copied into older issues. Bind adoption to the token
+      // owner's immutable ID and this report's first POST window, then choose the first.
+      for(const issue of issues) if(!issue.pull_request&&issue.user?.id===actor.id&&Date.parse(issue.created_at??"")>=firstPost-60000&&issue.body?.includes(marker)&&(!original||issue.number<original.number)) original=issue;
+      if(issues.length<100) { if(original) return original; break; }
+      if(page===10) throw new DeliveryFailure("Issue reconciliation needs a maintainer: too many matching pages.",false,true);
+    }
   }
   const payload=row.source==="app"?{
     title:`[${row.app_category}] Cojeev app report`,
     body:`## Context\n${appLiteral(row.title,120)}\n\n## Message\n${appLiteral(row.description,2000)}${row.diagnostics_json?`\n\n## Diagnostics\n${appLiteral(JSON.parse(row.diagnostics_json) as string,1600)}`:""}\n\n${marker}`,
     labels:["user-report",row.app_category]
   }:publicIssue(row,marker);
-  await reserveIssueCreation(env);
+  await reserveIssueCreation(env,row,job?.created_at??row.created_at);
   return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify(payload)},send) as unknown as GitHubIssue;
 }
 const EMAIL_KINDS=["email_received","email_resolved","email_owner_received","email_accepted","email_rejected"];
@@ -190,7 +207,7 @@ export async function drain(env:Env,reportId?:string,send=fetch) {
   const enabledKinds=[...(emailEnabled(env)?EMAIL_KINDS:[]),...(githubEnabled(env)?["github","github_state",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:appEnabled?["github"]:[])];
   if(!enabledKinds.length) return {processed:0};
   // Disabled providers must not consume the batch window and starve enabled work.
-  const jobs=await env.DB.prepare(`SELECT * FROM outbox WHERE state='pending' AND due_at<=? AND kind IN (${enabledKinds.map(()=>"?").join(",")}) AND (kind<>'github' OR report_id IN (SELECT id FROM reports WHERE (source='website' AND ?=1) OR (source='app' AND ?=1))) ${reportId?"AND report_id=?":""} ORDER BY created_at,id LIMIT 20`).bind(now(),...enabledKinds,Number(githubEnabled(env)),Number(appEnabled),...(reportId?[reportId]:[])).all<Delivery>();
+  const jobs=await env.DB.prepare(`SELECT * FROM outbox WHERE state='pending' AND due_at<=? AND kind IN (${enabledKinds.map(()=>"?").join(",")}) AND (kind<>'github' OR report_id IN (SELECT id FROM reports WHERE (source='website' AND ?=1) OR (source='app' AND ?=1))) ${reportId?"AND (report_id=? OR kind='github')":""} ORDER BY created_at,rowid LIMIT 20`).bind(now(),...enabledKinds,Number(githubEnabled(env)),Number(appEnabled),...(reportId?[reportId]:[])).all<Delivery>();
   let processed=0;
   for(const job of jobs.results) {
     const row=await getReport(env,job.report_id);
