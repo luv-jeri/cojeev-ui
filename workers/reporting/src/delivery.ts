@@ -7,9 +7,16 @@ import { messageTags, sendResend, testerAllowed } from './resend';
 export class DeliveryFailure extends Error {
   constructor(public reason: string, public ambiguous = false, public permanent = false, public quota = false) { super(reason); }
 }
-// Capacity waits and provider throttles must not consume delivery failures.
+// Capacity waits and provider throttles have separate retry budgets from delivery failures.
 class IssueCapacityWait extends Error {
   constructor(public retryAt:number) {super("Issue creation capacity is queued.");}
+}
+class GitHubThrottle extends Error {
+  constructor(public retryAt:number) {super("GitHub throttled delivery.");}
+}
+async function githubPause(env:Env) {
+  const pause=await env.DB.prepare("SELECT MAX(due_at) AS retry_at FROM outbox WHERE kind LIKE 'github%' AND delivery_status='throttled' AND due_at>?").bind(now()).first<{retry_at:number|null}>();
+  return pause?.retry_at??null;
 }
 async function reserveIssueCreation(env:Env,row:ReportRow,queuedAt:number) {
   const time=now(),configured=Number(env.GITHUB_ISSUE_HOURLY_LIMIT);
@@ -22,11 +29,12 @@ async function reserveIssueCreation(env:Env,row:ReportRow,queuedAt:number) {
   const [reserved]=await env.DB.batch([
     env.DB.prepare(`INSERT INTO github_issue_attempts(id,attempted_at) SELECT ?,? WHERE (SELECT count(*) FROM github_issue_attempts WHERE attempted_at>?)<?
       AND (SELECT count(*) FROM github_issue_attempts WHERE attempted_at>?)<?
+      AND NOT EXISTS (SELECT 1 FROM outbox WHERE kind LIKE 'github%' AND delivery_status='throttled' AND due_at>?)
       AND NOT EXISTS (SELECT 1 FROM outbox o JOIN reports r ON r.id=o.report_id
         WHERE o.kind='github' AND o.state IN ('pending','processing') AND o.due_at<=? AND o.report_id<>?
         AND (o.created_at<? OR (o.created_at=? AND o.rowid<(SELECT rowid FROM outbox WHERE id=?)))
         AND ((r.source='website' AND ?=1) OR (r.source='app' AND ?=1))) RETURNING id`)
-      .bind(id,time,time-3600000,limit,time-60000,minuteLimit,time,row.id,queuedAt,queuedAt,`${row.id}:github`,Number(githubEnabled(env)),Number(!!env.GITHUB_TOKEN&&/^[\w.-]+\/[\w.-]+$/.test(env.APP_GITHUB_REPOSITORY??""))),
+      .bind(id,time,time-3600000,limit,time-60000,minuteLimit,time,time,row.id,queuedAt,queuedAt,`${row.id}:github`,Number(githubEnabled(env)),Number(!!env.GITHUB_TOKEN&&/^[\w.-]+\/[\w.-]+$/.test(env.APP_GITHUB_REPOSITORY??""))),
     // Keep POST history on the durable job, independently of reservation cleanup.
     env.DB.prepare("UPDATE outbox SET first_attempt_at=COALESCE(first_attempt_at,?) WHERE id=? AND EXISTS (SELECT 1 FROM github_issue_attempts WHERE id=?)")
       .bind(time,`${row.id}:github`,id)
@@ -38,6 +46,8 @@ async function reserveIssueCreation(env:Env,row:ReportRow,queuedAt:number) {
     const releases:number[]=[];
     if(usage&&usage.count>=limit) releases.push((usage.time??time)+3600000);
     if(usage&&usage.minute_count>=minuteLimit) releases.push((usage.minute_time??time)+60000);
+    const pause=await githubPause(env);
+    if(pause!==null) releases.push(pause);
     throw new IssueCapacityWait(releases.length?Math.max(...releases):time+1000);
   }
 }
@@ -103,6 +113,8 @@ export function ownerMessage(row: ReportRow, site: string) {
 const emailPayload=(env:Env,job:Delivery,to:string,message:{subject:string;text:string;html:string}) =>
   JSON.stringify({to:[to],from:`000h by Cojeev <${env.EMAIL_FROM}>`,reply_to:'hello@cojeev.com',...message,tags:messageTags(env,job)});
 async function github(env:Env,path:string,init:RequestInit={}, send=fetch) {
+  const pause=await githubPause(env);
+  if(pause!==null) throw new IssueCapacityWait(pause);
   let response:Response;
   try { response=await send(`https://api.github.com${path}`,{...init,headers:{Authorization:`Bearer ${env.GITHUB_TOKEN}`,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"Cojeev-Reporting","Content-Type":"application/json",...init.headers},signal:AbortSignal.timeout(15000)}); }
   catch { throw new DeliveryFailure("GitHub response unavailable; reconcile before retrying.",init.method==="POST"); }
@@ -110,14 +122,14 @@ async function github(env:Env,path:string,init:RequestInit={}, send=fetch) {
     let secondary=false;
     if(response.status===403) {
       const body=await response.json().catch(()=>null) as {message?:unknown}|null;
-      secondary=response.headers.has('Retry-After')||response.headers.get('x-ratelimit-remaining')==='0'||typeof body?.message==='string'&&/secondary rate limit|abuse detection|rate limit exceeded/i.test(body.message);
+      secondary=response.headers.has('Retry-After')||response.headers.get('x-ratelimit-remaining')==='0'||typeof body?.message==='string'&&/secondary rate limit/i.test(body.message);
     }
     if(response.status===429||secondary) {
       const time=now(),retry=response.headers.get('Retry-After'),seconds=retry===null?NaN:Number(retry);
       const hints=[Number.isFinite(seconds)&&seconds>=0?time+seconds*1000:Date.parse(retry??''),Number(response.headers.get('x-ratelimit-reset'))*1000].filter(at=>Number.isFinite(at)&&at>=time);
-      throw new IssueCapacityWait(hints.length?Math.max(time+1000,...hints):time+60000);
+      throw new GitHubThrottle(hints.length?Math.max(time+1000,...hints):time+60000);
     }
-    throw new DeliveryFailure(`GitHub returned HTTP ${response.status}.`,init.method==="POST"&&response.status>=500,[400,401,404,422].includes(response.status));
+    throw new DeliveryFailure(response.status===403?"GitHub permission denied (HTTP 403); review token and repository access.":`GitHub returned HTTP ${response.status}.`,init.method==="POST"&&response.status>=500,[400,401,403,404,422].includes(response.status));
   }
   try { return await response.json() as Record<string,unknown>; } catch { throw new DeliveryFailure("GitHub returned an unreadable response.",init.method==="POST"); }
 }
@@ -229,6 +241,8 @@ export async function drain(env:Env,reportId?:string,send=fetch) {
   const jobs=await env.DB.prepare(`SELECT * FROM outbox WHERE state='pending' AND due_at<=? AND kind IN (${enabledKinds.map(()=>"?").join(",")}) AND (kind<>'github' OR report_id IN (SELECT id FROM reports WHERE (source='website' AND ?=1) OR (source='app' AND ?=1))) ${reportId?"AND (report_id=? OR kind='github')":""} ORDER BY created_at,rowid LIMIT 20`).bind(now(),...enabledKinds,Number(githubEnabled(env)),Number(appEnabled),...(reportId?[reportId]:[])).all<Delivery>();
   let processed=0;
   for(const job of jobs.results) {
+    // Stop GitHub work even for a snapshot selected before another drain's throttle.
+    if(job.kind.startsWith('github')&&await githubPause(env)!==null) continue;
     const row=await getReport(env,job.report_id);
     const appJob=job.kind==="github"&&row.source==="app";
     if(job.kind.startsWith("email")&&!emailEnabled(env) || job.kind.startsWith("github")&&!(appJob?appEnabled:githubEnabled(env))) continue;
@@ -239,15 +253,26 @@ export async function drain(env:Env,reportId?:string,send=fetch) {
     processed++;
     try {
       const provider=await deliver(env,job,row,send);
-      await env.DB.prepare("UPDATE outbox SET state='done',provider_id=?,lease_token=NULL,last_error=NULL WHERE id=? AND lease_token=?").bind(provider,job.id,lease).run();
+      await env.DB.prepare("UPDATE outbox SET state='done',provider_id=?,lease_token=NULL,last_error=NULL,delivery_status=CASE WHEN kind LIKE 'github%' THEN 'accepted' ELSE delivery_status END,payload_json=CASE WHEN kind LIKE 'github%' THEN json_remove(payload_json,'$.githubThrottles') ELSE payload_json END WHERE id=? AND lease_token=?").bind(provider,job.id,lease).run();
     } catch(error) {
+      if(error instanceof GitHubThrottle) {
+        const payload=JSON.parse(job.payload_json??'{}') as Record<string,unknown>;
+        const prior=Number(payload.githubThrottles??0);
+        const count=(Number.isSafeInteger(prior)&&prior>=0?prior:0)+1;
+        const review=count>=8;
+        const retryAt=Math.max(error.retryAt,now()+Math.min(3600000,60000*2**Math.min(count-1,6)));
+        const reason=review?`GitHub delivery stopped after ${count} consecutive throttles; maintainer review required.`:`GitHub throttled delivery (${count}/8); retry after ${new Date(retryAt).toISOString()}.`;
+        await env.DB.prepare("UPDATE outbox SET state=?,attempts=attempts-1,due_at=?,lease_token=NULL,last_error=?,delivery_status='throttled',payload_json=? WHERE id=? AND lease_token=?").bind(review?'needs_review':'pending',retryAt,reason,JSON.stringify({...payload,githubThrottles:count}),job.id,lease).run();
+        // The persisted deadline protects later drains; this drain stops immediately.
+        break;
+      }
       if(error instanceof IssueCapacityWait) {
         await env.DB.prepare("UPDATE outbox SET state='pending',attempts=attempts-1,due_at=?,lease_token=NULL,last_error=NULL,delivery_status='queued' WHERE id=? AND lease_token=?").bind(error.retryAt,job.id,lease).run();
         continue;
       }
       const failure=error instanceof DeliveryFailure?error:new DeliveryFailure("Delivery could not be confirmed. Check provider status.",true);
       const review=!failure.quota&&((failure.ambiguous&&!appJob)||failure.permanent||job.attempts>=7);
-      await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL,delivery_status=? WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+(failure.quota?3600000:Math.min(86400000,60000*2**job.attempts)),failure.quota?'quota':failure.ambiguous?'uncertain':review?'failed':'queued',job.id,lease).run();
+      await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL,delivery_status=?,payload_json=CASE WHEN kind LIKE 'github%' THEN json_remove(payload_json,'$.githubThrottles') ELSE payload_json END WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+(failure.quota?3600000:Math.min(86400000,60000*2**job.attempts)),failure.quota?'quota':failure.ambiguous?'uncertain':review?'failed':'queued',job.id,lease).run();
     }
   }
   return {processed};

@@ -61,7 +61,7 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
       const id=decodeURIComponent(retry[1]);
       const job=await env.DB.prepare('SELECT * FROM outbox WHERE id=?').bind(id).first<Delivery>();
       if(job?.kind.startsWith('email')&&job.first_attempt_at!==null&&now()-job.first_attempt_at>=86400000) throw new HttpError(409,'Provider reconciliation required; the email retry window expired.');
-      const result=await env.DB.prepare("UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state IN ('pending','needs_review','held') RETURNING report_id").bind(now(),now(),id).first<{report_id:string}>();
+      const result=await env.DB.prepare("UPDATE outbox SET state='pending',due_at=CASE WHEN kind LIKE 'github%' AND delivery_status='throttled' THEN MAX(due_at,?) ELSE ? END,reviewed_at=?,last_error=CASE WHEN delivery_status='throttled' THEN last_error ELSE NULL END WHERE id=? AND state IN ('pending','needs_review','held') RETURNING report_id").bind(now(),now(),now(),id).first<{report_id:string}>();
       if(!result) throw new HttpError(409,"This delivery is finished or is already running.");
       await getReport(env,result.report_id);ctx.waitUntil(drain(env,result.report_id));return json({ok:true});
     }

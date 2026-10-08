@@ -29,6 +29,7 @@ before(async()=>{
 // Fake clocks can move backwards between fixtures, so future reservations cannot leak.
 beforeEach(async()=>{
   await db.prepare("UPDATE outbox SET state='held' WHERE kind='github' AND state IN ('pending','processing')").run();
+  await db.prepare("UPDATE outbox SET delivery_status='queued' WHERE kind LIKE 'github%' AND delivery_status='throttled'").run();
   await db.prepare('DELETE FROM github_issue_attempts').run();
 });
 after(async()=>{await mf?.dispose();});
@@ -1896,28 +1897,30 @@ test('app_report_minute_ceiling_is_configurable_and_atomic',async()=>{
 
 test('app_report_github_secondary_limits_requeue_without_failure_and_honor_provider_time',async()=>{
   const cases=[
-    {status:403,headers:{'Retry-After':'120'},delay:120000},
+    {status:403,headers:{'Retry-After':'120'},message:'Resource not accessible by integration',delay:120000},
     {status:429,dateDelay:180000,delay:180000},
     {status:429,resetDelay:240000,delay:240000},
     {status:403,headers:{},delay:60000},
-    {status:429,headers:{'Retry-After':'120'},resetDelay:240000,delay:240000}
+    {status:429,headers:{'Retry-After':'120'},resetDelay:240000,delay:240000},
+    {status:403,headers:{'x-ratelimit-remaining':'0'},message:'API rate limit exceeded',resetDelay:240000,delay:240000}
   ];
   for(const [i,c] of cases.entries()) await inAppWindow(260+i*10,async time=>{
     const env=appEnv(),p=appPayload(),gh=fakeAppGitHub();await directApp(p,'192.0.2.1',env);
     let posts=0;
     const headers={...c.headers,...(c.dateDelay?{'Retry-After':new Date(time+c.dateDelay).toUTCString()}:{}),...(c.resetDelay?{'x-ratelimit-reset':String((time+c.resetDelay)/1000)}:{})};
     const send=async(url,init={})=>{
-      if(init.method==='POST'&&++posts===1) return Response.json({message:'You have exceeded a secondary rate limit.'},{status:c.status,headers});
+      if(init.method==='POST'&&++posts===1) return Response.json({message:c.message??'You have exceeded a secondary rate limit.'},{status:c.status,headers});
       return gh.send(url,init);
     };
     await backend.drain(env,p.id,send);
     let job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
     assert.equal(job.state,'pending');assert.equal(job.attempts,0,'a provider throttle consumes no failure retry');
-    assert.equal(job.delivery_status,'queued');assert.equal(job.last_error,null);assert.equal(job.due_at,time+c.delay);
+    assert.equal(job.delivery_status,'throttled');assert.match(job.last_error,/GitHub throttled delivery/);assert.equal(job.due_at,time+c.delay);
     Date.now=()=>job.due_at-1;await backend.drain(env,p.id,send);assert.equal(posts,1,'no retry before the provider deadline');
     Date.now=()=>job.due_at;await backend.drain(env,p.id,send);
     job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
     assert.equal(job.state,'done');assert.equal(job.attempts,1);assert.equal(posts,2);assert.equal(gh.posts,1);
+    assert.equal(job.delivery_status,'accepted');assert.equal(JSON.parse(job.payload_json).githubThrottles,undefined,'successful delivery resets consecutive throttle history');
   });
 });
 
@@ -1929,13 +1932,13 @@ test('app_report_repeated_secondary_limits_do_not_exhaust_delivery_retries',asyn
       if(init.method!=='POST') return Response.json([]);
       posts++;return Response.json({message:'secondary rate limit'},{status:403,headers:{'Retry-After':'60'}});
     };
-    for(let i=0;i<10;i++) {
+    for(let i=0;i<8;i++) {
       await backend.drain(env,p.id,send);
       const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
-      assert.equal(job.state,'pending');assert.equal(job.delivery_status,'queued');assert.equal(job.attempts,0);
+      assert.equal(job.state,i===7?'needs_review':'pending');assert.equal(job.delivery_status,'throttled');assert.equal(job.attempts,0);
       Date.now=()=>job.due_at;
     }
-    assert.equal(posts,10,'throttles never reach the eight-failure review cutoff');
+    assert.equal(posts,8,'throttles use a separate eight-throttle review bound without spending failure retries');
   });
 });
 
@@ -1967,5 +1970,121 @@ test('app_report_github_secondary_limit_deadline_survives_a_stale_drain_snapshot
     assert.equal(posts,1,'a stale queue snapshot must not send again before Retry-After');
     const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
     assert.equal(job.state,'pending');assert.equal(job.attempts,0);assert.equal(job.due_at,time+120000);
+  });
+});
+
+test('fixes4_migration_0006_retries_legacy_github_job_without_duplicate_POST',async()=>{
+  const legacy=new Miniflare(convertV4MiniflareOptions({modules:true,script:'export default {fetch(){return new Response("ok")}}',compatibilityDate:'2026-09-01',d1Databases:['DB']}));
+  try {
+    const old=await legacy.getD1Database('DB');
+    for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')&&n<'0006').sort()) await old.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
+    const p=payload();await submit(p);await queueGitHub(p.id);
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+    await old.prepare(`INSERT INTO reports(${Object.keys(row).join(',')}) VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
+    for(const [kind,attempts,first] of [['github',1,null],['github_state',1,null],['email_received',1,null],['github_project',0,null]]) {
+      await old.prepare("INSERT INTO outbox(id,report_id,kind,state,attempts,due_at,created_at,first_attempt_at,delivery_status,last_error) VALUES(?,?,?,'needs_review',?,0,?,?,'uncertain','GitHub response unavailable; reconcile before retrying.')").bind(`${p.id}:${kind}`,p.id,kind,attempts,row.created_at,first).run();
+    }
+    const untouched=payload();await submit(untouched);
+    const fresh=await db.prepare('SELECT * FROM reports WHERE id=?').bind(untouched.id).first();
+    await old.prepare(`INSERT INTO reports(${Object.keys(fresh).join(',')}) VALUES(${Object.keys(fresh).map(()=>'?').join(',')})`).bind(...Object.values(fresh)).run();
+    await old.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github',0,?)").bind(`${untouched.id}:github`,untouched.id,fresh.created_at).run();
+    await old.exec((await readFile('workers/reporting/migrations/0006_github_issue_budget.sql','utf8')).replace(/\n/g,' '));
+    // Same update as the authenticated admin retry, against the migrated database.
+    await old.prepare("UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state IN ('pending','needs_review','held')").bind(Date.now(),Date.now(),`${p.id}:github`).run();
+    const marker=`<!-- cojeev-report:${p.id}:${createHmac('sha256',ipSecret).update(`github-report:${p.id}`).digest('hex')} -->`;
+    const issue={number:77,node_id:'LEGACY_77',html_url:'https://github.com/owner/library/issues/77',body:marker,user:githubActor,created_at:new Date(row.created_at).toISOString()};
+    let reads=0,posts=0;
+    await backend.drain(backendEnv({DB:old,GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library'}),p.id,async(url,init={})=>{
+      if(init.method==='POST') {posts++;return Response.json({...issue,number:78});}
+      reads++;if(url.endsWith('/user')) return Response.json(githubActor);
+      assert.equal(new URL(url).searchParams.get('since'),new Date(row.created_at-60000).toISOString());
+      return Response.json([issue]);
+    });
+    assert.equal(posts,0,'legacy attempted job must adopt the existing issue');assert.equal(reads,2);
+    assert.equal((await old.prepare('SELECT issue_number FROM reports WHERE id=?').bind(p.id).first()).issue_number,77);
+    assert.equal((await old.prepare('SELECT first_attempt_at FROM outbox WHERE id=?').bind(`${p.id}:github`).first()).first_attempt_at,row.created_at);
+    for(const id of [`${p.id}:github_state`,`${p.id}:email_received`,`${p.id}:github_project`,`${untouched.id}:github`]) assert.equal((await old.prepare('SELECT first_attempt_at FROM outbox WHERE id=?').bind(id).first()).first_attempt_at,null);
+  } finally {await legacy.dispose();}
+});
+
+test('fixes4_permission_denied_403_requires_named_review_PL6',async()=>{
+  await inAppWindow(350,async()=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    await backend.drain(env,p.id,async()=>Response.json({message:'Resource not accessible by integration'},{status:403}));
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'needs_review','permission denial requires review on the first response');
+    assert.equal(job.delivery_status,'failed');assert.match(job.last_error,/GitHub.*permission.*HTTP 403/i);assert.equal(job.attempts,1);
+    const detail=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).json();
+    assert.equal(detail.deliveries[0].last_error,job.last_error);
+  });
+});
+
+test('fixes4_both_full_budgets_wait_for_later_release_PL10',async()=>{
+  await inAppWindow(360,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'1',GITHUB_ISSUE_MINUTE_LIMIT:'1'}),gh=fakeAppGitHub(),p=appPayload();
+    await db.prepare("INSERT INTO github_issue_attempts VALUES('both-full',?)").bind(time-10000).run();
+    await directApp(p,'192.0.2.1',env);await backend.drain(env,p.id,gh.send);
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.due_at,time-10000+3600000,'both full budgets require the later hour release');
+    assert.equal(job.attempts,0);assert.equal(gh.posts,0);
+    Date.now=()=>time-10000+60000;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,0);
+    Date.now=()=>job.due_at;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,1);
+  });
+});
+
+test('fixes4_throttle_pauses_entire_drain_and_new_intake',async()=>{
+  await inAppWindow(370,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub();let posts=0,reads=0;
+    const send=async(url,init={})=>{
+      if(init.method==='POST'&&++posts===1) return Response.json({message:'Too many requests'},{status:429,headers:{'Retry-After':'120'}});
+      if(init.method!=='POST') reads++;
+      return gh.send(url,init);
+    };
+    const reports=[];
+    for(let i=0;i<3;i++) {const p=appPayload();reports.push(p);await directApp(p,`192.0.${i+2}.1`,env);}
+    await backend.drain(env,undefined,send);assert.equal(posts,1,'first throttle stops the current drain');
+    const paused=await db.prepare('SELECT due_at,last_error FROM outbox WHERE report_id=?').bind(reports[0].id).first();
+    assert.equal((await request(`/v1/admin/deliveries/${encodeURIComponent(`${reports[0].id}:github`)}/retry`,'POST',{},admin)).status,200);
+    const retried=await db.prepare('SELECT due_at,last_error FROM outbox WHERE report_id=?').bind(reports[0].id).first();
+    assert.deepEqual(retried,paused,'manual retry must preserve the provider pause and its visible reason');
+    Date.now=()=>time+1000;const fresh=appPayload();await directApp(fresh,'198.51.100.1',env);
+    await backend.drain(env,fresh.id,send);assert.equal(posts,1,'new intake respects the shared pause');assert.equal(reads,0);
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(fresh.id).first();
+    await assert.rejects(backend.mirrorIssue(env,row,send),'direct reservation cannot bypass the provider pause');assert.equal(posts,1);
+    assert.equal((await db.prepare('SELECT first_attempt_at FROM outbox WHERE report_id=?').bind(fresh.id).first()).first_attempt_at,null,'a paused reservation records no POST history');
+    assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM github_issue_attempts').first()).n,1,'paused work allocates no creation reservation');
+    Date.now=()=>time+119999;await backend.drain(env,undefined,send);assert.equal(posts,1);
+    Date.now=()=>time+120000;await backend.drain(env,undefined,send);
+    assert.equal(posts,5,'all four reports deliver after the pause');assert.equal(gh.posts,4);
+  });
+});
+
+test('fixes4_throttles_back_off_with_provider_floor_and_end_in_visible_review',async()=>{
+  for(const [offset,retryAfter] of [[380,null],[500,'180']]) await inAppWindow(offset,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);let calls=0,posts=0;
+    const send=async(url,init={})=>{
+      calls++;
+      if(init.method==='POST') posts++;
+      return Response.json({message:'secondary rate limit'},{status:403,headers:retryAfter?{'Retry-After':retryAfter}:{}});
+    };
+    const delays=[];
+    for(let i=0;i<8;i++) {
+      const attemptTime=Date.now();await backend.drain(env,p.id,send);
+      const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+      assert.equal(job.attempts,0,'throttles retain a separate retry budget');assert.equal(job.delivery_status,'throttled');
+      assert.match(job.last_error,/GitHub.*throttl/i);assert.equal(JSON.parse(job.payload_json).githubThrottles,i+1);
+      delays.push(job.due_at-attemptTime);
+      assert.equal(job.due_at-attemptTime,Math.max(Math.min(3600000,60000*2**i),Number(retryAfter??0)*1000));
+      assert.equal(job.state,i===7?'needs_review':'pending');
+      const before=calls;Date.now=()=>job.due_at-1;await backend.drain(env,p.id,send);assert.equal(calls,before);
+      Date.now=()=>job.due_at;
+    }
+    assert.equal(posts,1,'subsequent throttles on reconciliation also count toward the bound');assert.equal(calls,8);
+    assert.equal(delays[7],3600000,'exponential delay caps at one hour');
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.match(job.last_error,/8 consecutive throttles.*review/i);
+    await backend.drain(env,p.id,send);assert.equal(calls,8,'exhausted throttle retries stop automatically');
+    const detail=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).json();
+    assert.equal(detail.deliveries[0].state,'needs_review');assert.equal(detail.deliveries[0].delivery_status,'throttled');assert.equal(detail.deliveries[0].last_error,job.last_error);
   });
 });

@@ -214,3 +214,35 @@ Times below are instrumented command wall times inside the compile lock, includi
 | Final full Worker suite | 376.39 s | 132/132 |
 
 Instrumented check-running total: **1944.87 s**. One abandoned runner-option probe was not instrumented; its log write span was approximately 24 s and is separate from this total. That probe showed that appending the Node filter after the package script's file glob did not select tests. The early aborted checks and fixture corrections are included above rather than hidden from the total. Final full-suite runner duration: 376.17 s; command wall time: 376.39 s.
+
+## Fourth-review corrections (2026-10-08)
+
+Scope: findings C, m7/PL6 plus PL10, m5 and m6 from `/Volumes/CojeevBuild/lanes/core/r2-recheck3-opus.md`, starting at `0387adb`. This UI worktree and its ancestors have no AGENTS.md; supplied owner/builder instructions apply. The report was read in full. The separate m8 intake-drain finding and queue-throughput product decision remain outside this assignment.
+
+Changed — C: the undeployed `0006_github_issue_budget.sql` now backfills `first_attempt_at=created_at` only for GitHub issue jobs with a null timestamp and `attempts>0`. No 0007, table or column is added. Apply 0006 with any future authorized rollout. The pre-0006 Miniflare/D1 fixture starts with a website job in needs_review/uncertain, one recorded attempt, no POST timestamp, and an existing signed-marker issue #77. After migration and admin-style retry, it performs two reads, adopts #77 and performs zero POSTs. Unattempted GitHub jobs and other delivery kinds keep null timestamps; P1 still covers new jobs that never POSTed.
+
+Changed — m7: HTTP 403 counts as a throttle only with Retry-After, x-ratelimit-remaining: 0, or the secondary-rate-limit message. Other 403s immediately enter needs_review/failed with a fixed permission/access reason, also exposed by authenticated admin detail. Positive fixtures cover each allowed marker independently. PL10 fills both budgets with distinct minute/hour release times, asserts the later hour deadline, and proves no delivery at the earlier minute release.
+
+Changed — m5: a provider throttle stops the current drain and persists a shared GitHub pause in existing outbox `delivery_status='throttled'` plus `due_at`. Later drains, reconciliation calls, and atomic creation reservations respect that pause. Admin retry preserves its deadline and reason. The multi-job/new-intake fixture observes only one POST until Retry-After expires, no paused creation reservation or POST timestamp, then all four accepted reports deliver.
+
+Changed — m6: existing `payload_json.githubThrottles` stores a separate consecutive throttle count without spending the eight delivery-failure attempts. Delays start at 60 seconds and double to a one-hour cap, with provider Retry-After/reset hints as a floor. On the eighth throttle the job becomes needs_review/throttled with a named maintainer-review reason. Reconciliation throttles count too. Successful delivery or a non-throttle failure clears the consecutive count; existing GitHub state payload fields remain intact. Admin detail exposes the waiting/review status and reason through its existing fields. The earlier ten-unbounded-throttles test now pins the requested eight-throttle bound while retaining the zero-failure-attempt invariant; all prior test names are retained.
+
+Tests — before production changes, the focused RED ran 8 tests: 4 passed, 4 failed. C failed with one duplicate POST; permission-denied 403 stayed pending; the first throttled drain sent three POSTs; repeated throttles remained queued without a named throttle status. Log: `/Volumes/CojeevBuild/lanes/core/r2-fixes4-red.log`.
+
+Tests — PL10's temporary Math.min defect failed the new exact hour-deadline assertion. PL6's temporary all-403-throttle defect failed the permission-review assertion. Both plants were restored before final validation and never staged or committed. Logs: `/Volumes/CojeevBuild/lanes/core/r2-fixes4-pl10.log` and `r2-fixes4-pl6.log`. Focused GREEN passed 11/11, including the five new regressions, existing provider-time/repeated-throttle/stale-snapshot checks and triage fixtures; log `r2-fixes4-green.log`. Two final assertions additionally pin that a paused reservation allocates neither capacity nor POST history; the final full run checks them.
+
+Review — the combined source/migration/test diff was reviewed once after the fix set was built. The shared pause covers all GitHub job kinds, retains the provider floor through admin retry, and leaves delivery-failure accounting separate. Test fixtures clear prior synthetic throttle markers because their fake clocks move backwards between tests. No manifest/dependency change, packaging, root typecheck, remote read/write, push or deployment is part of this correction set. All HTTP evidence uses synthetic responses and local Miniflare; no agent memory is used.
+
+Result — the full Worker suite ran once after all production/test edits: `lockf -k /Volumes/CojeevBuild/lanes/compile.lock /usr/bin/time -p npm run reporting:test`, exit 0, **137 tests, 137 passed, 0 failed, 0 cancelled, 0 skipped**. Runner duration **445.63 s**, command wall time **445.81 s**. The full run includes the local native POST -> waitUntil -> saved issue receipt -> same-UUID retry journey, P1, the six-hour two-network flood, all existing migration/website regressions and the five new tests. Log: `/Volumes/CojeevBuild/lanes/core/r2-fixes4-full.log`. Only documentation/commit work follows this tested source snapshot; `git diff --check` passes.
+
+### Fourth-fix check-running time
+
+| Check | Command wall time | Result |
+|---|---|---|
+| Initial RED | 3.40 s | 4/8 passed; all four requested findings reproduced |
+| PL10 Math.min plant | 1.43 s | expected later-release assertion failure |
+| Focused GREEN | 7.94 s | 11/11 passed |
+| PL6 all-403-throttle plant | 1.43 s | expected permission-review assertion failure |
+| Final full Worker suite | 445.81 s | 137/137 passed |
+
+Total check-running time: **460.01 s**. Times are instrumented inside the compile lock, excluding queue waiting, test writing, implementation/debugging, review, documentation and commits. Two queued check commands were cancelled before lock acquisition and ran no check process. No packaging or installation was performed. The branch remains local; no GitHub, Cloudflare or deployed Worker contact, push, merge or deployment occurred.
