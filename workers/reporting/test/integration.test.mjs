@@ -1358,7 +1358,7 @@ test('app_report_runtime_accepts_and_delivers_without_admin',async()=>{
 
 test('app_report_admission_window_and_atomic_failure',async()=>{
   const installId=randomUUID(),p=appPayload({installId}),env=appEnv();
-  const call=(payload,configuration=env)=>backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.78'},body:JSON.stringify(payload)}),configuration);
+  const call=(payload,configuration=env)=>backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':'198.18.78.1'},body:JSON.stringify(payload)}),configuration);
   for(let i=0;i<5;i++) assert.equal((await call(appPayload({installId}))).fresh,true);
   await assert.rejects(call(p),error=>error.status===429);
   const original=Date.now;
@@ -1457,20 +1457,17 @@ test('app_report_ipv6_prefix_and_address_aliases_share_budgets',async()=>{
 });
 test('app_report_global_window_bounds_rotating_ips_and_installs',async()=>{
   await inAppWindow(20,async time=>{
-    const gh=fakeAppGitHub(),env=appEnv();
-    // Unrelated website rate rows cannot consume the app ceiling.
+    const globalKey=createHmac('sha256',ipSecret).update(`app-rate:${Math.floor(time/600000)}:global`).digest('hex');
+    // The storage backstop is independent of website counters and issue delivery.
+    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,1999,?)').bind(globalKey,time+600000).run();
     await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,999,?)').bind('synthetic-website-global-control',time+600000).run();
-    for(let i=0;i<100;i++) {
-      const p=appPayload();assert.equal((await directApp(p,`2001:db8:${i.toString(16)}:1::1`,env)).fresh,true);
-      await backend.drain(env,p.id,gh.send);
-    }
+    assert.equal((await directApp(appPayload(),'2001:db8:abcd:1::1')).fresh,true);
     const refused=appPayload();
-    await assert.rejects(directApp(refused,'198.51.100.200',env),error=>error.status===429&&error.retryAfter>0);
+    await assert.rejects(directApp(refused,'198.51.100.200'),error=>error.status===429&&error.retryAfter>0);
     assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(refused.id).first(),null);
     assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(refused.id).first()).n,0);
-    assert.equal(gh.posts,100,'issue creation is bounded even with unlimited install/address rotation');
     Date.now=()=>time+600000;
-    assert.equal((await directApp(refused,'198.51.100.200',env)).fresh,true,'global ceiling resets next window');
+    assert.equal((await directApp(refused,'198.51.100.200')).fresh,true,'global ceiling resets next window');
   });
 });
 
@@ -1492,7 +1489,7 @@ test('app_report_rejection_does_not_allocate_or_increment_counters',async()=>{
     await assert.rejects(directApp(appPayload({installId}),'198.51.100.19'),error=>error.status===429);
     assert.deepEqual(await snapshot(),installBefore,'install refusal cannot allocate a fresh IP row');
     const globalKey=createHmac('sha256',ipSecret).update(`app-rate:${Math.floor(time/600000)}:global`).digest('hex');
-    await db.prepare('UPDATE rate_limits SET count=100 WHERE key=?').bind(globalKey).run();
+    await db.prepare('UPDATE rate_limits SET count=2000 WHERE key=?').bind(globalKey).run();
     const globalBefore=await snapshot();
     for(let i=0;i<10;i++) await assert.rejects(directApp(appPayload(),`2001:db8:${i+300}:1::1`),error=>error.status===429);
     assert.deepEqual(await snapshot(),globalBefore,'global refusals cannot allocate install/IP rows or increment any budget');
@@ -1502,7 +1499,7 @@ test('app_report_rejection_does_not_allocate_or_increment_counters',async()=>{
 test('app_report_concurrent_global_budget_allocates_only_the_winner',async()=>{
   await inAppWindow(40,async time=>{
     const slot=Math.floor(time/600000),key=value=>createHmac('sha256',ipSecret).update(`app-rate:${slot}:${value}`).digest('hex');
-    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,99,?)').bind(key('global'),time+600000).run();
+    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,1999,?)').bind(key('global'),time+600000).run();
     const a=appPayload(),b=appPayload();
     const results=await Promise.allSettled([directApp(a,'192.0.2.211'),directApp(b,'192.0.2.212')]);
     assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
@@ -1511,7 +1508,7 @@ test('app_report_concurrent_global_budget_allocates_only_the_winner',async()=>{
       const counter=await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key(`install:${p.installId}`)).first();
       assert.deepEqual(counter,results[index].status==='fulfilled'?{count:1}:null);
     }
-    assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key('global')).first()).count,100);
+    assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key('global')).first()).count,2000);
   });
 });
 
@@ -1604,4 +1601,110 @@ test('app_report_lease_expiry_uses_one_cutoff_for_both_updates',async()=>{
     assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
     assert.equal(gh.posts,1);
   } finally {Date.now=original;}
+});
+
+
+for(const [name,offset,addresses,other] of [
+  ['ipv4_24',50,Array.from({length:100},(_,i)=>`203.0.113.${Math.floor(i/10)+1}`),'198.51.100.1'],
+  ['ipv6_48',60,Array.from({length:100},(_,i)=>`2001:db8:1234:${i.toString(16)}::1`),'2001:db8:5678:1::1'],
+]) test(`app_report_${name}_flood_preserves_global_capacity_and_counters`,async()=>{
+  await inAppWindow(offset,async time=>{
+    const snapshot=async()=>(await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results;
+    let admitted=0;
+    for(const [index,value] of addresses.entries()) {
+      const ip=name==='ipv4_24'&&index%2?`::ffff:${value}`:value;
+      const p=appPayload(),before=await snapshot();
+      try {assert.equal((await directApp(p,ip)).fresh,true);admitted++;}
+      catch(error) {
+        assert.equal(error.status,429);
+        assert.deepEqual(await snapshot(),before,'coarse-network rejection changes no counter');
+        assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+        assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+      }
+    }
+    assert.equal(admitted,20,'one /24 or /48 gets twenty admissions, regardless of address/install rotation');
+    const key=createHmac('sha256',ipSecret).update(`app-rate:${Math.floor(time/600000)}:global`).digest('hex');
+    assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key).first()).count,20);
+    assert.equal((await directApp(appPayload(),other)).fresh,true,'another network remains admitted after the flood');
+    Date.now=()=>time+600000;
+    assert.equal((await directApp(appPayload(),addresses[0])).fresh,true,'coarse-network budget resets');
+  });
+});
+
+test('app_report_asn_budget_is_atomic_and_optional',async()=>{
+  await inAppWindow(70,async()=>{
+    const call=(ip,asn)=>{
+      const request=new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(appPayload())});
+      Object.defineProperty(request,'cf',{value:{asn}});
+      return backend.acceptApp(request,appEnv());
+    };
+    for(let i=0;i<100;i++) assert.equal((await call(`2001:db8:${i.toString(16)}:1::1`,64500)).fresh,true);
+    const before=(await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results;
+    await assert.rejects(call('2001:db8:ffff:1::1',64500),error=>error.status===429);
+    assert.deepEqual((await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results,before);
+    assert.equal((await call('2001:db8:ffff:1::1',64501)).fresh,true);
+    assert.equal((await directApp(appPayload(),'198.51.100.1')).fresh,true,'absent ASN does not prevent admission');
+  });
+});
+
+test('app_report_issue_creation_budget_is_shared_atomic_and_queues_without_failure',async()=>{
+  await inAppWindow(80,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'2'}),gh=fakeAppGitHub(),websiteLog=[];
+    const send=(url,init)=>url.includes('/repos/luv-jeri/cojeev/')?gh.send(url,init):fakeGitHub(websiteLog)(url,init);
+    const website=payload();await acceptLocal(env,website);await queueGitHub(website.id);
+    await backend.drain(env,website.id,send);
+    const a=appPayload(),b=appPayload();await directApp(a,'192.0.2.1',env);await directApp(b,'192.0.2.2',env);
+    // Competing leases for different reports must share the one remaining issue slot.
+    await Promise.all([backend.drain(env,a.id,send),backend.drain(env,b.id,send)]);
+    const posts=()=>gh.posts+websiteLog.filter(c=>c.method==='POST'&&c.url.endsWith('/issues')).length;
+    assert.equal(posts(),2,'app and website share one creation ceiling even under concurrent drains');
+    const pending=(await db.prepare("SELECT report_id,state,attempts,delivery_status FROM outbox WHERE report_id IN (?,?) ORDER BY report_id").bind(a.id,b.id).all()).results;
+    assert.equal(pending.filter(j=>j.state==='done').length,1);
+    const queued=pending.find(j=>j.state==='pending');assert.ok(queued);
+    assert.equal(queued.attempts,0,'waiting for capacity consumes no delivery retry');assert.equal(queued.delivery_status,'queued');
+    assert.equal((await directApp(queued.report_id===a.id?a:b,'192.0.2.1',env)).receipt.status,'accepted');
+    const c=appPayload();await directApp(c,'198.51.100.1',env);await backend.drain(env,c.id,send);
+    assert.equal(posts(),2,'fresh intake remains saved after delivery capacity is exhausted');
+    Date.now=()=>time+3599999;
+    await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id IN (?,?)').bind(queued.report_id,c.id).run();
+    await backend.drain(env,c.id,send);assert.equal(posts(),2,'rolling hour has not elapsed');
+    Date.now=()=>time+3600001;
+    await backend.drain(env,queued.report_id,send);
+    await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(c.id).run();
+    await backend.drain(env,c.id,send);assert.equal(posts(),4,'stored reports deliver once capacity returns');
+    for(const id of [queued.report_id,c.id]) assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(id).first()).state,'done');
+  });
+});
+
+test('app_report_default_issue_ceiling_bounds_every_rolling_hour_and_reconciles_at_capacity',async()=>{
+  await inAppWindow(100,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'999'}),posted=[];
+    const send=async(url,init={})=>{
+      if(url.endsWith('/user')) return Response.json(githubActor);
+      if(init.method!=='POST') return Response.json([]);
+      posted.push(JSON.parse(init.body));
+      return Response.json({number:posted.length,node_id:`I_${posted.length}`,html_url:`https://github.com/luv-jeri/cojeev/issues/${posted.length}`});
+    };
+    const row=()=>({id:randomUUID(),source:'app',destination_repository:'luv-jeri/cojeev',created_at:time,title:'0.1.0 (macos)',description:'Synthetic message',app_category:'crash'});
+    try {
+      // Unsafe configuration cannot raise the shared ceiling above 200.
+      for(let i=0;i<200;i++) await backend.mirrorIssue(env,row(),send);
+      const next=row();await assert.rejects(backend.mirrorIssue(env,next,send));assert.equal(posted.length,200);
+      // No reset at a UTC hour boundary: only an elapsed rolling hour releases capacity.
+      Date.now=()=>time+3599999;
+      await assert.rejects(backend.mirrorIssue({...env,GITHUB_ISSUE_HOURLY_LIMIT:undefined},next,send));assert.equal(posted.length,200);
+      const recovered=row();
+      // Reconciliation of an existing signed issue must not reserve a creation slot.
+      const saved={...recovered,body:`<!-- cojeev-report:${recovered.id}:${createHmac('sha256',ipSecret).update(`github-report:${recovered.id}`).digest('hex')} -->`,number:501,node_id:'I_501',html_url:'https://github.com/luv-jeri/cojeev/issues/501',user:githubActor,created_at:new Date(time).toISOString()};
+      const issue=await backend.mirrorIssue(env,recovered,async(url)=>url.endsWith('/user')?Response.json(githubActor):Response.json([saved]));
+      assert.equal(issue.number,501);assert.equal(posted.length,200);
+      Date.now=()=>time+3600000;
+      await backend.mirrorIssue({...env,GITHUB_ISSUE_HOURLY_LIMIT:undefined},next,send);assert.equal(posted.length,201);
+      await backend.cleanup(env);
+      assert.equal((await db.prepare('SELECT count(*) AS n FROM github_issue_attempts WHERE attempted_at<=?').bind(time).first()).n,0,'cron removes expired reservations');
+      assert.equal((await db.prepare('SELECT count(*) AS n FROM github_issue_attempts WHERE attempted_at=?').bind(time+3600000).first()).n,1,'cron preserves active reservations');
+    } finally {
+      await db.prepare('DELETE FROM github_issue_attempts WHERE attempted_at IN (?,?)').bind(time,time+3600000).run();
+    }
+  });
 });

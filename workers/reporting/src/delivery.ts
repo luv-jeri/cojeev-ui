@@ -7,6 +7,22 @@ import { messageTags, sendResend, testerAllowed } from './resend';
 export class DeliveryFailure extends Error {
   constructor(public reason: string, public ambiguous = false, public permanent = false, public quota = false) { super(reason); }
 }
+// Capacity waits are not provider failures and must not consume delivery attempts.
+class IssueCapacityWait extends Error {
+  constructor(public retryAt:number) {super("Issue creation capacity is queued.");}
+}
+async function reserveIssueCreation(env:Env) {
+  const time=now(),configured=Number(env.GITHUB_ISSUE_HOURLY_LIMIT);
+  const limit=Number.isSafeInteger(configured)&&configured>=1&&configured<=200?configured:200;
+  // One conditional write serializes reservations across repositories and concurrent leases.
+  // Count attempts, including lost responses and failures, so retries cannot bypass the ceiling.
+  const reservation=await env.DB.prepare("INSERT INTO github_issue_attempts(id,attempted_at) SELECT ?,? WHERE (SELECT count(*) FROM github_issue_attempts WHERE attempted_at>?)<? RETURNING id")
+    .bind(crypto.randomUUID(),time,time-3600000,limit).first();
+  if(!reservation) {
+    const oldest=await env.DB.prepare("SELECT MIN(attempted_at) AS time FROM github_issue_attempts WHERE attempted_at>?").bind(time-3600000).first<{time:number|null}>();
+    throw new IssueCapacityWait(Math.max(time+1000,(oldest?.time??time)+3600000));
+  }
+}
 export const escapeHTML = (v:string) => v.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
 type EmailLink={label:string;url:string};
 const EMAIL_STYLE="@media (prefers-color-scheme: dark){html,body,.em-bg{background:#15171a !important}.em-card{background:#20242a !important}.em-text{color:#f3f4f4 !important}.em-muted{color:#bdc1c5 !important}.em-link{color:#f0a4cc !important}}";
@@ -100,6 +116,7 @@ export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
     body:`## Context\n${appLiteral(row.title,120)}\n\n## Message\n${appLiteral(row.description,2000)}${row.diagnostics_json?`\n\n## Diagnostics\n${appLiteral(JSON.parse(row.diagnostics_json) as string,1600)}`:""}\n\n${marker}`,
     labels:["user-report",row.app_category]
   }:publicIssue(row,marker);
+  await reserveIssueCreation(env);
   return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify(payload)},send) as unknown as GitHubIssue;
 }
 const EMAIL_KINDS=["email_received","email_resolved","email_owner_received","email_accepted","email_rejected"];
@@ -187,6 +204,10 @@ export async function drain(env:Env,reportId?:string,send=fetch) {
       const provider=await deliver(env,job,row,send);
       await env.DB.prepare("UPDATE outbox SET state='done',provider_id=?,lease_token=NULL,last_error=NULL WHERE id=? AND lease_token=?").bind(provider,job.id,lease).run();
     } catch(error) {
+      if(error instanceof IssueCapacityWait) {
+        await env.DB.prepare("UPDATE outbox SET state='pending',attempts=attempts-1,due_at=?,lease_token=NULL,last_error=NULL,delivery_status='queued' WHERE id=? AND lease_token=?").bind(error.retryAt,job.id,lease).run();
+        continue;
+      }
       const failure=error instanceof DeliveryFailure?error:new DeliveryFailure("Delivery could not be confirmed. Check provider status.",true);
       const review=!failure.quota&&((failure.ambiguous&&!appJob)||failure.permanent||job.attempts>=7);
       await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL,delivery_status=? WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+(failure.quota?3600000:Math.min(86400000,60000*2**job.attempts)),failure.quota?'quota':failure.ambiguous?'uncertain':review?'failed':'queued',job.id,lease).run();

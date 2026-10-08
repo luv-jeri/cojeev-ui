@@ -49,13 +49,13 @@ export async function checkAbuse(request: Request, env: Env, token: unknown, id:
   const hosts = origins(env).map(v=>new URL(v).hostname);
   if(!result.success || !result.hostname || !hosts.includes(result.hostname) || result.action !== "reporting") throw new HttpError(403,"The security check expired. Please try again.");
 }
-// Canonical address budgets: IPv4 /32, IPv6 /64, mapped IPv4 shares /32.
-function appIPBudget(ip: string): string {
+// Canonical address and coarse-network budgets; mapped IPv4 shares both IPv4 tiers.
+function appIPBudgets(ip: string): [string,string] {
   const invalid=()=>new HttpError(503,"Reporting protection requires a valid edge IP.");
   if(/^\d{1,3}(?:\.\d{1,3}){3}$/.test(ip)) {
     const octets=ip.split(".").map(Number);
     if(octets.some(n=>n>255)) throw invalid();
-    return `${octets.join(".")}/32`;
+    return [`${octets.join(".")}/32`,`${octets.slice(0,3).join(".")}.0/24`];
   }
   if(!/^[0-9a-f:.]+$/i.test(ip)||!ip.includes(":")) throw invalid();
   let address:string;
@@ -63,21 +63,25 @@ function appIPBudget(ip: string): string {
   const [left,right]=address.split("::"),a=left?left.split(":"):[],b=right?right.split(":"):[];
   const words=(right===undefined?a:[...a,...Array(8-a.length-b.length).fill("0"),...b]).map(v=>parseInt(v,16));
   if(words.slice(0,5).every(n=>n===0)&&words[5]===0xffff) {
-    return `${[words[6]>>8,words[6]&255,words[7]>>8,words[7]&255].join(".")}/32`;
+    return appIPBudgets([words[6]>>8,words[6]&255,words[7]>>8,words[7]&255].join("."));
   }
-  return `${words.slice(0,4).map(n=>n.toString(16)).join(":")}::/64`;
+  return [`${words.slice(0,4).map(n=>n.toString(16)).join(":")}::/64`,`${words.slice(0,3).map(n=>n.toString(16)).join(":")}::/48`];
 }
-export const APP_WINDOW_LIMIT=100;
+export const APP_WINDOW_LIMIT=2000;
 export async function appAdmission(request: Request, env: Env, installId: string, reportId: string, tokenHash: string) {
   const isLocal=env.LOCAL_MODE==="true"&&["localhost","127.0.0.1","[::1]"].includes(new URL(request.url).hostname);
   const ip=request.headers.get("CF-Connecting-IP");
   if(!isLocal&&(!ip||!env.IP_HASH_SECRET||env.IP_HASH_SECRET.length<32)) throw new HttpError(503,"Reporting protection is not configured yet.");
   const time=Date.now(),slot=Math.floor(time/600000),expires=(slot+1)*600000;
-  const keys=await Promise.all([`install:${installId}`,`ip:${ip?appIPBudget(ip):"local"}`,"global"].map(value=>keyedDigest(env.IP_HASH_SECRET??"local-only",`app-rate:${slot}:${value}`)));
+  const [address,network]=ip?appIPBudgets(ip):["local","local"];
+  const asn=(request as Request & {cf?:{asn?:number}}).cf?.asn;
+  const budgets:Array<[string,number]>=[[`install:${installId}`,5],[`ip:${address}`,10],[`network:${network}`,20],
+    ...(typeof asn==="number"&&Number.isSafeInteger(asn)&&asn>0?[[`asn:${asn}`,100] as [string,number]]:[]),["global",APP_WINDOW_LIMIT]];
+  const keys=await Promise.all(budgets.map(([value])=>keyedDigest(env.IP_HASH_SECRET??"local-only",`app-rate:${slot}:${value}`)));
   // The report is conditionally inserted first in this same atomic batch.
   // Its unique random token hash binds counters to this admission only, including races.
   // Rejection inserts no report, so none of these statements allocates or increments a row.
-  return {keys,retryAfter:Math.max(1,Math.ceil((expires-time)/1000)),statements:keys.map(key=>env.DB.prepare("INSERT INTO rate_limits(key,count,expires_at) SELECT ?,1,? WHERE EXISTS (SELECT 1 FROM reports WHERE id=? AND token_hash=?) ON CONFLICT(key) DO UPDATE SET count=count+1").bind(key,expires,reportId,tokenHash))};
+  return {keys,limits:budgets.map(([,limit])=>limit),retryAfter:Math.max(1,Math.ceil((expires-time)/1000)),statements:keys.map(key=>env.DB.prepare("INSERT INTO rate_limits(key,count,expires_at) SELECT ?,1,? WHERE EXISTS (SELECT 1 FROM reports WHERE id=? AND token_hash=?) ON CONFLICT(key) DO UPDATE SET count=count+1").bind(key,expires,reportId,tokenHash))};
 }
 export async function verifyWebhook(request: Request, env: Env, body: ArrayBuffer) {
   if(!env.GITHUB_WEBHOOK_SECRET) throw new HttpError(503,"GitHub webhook is not configured.");

@@ -5,7 +5,7 @@ export interface Env {
   ALLOWED_ORIGINS: string; SITE_URL: string; LOCAL_MODE?: string;
   TURNSTILE_SITE_KEY?: string; TURNSTILE_SECRET?: string; IP_HASH_SECRET?: string;
   ADMIN_TOKEN?: string; HEALTH_TOKEN?: string; GITHUB_TOKEN?: string; GITHUB_REPOSITORY?: string;
-  APP_GITHUB_REPOSITORY?: string;
+  APP_GITHUB_REPOSITORY?: string; GITHUB_ISSUE_HOURLY_LIMIT?: string;
   GITHUB_PROJECT_ID?: string; GITHUB_WEBHOOK_SECRET?: string;
   EMAIL_FROM?: string; EMAIL_ENABLED?: string;
   RESEND_API_KEY?: string; RESEND_WEBHOOK_SECRET?: string;

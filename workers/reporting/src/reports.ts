@@ -1,5 +1,5 @@
 import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus, type RequestTopic } from "../../../lib/reporting/contracts";
-import { boundedBody, checkAbuse, appAdmission, APP_WINDOW_LIMIT, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
+import { boundedBody, checkAbuse, appAdmission, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
 import { emailEnabled, githubEnabled, now, ownerNotificationEmail, type Env, type ReportRow, type AttachmentRow, type Delivery, type AppReportPayload, type AppReportReceipt } from "./types";
 import { testerAllowed } from './resend';
 import type { PublicStage, PublicStatus } from "../../../lib/reporting/public-status";
@@ -77,8 +77,8 @@ export async function acceptApp(request: Request, env: Env): Promise<{receipt:Ap
   const title=`[${report.category}] Cojeev ${redact(report.appVersion,64)} (${report.platform})`;
   try {
     const results=await env.DB.batch([
-      env.DB.prepare("INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,created_at,updated_at,triage_state,source,app_category,destination_repository) SELECT ?,?,?,'bug',?,?,'',?,'[]',?,'[]',?,?,'approved','app',?,? WHERE COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<5 AND COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<10 AND COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<?")
-        .bind(report.id,tokenHash,payloadHash,title,redact(report.message,2000),installHash,report.diagnostics===null?null:JSON.stringify(redact(report.diagnostics,1600)),timestamp,timestamp,report.category,destination,...admission.keys,APP_WINDOW_LIMIT),
+      env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,created_at,updated_at,triage_state,source,app_category,destination_repository) SELECT ?,?,?,'bug',?,?,'',?,'[]',?,'[]',?,?,'approved','app',?,? WHERE ${admission.keys.map(()=>"COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<?").join(" AND ")}`)
+        .bind(report.id,tokenHash,payloadHash,title,redact(report.message,2000),installHash,report.diagnostics===null?null:JSON.stringify(redact(report.diagnostics,1600)),timestamp,timestamp,report.category,destination,...admission.keys.flatMap((key,index)=>[key,admission.limits[index]])),
       ...admission.statements,
       env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) SELECT ?,?,'github',?,?,? FROM reports WHERE id=? AND payload_hash=?").bind(`${report.id}:github`,report.id,timestamp,timestamp,timestamp,report.id,payloadHash)
     ]);

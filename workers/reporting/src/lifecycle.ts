@@ -53,6 +53,7 @@ export async function cleanup(env:Env) {
     env.DB.prepare("UPDATE topics SET title='[Expired request]',title_key='retired:'||id WHERE created_at<?").bind(now()-180*86400000),
     env.DB.prepare("UPDATE reports SET email='',title='[Expired report]',description='[Expired after 180 days]',references_json='[]',private_purged=1 WHERE private_purged=0 AND created_at<?").bind(now()-180*86400000),
     env.DB.prepare("DELETE FROM rate_limits WHERE expires_at<?").bind(now()),
+    env.DB.prepare("DELETE FROM github_issue_attempts WHERE attempted_at<=?").bind(now()-3600000),
     env.DB.prepare("DELETE FROM webhook_events WHERE created_at<?").bind(now()-30*86400000)
   ]);
   return {purged:old.results.length};
