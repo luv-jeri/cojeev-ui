@@ -277,16 +277,16 @@ export async function drain(env:Env,reportId?:string,send=fetch,intake=false) {
     processed++;
     try {
       const provider=await deliver(env,job,row,send);
-      await env.DB.prepare("UPDATE outbox SET state='done',provider_id=?,lease_token=NULL,last_error=NULL,delivery_status=CASE WHEN kind LIKE 'github%' THEN 'accepted' ELSE delivery_status END,payload_json=CASE WHEN kind LIKE 'github%' THEN json_remove(payload_json,'$.githubThrottles') ELSE payload_json END WHERE id=? AND lease_token=?").bind(provider,job.id,lease).run();
+      await env.DB.prepare("UPDATE outbox SET state='done',provider_id=?,lease_token=NULL,last_error=NULL,delivery_status=CASE WHEN kind LIKE 'github%' THEN 'accepted' ELSE delivery_status END,payload_json=CASE WHEN kind LIKE 'github%' THEN json_remove(payload_json,'$.githubThrottles','$.githubThrottleSetAt') ELSE payload_json END WHERE id=? AND lease_token=?").bind(provider,job.id,lease).run();
     } catch(error) {
       if(error instanceof GitHubThrottle) {
         const payload=JSON.parse(job.payload_json??'{}') as Record<string,unknown>;
         const prior=Number(payload.githubThrottles??0);
         const count=(Number.isSafeInteger(prior)&&prior>=0?prior:0)+1;
         const review=error.invalidHint||count>=8;
-        const retryAt=Math.max(error.retryAt,now()+Math.min(MAX_GITHUB_COOLDOWN,60000*2**Math.min(count-1,6)));
+        const throttleSetAt=now(),retryAt=Math.max(error.retryAt,throttleSetAt+Math.min(MAX_GITHUB_COOLDOWN,60000*2**Math.min(count-1,6)));
         const reason=error.invalidHint?"GitHub returned an invalid or excessive cooldown hint; shared cooldown bounded to one hour; maintainer review required.":review?`GitHub delivery stopped after ${count} consecutive throttles; maintainer review required.`:`GitHub throttled delivery (${count}/8); retry after ${new Date(retryAt).toISOString()}.`;
-        await env.DB.prepare("UPDATE outbox SET state=?,attempts=attempts-1,due_at=?,lease_token=NULL,last_error=?,delivery_status='throttled',payload_json=? WHERE id=? AND lease_token=?").bind(review?'needs_review':'pending',retryAt,reason,JSON.stringify({...payload,githubThrottles:count}),job.id,lease).run();
+        await env.DB.prepare("UPDATE outbox SET state=?,attempts=attempts-1,due_at=?,lease_token=NULL,last_error=?,delivery_status='throttled',payload_json=? WHERE id=? AND lease_token=?").bind(review?'needs_review':'pending',retryAt,reason,JSON.stringify({...payload,githubThrottles:count,githubThrottleSetAt:throttleSetAt}),job.id,lease).run();
         // The persisted deadline stops GitHub work, while independent email continues.
         continue;
       }
@@ -296,7 +296,7 @@ export async function drain(env:Env,reportId?:string,send=fetch,intake=false) {
       }
       const failure=error instanceof DeliveryFailure?error:new DeliveryFailure("Delivery could not be confirmed. Check provider status.",true);
       const review=!failure.quota&&((failure.ambiguous&&!appJob)||failure.permanent||job.attempts>=7);
-      await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL,delivery_status=?,payload_json=CASE WHEN kind LIKE 'github%' THEN json_remove(payload_json,'$.githubThrottles') ELSE payload_json END WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+(failure.quota?3600000:Math.min(86400000,60000*2**job.attempts)),failure.quota?'quota':failure.ambiguous?'uncertain':review?'failed':'queued',job.id,lease).run();
+      await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL,delivery_status=?,payload_json=CASE WHEN kind LIKE 'github%' THEN json_remove(payload_json,'$.githubThrottles','$.githubThrottleSetAt') ELSE payload_json END WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+(failure.quota?3600000:Math.min(86400000,60000*2**job.attempts)),failure.quota?'quota':failure.ambiguous?'uncertain':review?'failed':'queued',job.id,lease).run();
     }
   }
   return {processed};

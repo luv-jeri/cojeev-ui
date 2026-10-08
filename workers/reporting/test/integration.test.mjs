@@ -2133,6 +2133,44 @@ for(const [i,headers] of [
   });
 });
 
+test('fixes6_N4_admin_retry_preserves_one_hour_pause_written_after_binding',async()=>{
+  await inAppWindow(685,async time=>{
+    const env=appEnv({ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin}),p=appPayload();
+    await directApp(p,'192.0.2.1',env);
+    let boundRetry,release;
+    const ready=new Promise(resolve=>boundRetry=resolve),resume=new Promise(resolve=>release=resolve);
+    const delayedDB=new Proxy(db,{get(target,key){
+      if(key==='prepare') return sql=>{
+        const statement=target.prepare(sql);
+        if(sql.startsWith("UPDATE outbox SET state='pending',due_at=CASE")) return {bind(...args){
+          const bound=statement.bind(...args);
+          return {first:async()=>{boundRetry();await resume;return bound.first();}};
+        }};
+        return statement;
+      };
+      const value=target[key];return typeof value==='function'?value.bind(target):value;
+    }});
+    const pending=[],originalFetch=globalThis.fetch,gh=fakeAppGitHub();let calls=0,throttleCalls=0;
+    globalThis.fetch=async(...args)=>{calls++;return gh.send(...args);};
+    try {
+      const retry=backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${p.id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),{...env,DB:delayedDB},{waitUntil:promise=>pending.push(promise)});
+      await ready;
+      let paused;
+      try {
+        Date.now=()=>time+1;
+        await backend.drain(env,p.id,async()=>{throttleCalls++;return Response.json({message:'Too many requests'},{status:429,headers:{'Retry-After':'3600'}});});
+        paused=await db.prepare('SELECT due_at,delivery_status,last_error FROM outbox WHERE report_id=?').bind(p.id).first();
+        assert.equal(throttleCalls,1);assert.equal(paused.due_at,time+1+3600000);assert.equal(paused.delivery_status,'throttled');
+      } finally {release();}
+      assert.equal((await retry).status,200);await Promise.all(pending);
+      const retried=await db.prepare('SELECT due_at,delivery_status,last_error FROM outbox WHERE report_id=?').bind(p.id).first();
+      assert.deepEqual(retried,paused,'retry must preserve the current row pause even when its clock was captured earlier');
+      await backend.drain(env,p.id,globalThis.fetch);
+      assert.equal(calls,0,'retry background drain and later drain must make zero provider calls during the live pause');
+    } finally {release();await Promise.all(pending);globalThis.fetch=originalFetch;}
+  });
+});
+
 test('fixes5_N1_admin_retry_clears_stale_shared_pause_and_reconciles',async()=>{
   await inAppWindow(690,async time=>{
     const env=appEnv({ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin}),p=appPayload(),gh=fakeAppGitHub();
