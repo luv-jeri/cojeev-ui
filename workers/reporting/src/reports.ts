@@ -44,6 +44,8 @@ export async function topicIssue(env: Env, topicId: string) {
   return env.DB.prepare("SELECT issue_number,issue_node_id,issue_url FROM reports WHERE topic_id=? AND triage_state='approved' AND issue_number IS NOT NULL ORDER BY created_at LIMIT 1").bind(topicId).first<{issue_number:number;issue_node_id:string;issue_url:string}>();
 }
 export async function acceptApp(request: Request, env: Env): Promise<{receipt:AppReportReceipt;fresh:boolean}> {
+  if(request.headers.has("Origin")) throw new HttpError(403,"Native app reports must not carry an Origin header.");
+  if(request.headers.get("Content-Type")!=="application/json") throw new HttpError(415,"Send app reports as application/json.");
   const raw=await readJSON(request,16384);
   if(!raw||typeof raw!=="object"||Array.isArray(raw)) throw new HttpError(422,"Invalid app report.");
   const v=raw as Record<string,unknown>;

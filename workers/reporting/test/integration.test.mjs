@@ -1113,7 +1113,7 @@ test('email_html_escapes_every_value',()=>{
 
 // These fixtures exercise real intake, D1, outbox and delivery; only GitHub HTTP is fake.
 const appPayload = (more={}) => ({id:randomUUID(),installId:randomUUID(),category:'crash',message:'The window closed unexpectedly.',diagnostics:'Redacted synthetic export',appVersion:'0.1.0',platform:'macos',...more});
-const submitApp = (p, ip=p.installId) => request('/v1/app-reports','POST',p,null,{'CF-Connecting-IP':ip,Origin:'https://native.invalid'});
+const submitApp = (p, ip=p.installId) => mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(p)});
 const appEnv = (more={}) => backendEnv({GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev',...more});
 const fakeAppGitHub = () => {
   const issues=[]; let uncertain=false, posts=0;
@@ -1199,8 +1199,8 @@ test('app_report_rejects_bad_category_and_oversize',async()=>{
     assert.equal(typeof (await response.json()).error,'string');
     assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
   }
-  assert.equal((await request('/v1/app-reports','POST','x'.repeat(16385))).status,413);
-  assert.equal((await request('/v1/app-reports','POST','{')).status,400);
+  assert.equal((await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json'},body:'x'.repeat(16385)})).status,413);
+  assert.equal((await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json'},body:'{'})).status,400);
   const boundary=appPayload({message:'x'.repeat(2000),diagnostics:'x'.repeat(1600),appVersion:'v'.repeat(64),platform:'windows'});
   assert.equal((await submitApp(boundary)).status,201);
   assert.equal((await submitApp(appPayload({diagnostics:null}))).status,201);
@@ -1409,4 +1409,28 @@ test('local component verification preserves offline mode and permits an explici
   let calls=0;
   assert.equal(await backend.verifyLiveComponent(env,url,async()=>{calls++;return new Response(null,{headers:{'Content-Type':'text/html'}});}),url);
   assert.equal(calls,1);
+});
+
+
+test('app_report_requires_exact_json_and_absent_origin_before_writes',async()=>{
+  for(const headers of [
+    {Origin:'https://evil.example','Content-Type':'text/plain;charset=UTF-8','Sec-Fetch-Site':'cross-site','Sec-Fetch-Mode':'no-cors'},
+    {Origin:origin,'Content-Type':'application/json'},
+    {Origin:'null','Content-Type':'application/json'},
+    {'Content-Type':'text/plain'}, {},
+    {'Content-Type':'application/json; charset=utf-8'}, {'Content-Type':'Application/JSON'},
+  ]) {
+    const p=appPayload(),before=(await db.prepare('SELECT count(*) AS n FROM rate_limits').first()).n;
+    const response=await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers,body:JSON.stringify(p)});
+    assert.equal(response.status,Object.hasOwn(headers,'Origin')?403:415,JSON.stringify(headers));
+    assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM rate_limits').first()).n,before);
+  }
+  // Miniflare drops empty Origin headers at its edge adapter; probe intake directly.
+  await assert.rejects(backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{Origin:'','Content-Type':'application/json'},body:JSON.stringify(appPayload())}),appEnv()),error=>error.status===403);
+  assert.equal((await submitApp(appPayload())).status,201);
+  // Website admission remains origin-based.
+  assert.equal((await submit(payload())).status,201);
+  assert.equal((await request('/v1/reports','POST',{report:payload(),token},null,{Origin:'https://evil.example'})).status,403);
 });
