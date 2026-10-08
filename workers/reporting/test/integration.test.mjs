@@ -1666,19 +1666,27 @@ test('app_report_issue_creation_budget_is_shared_atomic_and_queues_without_failu
     await Promise.all([backend.drain(env,a.id,send),backend.drain(env,b.id,send)]);
     const posts=()=>gh.posts+websiteLog.filter(c=>c.method==='POST'&&c.url.endsWith('/issues')).length;
     assert.equal(posts(),2,'app and website share one creation ceiling even under concurrent drains');
-    const pending=(await db.prepare("SELECT report_id,state,attempts,delivery_status FROM outbox WHERE report_id IN (?,?) ORDER BY report_id").bind(a.id,b.id).all()).results;
+    const pending=(await db.prepare("SELECT report_id,state,attempts,delivery_status,due_at,first_attempt_at,last_error FROM outbox WHERE report_id IN (?,?) ORDER BY report_id").bind(a.id,b.id).all()).results;
     assert.equal(pending.filter(j=>j.state==='done').length,1);
-    const queued=pending.find(j=>j.state==='pending');assert.ok(queued);
+    let queued=pending.find(j=>j.state==='pending');assert.ok(queued);
+    // A competing lease may first yield to FIFO before the winning reservation
+    // commits. Advance to that persisted deadline to observe the full budget.
+    if(queued.due_at<time+3600000) {
+      Date.now=()=>queued.due_at;await backend.drain(env,queued.report_id,send);
+      queued=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(queued.report_id).first();
+    }
     assert.equal(queued.attempts,0,'waiting for capacity consumes no delivery retry');assert.equal(queued.delivery_status,'queued');
+    assert.equal(queued.due_at,time+3600000,'hour capacity wait retries at the oldest reservation expiry');
+    assert.equal(queued.first_attempt_at,null);assert.equal(queued.last_error,null);
     assert.equal((await directApp(queued.report_id===a.id?a:b,'192.0.2.1',env)).receipt.status,'accepted');
     const c=appPayload();await directApp(c,'198.51.100.1',env);await backend.drain(env,c.id,send);
     assert.equal(posts(),2,'fresh intake remains saved after delivery capacity is exhausted');
+    const waiting=await db.prepare('SELECT due_at FROM outbox WHERE report_id=?').bind(c.id).first();
+    assert.equal(waiting.due_at,time+3600000);
     Date.now=()=>time+3599999;
-    await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id IN (?,?)').bind(queued.report_id,c.id).run();
     await backend.drain(env,c.id,send);assert.equal(posts(),2,'rolling hour has not elapsed');
-    Date.now=()=>time+3600001;
+    Date.now=()=>time+3600000;
     await backend.drain(env,queued.report_id,send);
-    await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(c.id).run();
     await backend.drain(env,c.id,send);assert.equal(posts(),4,'stored reports deliver once capacity returns');
     for(const id of [queued.report_id,c.id]) assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(id).first()).state,'done');
   });

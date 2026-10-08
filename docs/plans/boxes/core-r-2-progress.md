@@ -169,3 +169,48 @@ Check-running time for the second-review correction set: 186.69 s total (RED 45.
 m1 Changed: requested and returned GitHub label names are compared in lowercase. Test app_report_labels_match_github_case_insensitively covers both a new issue and signed-marker reconciliation with USER-REPORT and Crash echoed by GitHub. RED routed the report to needs_review; GREEN records the receipt as done with one issue POST. The combined 122/122 result and check-running time above include this regression.
 
 m2 Changed: root cojeev-ui owns workers/reporting/test and now declares mdast-util-from-markdown ^2.0.3 as a devDependency. npm install --package-lock-only --offline --ignore-scripts --no-audit --no-fund updated the lockfile; the only manifest/lockfile additions are this direct declaration, with no dependency version or graph changes. Test markdown_parser_is_a_direct_dev_dependency_of_the_test_package failed before the addition and passes with matching manifest/lockfile declarations. The combined 122/122 result and separate check-running time above include this regression. All three findings are fixed locally; branch remains unpushed.
+
+
+## Third-review corrections (2026-10-08)
+
+N2 Changed: intake-time and cron GitHub drains use one FIFO queue. Atomic creation reservations refuse a newer report while an older enabled, due job is pending or processing. Equal timestamps use outbox insertion order, so a smaller UUID cannot jump an earlier arrival. Capacity waits stay pending/queued, refund the claimed delivery attempt, and retain the report.
+
+N2 Changed: the creation reservation and first POST timestamp are recorded in one D1 batch. Only recorded `outbox.first_attempt_at` authorizes reconciliation; an expired pre-POST lease or an uncertain flag without a POST timestamp skips the scan. The signed-marker/actor scan starts at first POST minus 60 seconds, independent of intake age. Durable POST history survives pacing-reservation cleanup. Existing bounded reconciliation of attempted/lost POSTs and case-insensitive label checks remain covered.
+
+N2 Tests/Result: P2 serves the older due report before fresh intake when capacity returns. P1 delivers a six-hour-old never-posted report in a repository that would exhaust ten reconciliation pages, with zero GETs and one POST. P1 also covers a crash before POST: that case failed with needs_review before the final correction and now delivers once without scanning. A six-hour two-/24 flood admits 1,440 reports (20 per network per ten minutes, 120/hour each) against the default 200/hour budget; the oldest report eventually delivers once and never becomes failed. The fixture exercises fresh intake at every available creation slot and cron drains at every ten-minute boundary; redundant full-budget intake drains are covered by the separate queue-clock test. Pending/processing FIFO reservation tests include equal-time arrivals with reversed UUID ordering and held-job exclusion.
+
+m3 Changed: the same 0006 reservation table now enforces both rolling-hour and rolling-minute ceilings atomically. Hour default/maximum remains 200. `GITHUB_ISSUE_MINUTE_LIMIT` accepts integers 1..60; default/maximum is 60 and invalid/unsafe values fall back to 60. A capacity wait uses the later applicable expiry when both budgets are full. The 200/hour regression now spreads its POSTs over four minute windows.
+
+m3 Tests/Result: default/configured/unsafe minute limits, competing drains, minute expiry, 403 secondary limits and 429 responses are covered. Retry-After seconds, HTTP dates, x-ratelimit-reset, combined hints and the headerless secondary-limit fallback are tested. Throttles restore the delivery attempt count, clear delivery errors and stay queued; ten consecutive throttles do not hit the eight-failure cutoff. Claiming a job rechecks due_at so a stale drain snapshot cannot resend before the provider deadline. Five regressions failed before implementation; the focused GREEN passed 9/9.
+
+m4 Changed: the shared-budget queued-delivery regression never writes due_at by hand. It advances the fake clock to any short FIFO-yield deadline, asserts the full-budget deadline equals the oldest reservation plus one hour, verifies no early POST, and delivers stored jobs at that exact deadline. Waiting jobs have no first POST timestamp, error or spent failure attempt.
+
+m4 Notes — plant and result: temporarily replaced the capacity-wait retry expression with `throw new IssueCapacityWait(Number.MAX_SAFE_INTEGER)`. The updated test failed at “hour capacity wait retries at the oldest reservation expiry”: actual due_at was 9007199254740991, expected oldest reservation + 3600000. The plant was repeated after the final clock-fixture adjustment and failed the same assertion. It was restored before the final full run and was never staged or committed.
+
+Notes — storage: no new table, column or migration. Reuse `github_issue_attempts` from 0006 and `outbox.first_attempt_at` from 0002. Migration 0006 still must accompany any future authorized rollout. Tests isolate unfinished GitHub queues and pacing reservations between fixtures; fake clocks can move backwards between tests, so future reservations from another fixture cannot contaminate a flood model. Reports and durable outbox history remain available within each test.
+
+Final validation: `lockf -k /Volumes/CojeevBuild/lanes/compile.lock /usr/bin/time -p npm run reporting:test` passed **132/132**, zero failures, cancellations or skips. It includes the complete local Miniflare native POST -> waitUntil -> saved issue receipt -> same-UUID retry journey with intercepted outbound responses. All original test names are retained; ten regression tests were added and the existing queue-clock regression strengthened. N1/coarse-network/ASN limits, rejected-write counter invariants, m1 labels and m2 dependency declarations all pass. Review of the combined diff and local Workers runtime guidance found no remaining scope issue; all new asynchronous operations are awaited and request state stays local.
+
+Only the Worker's own reporting:test package script ran. Focused invocations use NODE_OPTIONS test-name filtering with `|^triage` so the second test file participates. No root typecheck, other project test, dependency installation, packaging or deployment. GitHub HTTP is synthetic and the working Worker is local; no real GitHub, deployed Worker or Cloudflare contact, credentials printed, push, PR or remote write.
+
+### Check-running time
+
+Times below are instrumented command wall times inside the compile lock, including failed and aborted runs. Compile-lock queue waiting is excluded. These measure check processes separately from test writing, source editing, debugging, review, documentation and commits; activities may overlap with a running check. No packaging was performed.
+
+| Check | Running time | Result |
+|---|---|---|
+| N2 initial RED | 153.75 s | completed; P1/P2/POST-window assertions failed |
+| N2 early GREEN attempt | 435.16 s | aborted; queue-clock assertion and unselected triage fixture |
+| m3 RED | 84.18 s | five regressions failed; unselected triage fixture stopped |
+| N2 focused fixture correction | 3.52 s | 7/8; corrected test-adapter typo afterward |
+| N2 six-hour flood | 224.17 s | 4/4 including 1,440 flood admissions |
+| N2 corrected P1 | 1.38 s | 4/4 |
+| m3 GREEN | 14.15 s | 9/9 |
+| m4 first D7 plant | 1.27 s | expected expiry assertion failure |
+| First full attempt | 636.77 s | aborted; future pacing reservations leaked between fake-clock fixtures |
+| N2 expired pre-POST lease RED | 1.59 s | expected needs_review versus done failure |
+| N2 expired lease/journey GREEN | 9.24 s | 12/12 |
+| m4 final D7 plant | 3.30 s | expected expiry assertion failure |
+| Final full Worker suite | 376.39 s | 132/132 |
+
+Instrumented check-running total: **1944.87 s**. One abandoned runner-option probe was not instrumented; its log write span was approximately 24 s and is separate from this total. That probe showed that appending the Node filter after the package script's file glob did not select tests. The early aborted checks and fixture corrections are included above rather than hidden from the total. Final full-suite runner duration: 376.17 s; command wall time: 376.39 s.
