@@ -273,10 +273,23 @@ test('a deployed release is not live while its declared delivery readiness is in
   assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('provider-unconfigured'),'an unconfigured provider must never be retried as propagation lag');
 });
 
+function publicRegistry(url,options) {
+  if(['https://000h.cojeev.com/r/registry.json','https://cojeev.com/ui/r/registry.json'].includes(url)) {
+    assert.equal(options.redirect,'manual');
+    return Response.json({name:'000h-cojeev',items:Array.from({length:500},(_,i)=>({name:`registry-probe-${i}`}))});
+  }
+  const item=url.match(/^https:\/\/cojeev\.com\/ui\/r\/(registry-probe-(?:0|250|499))\.json$/);
+  if(item) {
+    assert.equal(options.redirect,'manual');
+    return Response.json({name:item[1],files:[{}]});
+  }
+}
 test('production health and release probes use apex ui directly and reject redirects',async()=>{
   const seen=[];
   const fetcher=async(url,options)=>{
-    seen.push({url,options});assert.equal(options.redirect,'error');
+    seen.push({url,options});
+    const registry=publicRegistry(url,options);if(registry)return registry;
+    assert.equal(options.redirect,'error');
     if(url==='https://feedback.cojeev.com/v1/admin/health')return Response.json(delivery);
     if(url.endsWith('/health'))return Response.json({status:'ok',environment:'production',release:commit});
     if(url.endsWith('/release.json'))return Response.json({environment:'production',release:commit},{headers});
@@ -284,7 +297,7 @@ test('production health and release probes use apex ui directly and reject redir
   };
   assert.deepEqual(await liveProblems('production',commit,{token,fetcher}),[]);
   assert.equal(seen[0].url,'https://cojeev.com/ui/health');
-  assert.ok(seen.every(({url})=>!url.includes('www.')&&!url.includes('000h.')));
+  assert.ok(seen.filter(({options})=>options.redirect==='error').every(({url})=>!url.includes('www.')&&!url.includes('000h.')));
 });
 test('rollback live checks probe the artifact layout rather than the new canonical site',async()=>{
   for(const environment of ['beta','production']) {
@@ -292,7 +305,9 @@ test('rollback live checks probe the artifact layout rather than the new canonic
     const api=environment==='beta'?'https://feedback-beta.cojeev.com':'https://feedback.cojeev.com';
     const seen=[];
     const fetcher=async(url,options)=>{
-      seen.push(url);assert.equal(options.redirect,'error');
+      seen.push(url);
+      const registry=publicRegistry(url,options);if(registry)return registry;
+      assert.equal(options.redirect,'error');
       if(url===`${api}/v1/admin/health`)return Response.json(delivery);
       if(url.endsWith('/health'))return Response.json({status:'ok',environment,release:commit});
       if(url===`${site}/release.json`)return Response.json({environment,release:commit},{headers});
