@@ -20,7 +20,7 @@ before(async()=>{
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { contact } from "./workers/reporting/src/contact.ts"; export { default as worker } from "./workers/reporting/src/index.ts"; export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 after(async()=>{await mf?.dispose();});
@@ -1143,4 +1143,99 @@ test('local component verification preserves offline mode and permits an explici
   let calls=0;
   assert.equal(await backend.verifyLiveComponent(env,url,async()=>{calls++;return new Response(null,{headers:{'Content-Type':'text/html'}});}),url);
   assert.equal(calls,1);
+});
+
+const contactPayload=(more={})=>({id:randomUUID(),name:' Visitor ',email:'visitor@example.com',message:'I would like to build a useful interface.',page:'/cojeev-ui/work-with-me/',company:'',turnstileToken:'',...more});
+const contactRequest=(body,ip=body.id)=>new Request('http://localhost/v1/contact',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(body)});
+const contactEnv=more=>resendEnv({ALLOWED_ORIGINS:origin,EMAIL_FROM:'hello@cojeev.com',CONTACT_NOTIFICATION_EMAIL:'owner@example.com',...more});
+const contactRow=id=>db.prepare('SELECT * FROM contact_messages WHERE id=?').bind(id).first();
+const noContactSend=async()=>{assert.fail('Contact must not send');};
+test('contact endpoint stores first and sends one replyable escaped email',async()=>{
+  const p=contactPayload({name:' <Visitor> ',message:'Please build <something> useful & warm.'}),calls=[];
+  const env=contactEnv(),original=globalThis.fetch;
+  globalThis.fetch=async(url,init)=>{
+    calls.push({url,init});assert.equal((await contactRow(p.id)).delivery_status,'sending');
+    return Response.json({id:'contact-accepted'});
+  };
+  try {
+    const res=await backend.worker.fetch(contactRequest(p),env,{waitUntil(){}});
+    assert.equal(res.status,200);assert.deepEqual(await res.json(),{ok:true});
+  } finally {globalThis.fetch=original;}
+  assert.equal(calls.length,1);assert.equal(calls[0].url,'https://api.resend.com/emails');
+  const body=JSON.parse(calls[0].init.body);
+  assert.deepEqual([body.to,body.from,body.reply_to,body.subject],['owner@example.com','hello@cojeev.com',p.email,'000h contact from <Visitor>']);
+  for(const value of ['<Visitor>',p.email,p.message,p.page]) assert.ok(body.text.includes(value));
+  assert.ok(body.html.includes('&lt;Visitor&gt;')&&body.html.includes('&amp; warm.'));assert.ok(!body.html.includes('<something>'));
+  assert.equal(calls[0].init.headers['Idempotency-Key'],`cojeev/contact:${p.id}`);
+  const row=await contactRow(p.id);assert.equal(row.name,'<Visitor>');assert.equal(row.delivery_status,'accepted');assert.equal(row.provider_id,'contact-accepted');
+  assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_attempts WHERE job_id=?').bind(`contact:${p.id}`).first()).n,1);
+});
+test('contact honeypot returns 200 without storage, verification or sending',async()=>{
+  for(const company of ['Robot',' ']) {
+    const p=contactPayload({company});
+    assert.deepEqual(await backend.contact(contactRequest(p),contactEnv(),noContactSend),{ok:true});assert.equal(await contactRow(p.id),null);
+  }
+});
+test('contact route refuses bad or missing origin and unconfigured recipients',async()=>{
+  for(const bad of ['https://evil.test',origin+'.evil','']) {
+    const res=await request('/v1/contact','POST',contactPayload(),null,{Origin:bad});assert.equal(res.status,403);
+  }
+  const res=await request('/v1/contact','POST',contactPayload());assert.equal(res.status,503);assert.equal((await res.json()).error,'Contact is not configured.');
+});
+test('contact validates names, email, message, id and page before storing',async()=>{
+  for(const more of [{email:'bad'},{email:'visitor @example.com'},{email:'visitor@example.com\n'},{email:'visitor@example.com\r\nBcc:other@example.com'},{email:'x'.repeat(250)+'@x.test'},{name:'Visitor\nInjected'},{name:'Visitor\r'},{name:' '},{name:'x'.repeat(101)},{message:'too short'},{message:'x'.repeat(4001)},{message:' '.repeat(4000)+'a valid message'},{id:'not-a-uuid'},{page:'https://evil.test/'},{page:'//evil.test/'},{page:'/about/?email=private'}]) {
+    const p=contactPayload(more);await assert.rejects(backend.contact(contactRequest(p),contactEnv(),noContactSend),error=>error.status===400);assert.equal(await contactRow(p.id),null);
+  }
+  const p=contactPayload({message:'x'.repeat(9000)});await assert.rejects(backend.contact(contactRequest(p),contactEnv(),noContactSend),error=>error.status===413);assert.equal(await contactRow(p.id),null);
+});
+test('simultaneous contact duplicates send once and changed retries conflict',async()=>{
+  const p=contactPayload();let sends=0;
+  const provider=async()=>{sends++;return Response.json({id:'contact-once'});};
+  const results=await Promise.allSettled([backend.contact(contactRequest(p),contactEnv(),provider),backend.contact(contactRequest(p),contactEnv(),provider)]);
+  assert.ok(results.some(result=>result.status==='fulfilled'));
+  for(const result of results) if(result.status==='rejected') assert.equal(result.reason.status,503);
+  assert.equal(sends,1);assert.deepEqual(await backend.contact(contactRequest(p),contactEnv(),noContactSend),{ok:true});
+  await assert.rejects(backend.contact(contactRequest({...p,message:'Changed after acceptance.'}),contactEnv(),noContactSend),error=>error.status===409);
+});
+test('contact shares the per-IP ten-per-ten-minutes limit',async()=>{
+  const ip=randomUUID();let sends=0;
+  const provider=async()=>{sends++;return Response.json({id:`rate-contact-${sends}`});};
+  for(let i=0;i<10;i++) await backend.contact(contactRequest(contactPayload(),ip),contactEnv(),provider);
+  const p=contactPayload();await assert.rejects(backend.contact(contactRequest(p,ip),contactEnv(),noContactSend),error=>error.status===429&&error.retryAfter>0);
+  assert.equal(sends,10);assert.equal(await contactRow(p.id),null);
+});
+test('contact daily and monthly email quotas retain the message without sending',async()=>{
+  for(const more of [{EMAIL_DAILY_LIMIT:'0'},{EMAIL_MONTHLY_LIMIT:'0'}]) {
+    const p=contactPayload();await assert.rejects(backend.contact(contactRequest(p),contactEnv(more),noContactSend),error=>error.status===503);
+    assert.equal((await contactRow(p.id)).delivery_status,'limited');assert.equal((await contactRow(p.id)).message,p.message);
+    assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_attempts WHERE job_id=?').bind(`contact:${p.id}`).first()).n,0);
+  }
+});
+test('contact provider failures retain private content and never resend uncertain outcomes',async()=>{
+  for(const provider of [async()=>{throw new Error('Provider response lost');},async()=>new Response(null,{status:500}),async()=>Response.json({}),async()=>new Response(null,{status:429})]) {
+    const p=contactPayload();let sends=0;
+    await assert.rejects(backend.contact(contactRequest(p),contactEnv(),async(...args)=>{sends++;return provider(...args);}),error=>error.status===503);
+    const row=await contactRow(p.id);assert.ok(['needs_review','limited'].includes(row.delivery_status));assert.equal(row.message,p.message);assert.equal(row.provider_id,null);
+    await assert.rejects(backend.contact(contactRequest(p),contactEnv(),noContactSend),error=>error.status===503);assert.equal(sends,1);
+  }
+  const p=contactPayload();await assert.rejects(backend.contact(contactRequest(p),contactEnv({EMAIL_ENABLED:'false'}),noContactSend),error=>error.status===503);assert.equal((await contactRow(p.id)).delivery_status,'disabled');
+});
+test('contact requires a verified reporting Turnstile action and exact configured hostname',async()=>{
+  const env=contactEnv({LOCAL_MODE:'false',TURNSTILE_SECRET:'test-only-turnstile'}),original=globalThis.fetch;let calls=0;
+  try {
+    for(const result of [{success:false},{success:true,hostname:'evil.test',action:'reporting'},{success:true,hostname:'localhost',action:'contact'}]) {
+      globalThis.fetch=async()=>{calls++;return Response.json(result);};
+      const p=contactPayload({turnstileToken:'test-only-challenge'});
+      await assert.rejects(backend.contact(contactRequest(p),env,noContactSend),error=>error.status===403);assert.equal(await contactRow(p.id),null);
+    }
+    globalThis.fetch=async(url,init)=>{calls++;assert.equal(url,'https://challenges.cloudflare.com/turnstile/v0/siteverify');const body=JSON.parse(init.body);assert.equal(body.idempotency_key,p.id);return Response.json({success:true,hostname:'localhost',action:'reporting'});};
+    const p=contactPayload({turnstileToken:'test-only-challenge'});
+    await backend.contact(contactRequest(p),env,async()=>Response.json({id:'verified-contact'}));assert.equal(calls,4);
+  } finally {globalThis.fetch=original;}
+});
+test('cleanup deletes contact content older than ninety days and keeps fresh messages',async()=>{
+  const old=contactPayload(),fresh=contactPayload();
+  for(const p of [old,fresh]) await backend.contact(contactRequest(p),contactEnv(),async()=>Response.json({id:`retention-${p.id}`}));
+  await db.prepare('UPDATE contact_messages SET created_at=? WHERE id=?').bind(Date.now()-91*86400000,old.id).run();
+  await backend.cleanup(backendEnv());assert.equal(await contactRow(old.id),null);assert.equal((await contactRow(fresh.id)).message,fresh.message);
 });

@@ -86,7 +86,7 @@ test("a report's release identifier passes the same shape check as an analytics 
 test("the contact surface publishes only the owner's chosen address, and GitHub either way", () => {
   const enabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: true }));
   const disabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: false }));
-  assert.equal([...enabled.matchAll(/mailto:([^"]+)/g)].map(match => match[1]).join(), ["hellosanjaygautam@gmail.com","hellosanjaygautam@gmail.com","hellosanjaygautam@gmail.com"].join());
+  assert.equal([...enabled.matchAll(/mailto:([^"]+)/g)].map(match => match[1]).join(), ["hellosanjaygautam@gmail.com","hellosanjaygautam@gmail.com"].join());
   assert.match(enabled, /href="https:\/\/github\.com\/luv-jeri"/);
   assert.doesNotMatch(disabled, /mailto:/, "an unverified inbox is never published");
   assert.match(disabled, /href="https:\/\/github\.com\/luv-jeri"/);
@@ -99,4 +99,17 @@ test("receipt expectation names the next email only when email is on", () => {
     assert.equal(receiptExpectation(kind, false), null);
     assert.equal(receiptExpectation(kind, undefined), null);
   }
+});
+
+test("the maker's contact form renders only when contact is enabled", () => {
+  const enabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: true }));
+  const disabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: false }));
+  assert.match(enabled, /Send me a message/);
+  for (const name of ["name", "email", "message", "company"]) {
+    assert.match(enabled, new RegExp(`name="${name}"`));
+    assert.doesNotMatch(disabled, new RegExp(`name="${name}"`));
+  }
+  assert.match(enabled, /Send message/);
+  assert.match(enabled, /role="status"/);
+  assert.doesNotMatch(disabled, /Send me a message|Send message|<form/);
 });

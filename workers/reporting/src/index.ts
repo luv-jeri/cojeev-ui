@@ -5,6 +5,7 @@ import { emailLimits, resendWebhook } from './resend';
 import { drain } from "./delivery";
 import { cleanup, updateFromAdmin, webhook } from "./lifecycle";
 import { adminList, applyVerdict, listUntriaged, markVerified } from "./triage";
+import { contact } from "./contact";
 type Context = {waitUntil(promise:Promise<unknown>):void};
 const json=(body:unknown,status=200)=>Response.json(body,{status});
 async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
@@ -20,6 +21,7 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
     assertBrowserOrigin(request,env);const result=await accept(request,env);
     ctx.waitUntil(drain(env,result.receipt.id));return json(result.receipt,result.fresh?201:200);
   }
+  if(path==="/v1/contact"&&request.method==="POST") { assertBrowserOrigin(request,env);return json(await contact(request,env)); }
   const fileMatch=path.match(/^\/v1\/reports\/([^/]+)\/attachments\/([^/]+)$/);
   if(fileMatch&&request.method==="PUT") { assertBrowserOrigin(request,env);return json(await upload(request,env,fileMatch[1],fileMatch[2])); }
   const reportMatch=path.match(/^\/v1\/reports\/([^/]+)$/);
