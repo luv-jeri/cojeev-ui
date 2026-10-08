@@ -161,10 +161,11 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
   return sendResend(env,job,emailPayload(env,job,row.email,emailMessage(row,job.kind,env.SITE_URL)),send);
 }
 export async function drain(env:Env,reportId?:string,send=fetch) {
+  const leaseCutoff=now();
   // App creation is safe to retry only through mirrorIssue's signed-marker scan.
-  await env.DB.prepare("UPDATE outbox SET state='pending',due_at=?,lease_token=NULL,delivery_status='uncertain' WHERE kind='github' AND state='processing' AND lease_until<? AND attempts<8 AND report_id IN (SELECT id FROM reports WHERE source='app')").bind(now(),now()).run();
+  await env.DB.prepare("UPDATE outbox SET state='pending',due_at=?,lease_token=NULL,delivery_status='uncertain' WHERE kind='github' AND state='processing' AND lease_until<? AND attempts<8 AND report_id IN (SELECT id FROM reports WHERE source='app')").bind(leaseCutoff,leaseCutoff).run();
   // A crashed send has an unknown remote outcome. Never blindly resend it.
-  await env.DB.prepare("UPDATE outbox SET state='needs_review',last_error='Delivery lease expired; check the provider before retrying.',lease_token=NULL WHERE state='processing' AND lease_until<?").bind(now()).run();
+  await env.DB.prepare("UPDATE outbox SET state='needs_review',last_error='Delivery lease expired; check the provider before retrying.',lease_token=NULL WHERE state='processing' AND lease_until<?").bind(leaseCutoff).run();
   const cutoff=activationCutoff(env);
   await env.DB.prepare("UPDATE outbox SET state='held',last_error='Delivery activation or historical review required.' WHERE state='pending' AND (? IS NULL OR (reviewed_at IS NULL AND report_id IN (SELECT id FROM reports WHERE created_at<?)))").bind(cutoff,cutoff).run();
   if(cutoff===null) return {processed:0};

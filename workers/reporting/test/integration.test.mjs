@@ -1580,3 +1580,28 @@ test('app_report_missing_github_labels_requires_review_for_new_and_reconciled_is
   });
   assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
 });
+
+test('app_report_lease_expiry_uses_one_cutoff_for_both_updates',async()=>{
+  const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+  const original=Date.now,start=original();let clock=start;
+  await db.prepare("UPDATE outbox SET state='processing',lease_until=?,attempts=1 WHERE report_id=?").bind(start+1,p.id).run();
+  const tickingDB=new Proxy(db,{get(target,key){
+    if(key==='prepare') return sql=>{
+      const statement=target.prepare(sql);
+      if(sql.startsWith("UPDATE outbox SET state='pending',due_at=?")) return {bind(...args){
+        const bound=statement.bind(...args);return {run:async()=>{const result=await bound.run();clock=start+2;return result;}};
+      }};
+      return statement;
+    };
+    const value=target[key];return typeof value==='function'?value.bind(target):value;
+  }});
+  Date.now=()=>clock;
+  try {
+    await backend.drain(appEnv({DB:tickingDB}),p.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'processing','lease expiring between updates is not incorrectly held for review');
+    assert.equal(gh.posts,0);
+    await backend.drain(appEnv(),p.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+    assert.equal(gh.posts,1);
+  } finally {Date.now=original;}
+});
