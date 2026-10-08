@@ -20,7 +20,7 @@ export function assessHealth(data) {
   if((data.deploymentIntent==='active'||data.activationCutoff)&&!ready) problems.add('provider-unconfigured');
   return [...problems].sort();
 }
-export async function checkHealth(environment,{token,commit,fetcher=fetch,layout='ui'}={}) {
+export async function checkHealth(environment,{token,commit,fetcher=fetch,layout='ui',registry=false}={}) {
   const target=environmentConfig(environment,layout),problems=[];
   const get=async(url,headers={})=>{
     const response=await fetcher(url,{headers,redirect:'error',signal:AbortSignal.timeout(15000)});
@@ -34,7 +34,9 @@ export async function checkHealth(environment,{token,commit,fetcher=fetch,layout
   } catch {problems.push('http-health');}
   if(!token) problems.push('invalid-delivery-health');
   else try {problems.push(...assessHealth(await get(`${target.api}/v1/admin/health`,{Authorization:`Bearer ${token}`})));} catch {problems.push('invalid-delivery-health');}
-  if(environment==='production') try {
+  // Monitor-only: a release or rollback live check must not fail on the public
+  // registry, which a pre-/ui rollback artifact does not serve at the new site.
+  if(registry&&environment==='production') try {
     const site=environmentConfig('production','ui').site;
     const registryJSON=async url=>{
       for(let redirects=0;redirects<=5;redirects++) {
@@ -100,7 +102,7 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
     const [environment,commit]=process.argv.slice(2);
     const result=process.env.OPERATIONS_FAILURE
       ? {environment,problems:[process.env.OPERATIONS_FAILURE]}
-      : await checkHealth(environment,{token:process.env.HEALTH_TOKEN,commit});
+      : await checkHealth(environment,{token:process.env.HEALTH_TOKEN,commit,registry:true});
     if(process.env.UPDATE_ALERT==='true') await updateAlert(environment,result.problems);
     console.log(JSON.stringify(result));
     if(result.problems.length) process.exitCode=1;

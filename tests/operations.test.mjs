@@ -58,7 +58,7 @@ function registryFetcher(overrides={},seen=[]) {
 }
 test('production registry checks both indexes and deterministic first, middle and last items',async()=>{
   const seen=[];
-  const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher({},seen)});
+  const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({},seen)});
   assert.deepEqual(result.problems,[]);
   const requests=seen.filter(({url})=>url.includes('/r/'));
   assert.deepEqual(requests.map(({url})=>url),[listedRegistry,directRegistry,...['item-0','item-250','item-499'].map(name=>`${registrySite}/r/${name}.json`)]);
@@ -68,9 +68,15 @@ test('production registry checks both indexes and deterministic first, middle an
     assert.ok(options.signal instanceof AbortSignal);
   }
 });
+test('release live checks never probe the registry unless the monitor asks',async()=>{
+  const seen=[];
+  const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher({},seen)});
+  assert.deepEqual(result.problems,[]);
+  assert.ok(seen.every(({url})=>!url.includes('/r/')));
+});
 test('registry follows the directory-listed 301 redirect before checking the direct index',async()=>{
   const seen=[];
-  const result=await checkHealth('production',{fetcher:registryFetcher({[listedRegistry]:()=>new Response(null,{status:301,headers:{location:directRegistry}})},seen)});
+  const result=await checkHealth('production',{registry:true,fetcher:registryFetcher({[listedRegistry]:()=>new Response(null,{status:301,headers:{location:directRegistry}})},seen)});
   assert.deepEqual(result.problems,['invalid-delivery-health']);
   assert.deepEqual(seen.filter(({url})=>url.includes('/r/')).slice(0,3).map(({url})=>url),[listedRegistry,directRegistry,directRegistry]);
 });
@@ -78,23 +84,23 @@ test('registry accepts five redirects and refuses a sixth',async()=>{
   for(const count of [5,6]) {
     const overrides={[listedRegistry]:()=>new Response(null,{status:302,headers:{location:'/r/redirect-1'}})};
     for(let i=1;i<=count;i++) overrides[`https://000h.cojeev.com/r/redirect-${i}`]=()=>i===count?Response.json(registryIndex):new Response(null,{status:307,headers:{location:`/r/redirect-${i+1}`}});
-    const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher(overrides)});
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher(overrides)});
     assert.deepEqual(result.problems,count===5?[]:['registry-unavailable']);
   }
 });
 test('registry reports a missing item file',async()=>{
-  const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher({[`${registrySite}/r/item-250.json`]:()=>new Response('not found',{status:404})})});
+  const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[`${registrySite}/r/item-250.json`]:()=>new Response('not found',{status:404})})});
   assert.deepEqual(result.problems,['registry-unavailable']);
 });
 test('registry rejects wrong index and item names',async()=>{
   for(const url of [listedRegistry,directRegistry,`${registrySite}/r/item-499.json`]) {
-    const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher({[url]:()=>Response.json({...registryIndex,name:'wrong',files:[{}]})})});
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[url]:()=>Response.json({...registryIndex,name:'wrong',files:[{}]})})});
     assert.deepEqual(result.problems,['registry-unavailable'],url);
   }
 });
 test('registry rejects an index with fewer than 500 entries on either path',async()=>{
   for(const url of [listedRegistry,directRegistry]) {
-    const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher({[url]:()=>Response.json({...registryIndex,items:registryIndex.items.slice(0,499)})})});
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[url]:()=>Response.json({...registryIndex,items:registryIndex.items.slice(0,499)})})});
     assert.deepEqual(result.problems,['registry-unavailable'],url);
   }
 });
@@ -106,7 +112,7 @@ test('registry requires exactly 200, JSON content and non-empty item files',asyn
     ()=>new Response('invalid JSON',{headers:{'content-type':'application/json'}}),
     ()=>Response.json({name:'item-0',files:[]}),
   ]) {
-    const result=await checkHealth('production',{token:'test-token',fetcher:registryFetcher({[`${registrySite}/r/item-0.json`]:response})});
+    const result=await checkHealth('production',{registry:true,token:'test-token',fetcher:registryFetcher({[`${registrySite}/r/item-0.json`]:response})});
     assert.deepEqual(result.problems,['registry-unavailable']);
   }
 });
