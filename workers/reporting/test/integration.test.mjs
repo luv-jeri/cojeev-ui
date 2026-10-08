@@ -1718,7 +1718,10 @@ test('app_report_default_issue_ceiling_bounds_every_rolling_hour_and_reconciles_
     const row=()=>({id:randomUUID(),source:'app',destination_repository:'luv-jeri/cojeev',created_at:time,title:'0.1.0 (macos)',description:'Synthetic message',app_category:'crash'});
     try {
       // Unsafe configuration cannot raise the shared ceiling above 200.
-      for(let i=0;i<200;i++) await backend.mirrorIssue(env,row(),send);
+      for(let i=0;i<200;i++) {
+        Date.now=()=>time+Math.floor(i/60)*60000;
+        await backend.mirrorIssue(env,row(),send);
+      }
       const next=row();await assert.rejects(backend.mirrorIssue(env,next,send));assert.equal(posted.length,200);
       // No reset at a UTC hour boundary: only an elapsed rolling hour releases capacity.
       Date.now=()=>time+3599999;
@@ -1850,5 +1853,111 @@ test('app_report_fifo_reservation_cannot_jump_an_older_due_lease',async()=>{
     }
     await db.prepare("UPDATE outbox SET state='held' WHERE report_id=?").bind(old.id).run();
     await backend.drain(env,fresh.id,gh.send);assert.equal(gh.posts,1,'held jobs do not starve the active queue');
+  });
+});
+
+
+test('app_report_minute_ceiling_queues_until_rolling_minute_returns',async()=>{
+  for(const [offset,setting] of [[230,undefined],[240,'999']]) await inAppWindow(offset,async time=>{
+    const env=appEnv({GITHUB_ISSUE_MINUTE_LIMIT:setting}),gh=fakeAppGitHub();
+    const row=()=>({id:randomUUID(),source:'app',destination_repository:'luv-jeri/cojeev',created_at:time,title:'0.1.0 (macos)',description:'Synthetic message',app_category:'crash'});
+    for(let i=0;i<60;i++) await backend.mirrorIssue(env,row(),gh.send);
+    const p=appPayload();await directApp(p,'192.0.2.1',env);await backend.drain(env,p.id,gh.send);
+    let job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(gh.posts,60,'default and unsafe configuration permit at most 60 POSTs per minute');
+    assert.equal(job.state,'pending');assert.equal(job.attempts,0);assert.equal(job.first_attempt_at,null);
+    assert.equal(job.delivery_status,'queued');assert.equal(job.due_at,time+60000);
+    Date.now=()=>time+59999;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,60);
+    Date.now=()=>time+60000;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,61);
+    job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();assert.equal(job.state,'done');
+  });
+});
+
+test('app_report_minute_ceiling_is_configurable_and_atomic',async()=>{
+  await inAppWindow(250,async time=>{
+    const env=appEnv({GITHUB_ISSUE_MINUTE_LIMIT:'1'}),gh=fakeAppGitHub(),a=appPayload(),b=appPayload();
+    await directApp(a,'192.0.2.1',env);Date.now=()=>time+1;await directApp(b,'198.51.100.1',env);
+    await Promise.all([backend.drain(env,a.id,gh.send),backend.drain(env,b.id,gh.send)]);
+    assert.equal(gh.posts,1,'competing drains share the configured minute budget');
+    Date.now=()=>time+1001;await backend.drain(env,undefined,gh.send);
+    assert.equal(gh.posts,1,'a FIFO contention retry cannot bypass the minute ceiling');
+    const jobs=(await db.prepare('SELECT state,attempts FROM outbox WHERE report_id IN (?,?)').bind(a.id,b.id).all()).results;
+    assert.equal(jobs.filter(job=>job.state==='done').length,1);assert.equal(jobs.find(job=>job.state==='pending').attempts,0);
+  });
+});
+
+test('app_report_github_secondary_limits_requeue_without_failure_and_honor_provider_time',async()=>{
+  const cases=[
+    {status:403,headers:{'Retry-After':'120'},delay:120000},
+    {status:429,dateDelay:180000,delay:180000},
+    {status:429,resetDelay:240000,delay:240000},
+    {status:403,headers:{},delay:60000},
+    {status:429,headers:{'Retry-After':'120'},resetDelay:240000,delay:240000}
+  ];
+  for(const [i,c] of cases.entries()) await inAppWindow(260+i*10,async time=>{
+    const env=appEnv(),p=appPayload(),gh=fakeAppGitHub();await directApp(p,'192.0.2.1',env);
+    let posts=0;
+    const headers={...c.headers,...(c.dateDelay?{'Retry-After':new Date(time+c.dateDelay).toUTCString()}:{}),...(c.resetDelay?{'x-ratelimit-reset':String((time+c.resetDelay)/1000)}:{})};
+    const send=async(url,init={})=>{
+      if(init.method==='POST'&&++posts===1) return Response.json({message:'You have exceeded a secondary rate limit.'},{status:c.status,headers});
+      return gh.send(url,init);
+    };
+    await backend.drain(env,p.id,send);
+    let job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'pending');assert.equal(job.attempts,0,'a provider throttle consumes no failure retry');
+    assert.equal(job.delivery_status,'queued');assert.equal(job.last_error,null);assert.equal(job.due_at,time+c.delay);
+    Date.now=()=>job.due_at-1;await backend.drain(env,p.id,send);assert.equal(posts,1,'no retry before the provider deadline');
+    Date.now=()=>job.due_at;await backend.drain(env,p.id,send);
+    job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'done');assert.equal(job.attempts,1);assert.equal(posts,2);assert.equal(gh.posts,1);
+  });
+});
+
+test('app_report_repeated_secondary_limits_do_not_exhaust_delivery_retries',async()=>{
+  await inAppWindow(320,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);let posts=0;
+    const send=async(url,init={})=>{
+      if(url.endsWith('/user')) return Response.json(githubActor);
+      if(init.method!=='POST') return Response.json([]);
+      posts++;return Response.json({message:'secondary rate limit'},{status:403,headers:{'Retry-After':'60'}});
+    };
+    for(let i=0;i<10;i++) {
+      await backend.drain(env,p.id,send);
+      const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+      assert.equal(job.state,'pending');assert.equal(job.delivery_status,'queued');assert.equal(job.attempts,0);
+      Date.now=()=>job.due_at;
+    }
+    assert.equal(posts,10,'throttles never reach the eight-failure review cutoff');
+  });
+});
+
+
+test('app_report_github_secondary_limit_deadline_survives_a_stale_drain_snapshot',async()=>{
+  await inAppWindow(340,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    let release,selected,posts=0;
+    const ready=new Promise(resolve=>selected=resolve),resume=new Promise(resolve=>release=resolve);
+    const staleDB=new Proxy(db,{get(target,key){
+      if(key==='prepare') return sql=>{
+        const statement=target.prepare(sql);
+        if(sql.startsWith('SELECT * FROM outbox WHERE state=')) return {bind(...args){
+          const bound=statement.bind(...args);return {all:async()=>{const result=await bound.all();selected();await resume;return result;}};
+        }};
+        return statement;
+      };
+      const value=target[key];return typeof value==='function'?value.bind(target):value;
+    }});
+    const send=async(url,init={})=>{
+      if(url.endsWith('/user')) return Response.json(githubActor);
+      if(init.method!=='POST') return Response.json([]);
+      posts++;return Response.json({message:'secondary rate limit'},{status:429,headers:{'Retry-After':'120'}});
+    };
+    const competing=backend.drain({...env,DB:staleDB},p.id,send);
+    await ready;
+    try {await backend.drain(env,p.id,send);} finally {release();}
+    await competing;
+    assert.equal(posts,1,'a stale queue snapshot must not send again before Retry-After');
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'pending');assert.equal(job.attempts,0);assert.equal(job.due_at,time+120000);
   });
 });

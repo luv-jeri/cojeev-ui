@@ -7,31 +7,38 @@ import { messageTags, sendResend, testerAllowed } from './resend';
 export class DeliveryFailure extends Error {
   constructor(public reason: string, public ambiguous = false, public permanent = false, public quota = false) { super(reason); }
 }
-// Capacity waits are not provider failures and must not consume delivery attempts.
+// Capacity waits and provider throttles must not consume delivery failures.
 class IssueCapacityWait extends Error {
   constructor(public retryAt:number) {super("Issue creation capacity is queued.");}
 }
 async function reserveIssueCreation(env:Env,row:ReportRow,queuedAt:number) {
   const time=now(),configured=Number(env.GITHUB_ISSUE_HOURLY_LIMIT);
   const limit=Number.isSafeInteger(configured)&&configured>=1&&configured<=200?configured:200;
+  const minuteConfigured=Number(env.GITHUB_ISSUE_MINUTE_LIMIT);
+  const minuteLimit=Number.isSafeInteger(minuteConfigured)&&minuteConfigured>=1&&minuteConfigured<=60?minuteConfigured:60;
   // One conditional write serializes reservations across repositories and concurrent leases.
   // Count attempts, including lost responses and failures, so retries cannot bypass the ceiling.
   const id=crypto.randomUUID();
   const [reserved]=await env.DB.batch([
     env.DB.prepare(`INSERT INTO github_issue_attempts(id,attempted_at) SELECT ?,? WHERE (SELECT count(*) FROM github_issue_attempts WHERE attempted_at>?)<?
+      AND (SELECT count(*) FROM github_issue_attempts WHERE attempted_at>?)<?
       AND NOT EXISTS (SELECT 1 FROM outbox o JOIN reports r ON r.id=o.report_id
         WHERE o.kind='github' AND o.state IN ('pending','processing') AND o.due_at<=? AND o.report_id<>?
         AND (o.created_at<? OR (o.created_at=? AND o.rowid<(SELECT rowid FROM outbox WHERE id=?)))
         AND ((r.source='website' AND ?=1) OR (r.source='app' AND ?=1))) RETURNING id`)
-      .bind(id,time,time-3600000,limit,time,row.id,queuedAt,queuedAt,`${row.id}:github`,Number(githubEnabled(env)),Number(!!env.GITHUB_TOKEN&&/^[\w.-]+\/[\w.-]+$/.test(env.APP_GITHUB_REPOSITORY??""))),
+      .bind(id,time,time-3600000,limit,time-60000,minuteLimit,time,row.id,queuedAt,queuedAt,`${row.id}:github`,Number(githubEnabled(env)),Number(!!env.GITHUB_TOKEN&&/^[\w.-]+\/[\w.-]+$/.test(env.APP_GITHUB_REPOSITORY??""))),
     // Keep POST history on the durable job, independently of reservation cleanup.
     env.DB.prepare("UPDATE outbox SET first_attempt_at=COALESCE(first_attempt_at,?) WHERE id=? AND EXISTS (SELECT 1 FROM github_issue_attempts WHERE id=?)")
       .bind(time,`${row.id}:github`,id)
   ]);
   const reservation=reserved.results[0];
   if(!reservation) {
-    const usage=await env.DB.prepare("SELECT count(*) AS count,MIN(attempted_at) AS time FROM github_issue_attempts WHERE attempted_at>?").bind(time-3600000).first<{count:number;time:number|null}>();
-    throw new IssueCapacityWait(usage&&usage.count>=limit?(usage.time??time)+3600000:time+1000);
+    const usage=await env.DB.prepare("SELECT count(*) AS count,MIN(attempted_at) AS time,SUM(CASE WHEN attempted_at>? THEN 1 ELSE 0 END) AS minute_count,MIN(CASE WHEN attempted_at>? THEN attempted_at END) AS minute_time FROM github_issue_attempts WHERE attempted_at>?")
+      .bind(time-60000,time-60000,time-3600000).first<{count:number;time:number|null;minute_count:number;minute_time:number|null}>();
+    const releases:number[]=[];
+    if(usage&&usage.count>=limit) releases.push((usage.time??time)+3600000);
+    if(usage&&usage.minute_count>=minuteLimit) releases.push((usage.minute_time??time)+60000);
+    throw new IssueCapacityWait(releases.length?Math.max(...releases):time+1000);
   }
 }
 export const escapeHTML = (v:string) => v.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
@@ -99,7 +106,19 @@ async function github(env:Env,path:string,init:RequestInit={}, send=fetch) {
   let response:Response;
   try { response=await send(`https://api.github.com${path}`,{...init,headers:{Authorization:`Bearer ${env.GITHUB_TOKEN}`,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"Cojeev-Reporting","Content-Type":"application/json",...init.headers},signal:AbortSignal.timeout(15000)}); }
   catch { throw new DeliveryFailure("GitHub response unavailable; reconcile before retrying.",init.method==="POST"); }
-  if(!response.ok) throw new DeliveryFailure(`GitHub returned HTTP ${response.status}.`,init.method==="POST"&&response.status>=500,[400,401,404,422].includes(response.status));
+  if(!response.ok) {
+    let secondary=false;
+    if(response.status===403) {
+      const body=await response.json().catch(()=>null) as {message?:unknown}|null;
+      secondary=response.headers.has('Retry-After')||response.headers.get('x-ratelimit-remaining')==='0'||typeof body?.message==='string'&&/secondary rate limit|abuse detection|rate limit exceeded/i.test(body.message);
+    }
+    if(response.status===429||secondary) {
+      const time=now(),retry=response.headers.get('Retry-After'),seconds=retry===null?NaN:Number(retry);
+      const hints=[Number.isFinite(seconds)&&seconds>=0?time+seconds*1000:Date.parse(retry??''),Number(response.headers.get('x-ratelimit-reset'))*1000].filter(at=>Number.isFinite(at)&&at>=time);
+      throw new IssueCapacityWait(hints.length?Math.max(time+1000,...hints):time+60000);
+    }
+    throw new DeliveryFailure(`GitHub returned HTTP ${response.status}.`,init.method==="POST"&&response.status>=500,[400,401,404,422].includes(response.status));
+  }
   try { return await response.json() as Record<string,unknown>; } catch { throw new DeliveryFailure("GitHub returned an unreadable response.",init.method==="POST"); }
 }
 type GitHubIssue={number:number;node_id:string;html_url:string;labels?:Array<string|{name?:string}>;body?:string;created_at?:string;user?:{id:number;login:string};pull_request?:unknown};
@@ -214,7 +233,8 @@ export async function drain(env:Env,reportId?:string,send=fetch) {
     const appJob=job.kind==="github"&&row.source==="app";
     if(job.kind.startsWith("email")&&!emailEnabled(env) || job.kind.startsWith("github")&&!(appJob?appEnabled:githubEnabled(env))) continue;
     const lease=crypto.randomUUID();
-    const claim=await env.DB.prepare("UPDATE outbox SET state='processing',attempts=attempts+1,lease_until=?,lease_token=? WHERE id=? AND state='pending' RETURNING id").bind(now()+300000,lease,job.id).first();
+    const claimTime=now();
+    const claim=await env.DB.prepare("UPDATE outbox SET state='processing',attempts=attempts+1,lease_until=?,lease_token=? WHERE id=? AND state='pending' AND due_at<=? RETURNING id").bind(claimTime+300000,lease,job.id,claimTime).first();
     if(!claim) continue;
     processed++;
     try {
