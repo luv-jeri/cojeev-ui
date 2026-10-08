@@ -1552,3 +1552,31 @@ test('app_report_version_is_strict_and_single_line',async()=>{
   }
   for(const appVersion of ['0.1.0','1.2.3-beta.4']) assert.equal((await submitApp(appPayload({appVersion}))).status,201);
 });
+
+test('app_report_missing_github_labels_requires_review_for_new_and_reconciled_issues',async()=>{
+  for(const reconcile of [false,true]) {
+    const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+    const send=async(url,init)=>{
+      const response=await gh.send(url,init),body=await response.json();
+      if(init?.method==='POST') {gh.issues[0].labels=[];return Response.json({...body,labels:[]},{status:201});}
+      return Response.json(body);
+    };
+    if(reconcile) {
+      gh.loseNextResponse();await backend.drain(appEnv(),p.id,send);
+      gh.issues[0].labels=[];
+      await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(p.id).run();
+    }
+    await backend.drain(appEnv(),p.id,send);
+    const job=await db.prepare('SELECT state,last_error FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'needs_review','missing required labels cannot count as delivery');
+    assert.equal(job.last_error,'GitHub issue labels require maintainer review.');
+    assert.equal(gh.posts,1,'label failure never creates a duplicate issue');
+  }
+  // Real GitHub returns label objects rather than request-style strings.
+  const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+  await backend.drain(appEnv(),p.id,async(url,init)=>{
+    const response=await gh.send(url,init),body=await response.json();
+    return Response.json(init?.method==='POST'?{...body,labels:body.labels.map(name=>({name}))}:body);
+  });
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+});

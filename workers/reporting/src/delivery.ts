@@ -75,7 +75,7 @@ async function github(env:Env,path:string,init:RequestInit={}, send=fetch) {
   if(!response.ok) throw new DeliveryFailure(`GitHub returned HTTP ${response.status}.`,init.method==="POST"&&response.status>=500,[400,401,404,422].includes(response.status));
   try { return await response.json() as Record<string,unknown>; } catch { throw new DeliveryFailure("GitHub returned an unreadable response.",init.method==="POST"); }
 }
-type GitHubIssue={number:number;node_id:string;html_url:string;body?:string;created_at?:string;user?:{id:number;login:string};pull_request?:unknown};
+type GitHubIssue={number:number;node_id:string;html_url:string;labels?:Array<string|{name?:string}>;body?:string;created_at?:string;user?:{id:number;login:string};pull_request?:unknown};
 export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
   const repository=row.source==="app"?row.destination_repository:env.GITHUB_REPOSITORY;
   if(!githubEnabled({...env,GITHUB_REPOSITORY:repository??undefined})) throw new DeliveryFailure("GitHub setup required.",false,true);
@@ -117,6 +117,11 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     }
     const issue=await mirrorIssue(env,row,send);
     if(!issue.number||!issue.node_id||!issue.html_url) throw new DeliveryFailure("GitHub issue receipt incomplete.",true);
+    if(row.source==="app"&&!row.issue_number) {
+      const returned=(issue as GitHubIssue).labels;
+      const labels=Array.isArray(returned)?returned.map(label=>typeof label==="string"?label:label?.name):[];
+      if(!["user-report",row.app_category].every(label=>labels.includes(label??""))) throw new DeliveryFailure("GitHub issue labels require maintainer review.",false,true);
+    }
     const statements=[env.DB.prepare("UPDATE reports SET issue_number=?,issue_node_id=?,issue_url=? WHERE id=?").bind(issue.number,issue.node_id,issue.html_url,row.id)];
     if(row.source!=="app") {
       statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_accepted',?,?,?)").bind(`${row.id}:email_accepted`,row.id,now(),now(),now()));
