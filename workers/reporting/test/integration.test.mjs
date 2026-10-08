@@ -1691,6 +1691,13 @@ test('app_report_labels_match_github_case_insensitively',async()=>{
   }
 });
 
+test('markdown_parser_is_a_direct_dev_dependency_of_the_test_package',async()=>{
+  const manifest=JSON.parse(await readFile('package.json','utf8')),lock=JSON.parse(await readFile('package-lock.json','utf8'));
+  assert.ok(manifest.devDependencies['mdast-util-from-markdown'],'the Markdown regression parser must not rely on transitive dependencies');
+  assert.equal(lock.packages[''].devDependencies['mdast-util-from-markdown'],manifest.devDependencies['mdast-util-from-markdown']);
+});
+
+
 test('app_report_default_issue_ceiling_bounds_every_rolling_hour_and_reconciles_at_capacity',async()=>{
   await inAppWindow(100,async time=>{
     const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'999'}),posted=[];
