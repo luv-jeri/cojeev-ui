@@ -153,7 +153,6 @@ export const examples: Record<string, ExampleComponent> = {
   skeleton: lazy(() => import("./loading").then((module) => ({ default: module.SkeletonExample }))),
   "slider": lazy(() => import("./motion-progress").then((module) => ({ default: module.SliderExample }))),
   spinner: lazy(() => import("./loading").then((module) => ({ default: module.SpinnerExample }))),
-  stepper: lazy(() => import("./progression").then((module) => ({ default: module.StepperExample }))),
   switch: lazy(() => import("./choice-foundations").then((module) => ({ default: module.SwitchExample }))),
   table: lazy(() => import("./tables").then((module) => ({ default: module.TableExample }))),
   tabs: lazy(() => import("./navigation").then((module) => ({ default: module.TabsExample }))),

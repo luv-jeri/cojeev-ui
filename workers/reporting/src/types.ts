@@ -1,7 +1,7 @@
 import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 import type { ReportKind, ReportStatus } from "../../../lib/reporting/contracts";
 export interface Env {
-  DB: D1Database; MEDIA: R2Bucket;
+  DB: D1Database; MEDIA: R2Bucket; WEBSITE?: { fetch: typeof fetch };
   ALLOWED_ORIGINS: string; SITE_URL: string; LOCAL_MODE?: string;
   TURNSTILE_SITE_KEY?: string; TURNSTILE_SECRET?: string; IP_HASH_SECRET?: string;
   ADMIN_TOKEN?: string; HEALTH_TOKEN?: string; GITHUB_TOKEN?: string; GITHUB_REPOSITORY?: string;

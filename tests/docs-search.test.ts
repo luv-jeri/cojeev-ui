@@ -11,3 +11,17 @@ test("Fumadocs indexes documentation content beyond component titles", async () 
   const data = await search.export() as { type: string };
   assert.equal(data.type, "simple");
 });
+
+test("Everyday names find the component that does the job", async () => {
+  const search = createDocsSearch();
+  for (const query of ["timeline", "history", "audit trail"]) {
+    assert.ok((await search.search(query)).some(result => result.url === "/docs/activity-feed/"), query);
+  }
+});
+
+test("Run and workflow names find Milestone path", async () => {
+  const search = createDocsSearch();
+  for (const query of ["timeline", "workflow", "run trace", "execution trace", "nested steps", "milestones", "user flow", "event sequence"]) {
+    assert.ok((await search.search(query)).some(result => result.url === "/docs/milestone-path/"), query);
+  }
+});

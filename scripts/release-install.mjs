@@ -9,7 +9,7 @@ import {readArtifact} from './release.mjs';
 const [environment,commit,directory,digest]=process.argv.slice(2);
 if(!directory) throw new Error('Pass ENV SHA ARTIFACT_DIRECTORY MANIFEST_DIGEST');
 await readArtifact(path.resolve(directory),environment,commit,digest);
-const registry=path.join(directory,'site/r');
+const registry=path.join(directory,'site/ui/r');
 
 const temp=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-registry-install-'));
 const server=createServer(async(request,response)=>{
@@ -24,7 +24,7 @@ try {
   for(const file of await fs.readdir(registry)) {
     if(!file.endsWith('.json')) continue;
     const item=JSON.parse(await fs.readFile(path.join(registry,file),'utf8'));
-    if(item.registryDependencies) item.registryDependencies=item.registryDependencies.map(value=>/^https?:\/\/[^/]+(?:\/cojeev-ui)?\/r\//.test(value)?`${origin}/r/${value.split('/r/')[1]}`:value);
+    if(item.registryDependencies) item.registryDependencies=item.registryDependencies.map(value=>/^https?:\/\/[^/]+(?:\/(?:cojeev-ui|ui))?\/r\//.test(value)?`${origin}/r/${value.split('/r/')[1]}`:value);
     await fs.writeFile(path.join(temp,file),JSON.stringify(item));
   }
   const code=await new Promise((resolve,reject)=>{

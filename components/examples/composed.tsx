@@ -93,16 +93,6 @@ import {
   SidebarFooter,
 } from "@/registry/cojeev/ui/sidebar";
 import {
-  Stepper,
-  StepperList,
-  StepperItem,
-  StepperIndicator,
-  StepperTitle,
-  StepperPrevious,
-  StepperNext,
-  StepperStatus,
-} from "@/registry/cojeev/ui/stepper";
-import {
   TableContainer,
   Table,
   TableHeader,
@@ -665,49 +655,6 @@ export function SidebarExample() {
         <Body>Selected workspace section.</Body>
       </div>
     </div>
-  );
-}
-export function StepperExample() {
-  const [step, setStep] = React.useState(1);
-  const labels = ["Name", "Preferences", "Ready"];
-  return (
-    <Stepper
-      value={step}
-      onValueChange={setStep}
-      count={labels.length}
-      labels={labels}
-    >
-      <StepperList>
-        {labels.map((label, i) => (
-          <StepperItem key={label} step={i + 1}>
-            <StepperIndicator step={i + 1} />
-            <StepperTitle>{label}</StepperTitle>
-          </StepperItem>
-        ))}
-      </StepperList>
-      <Card>
-        <CardTitle>{labels[step - 1]}</CardTitle>
-        {step === 1 ? (
-          <Input aria-label="Space name" placeholder="Name your space" />
-        ) : step === 2 ? (
-          <Body>Keep a little room for curiosity.</Body>
-        ) : (
-          <Body>Your example workspace is ready.</Body>
-        )}
-      </Card>
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        <StepperPrevious />
-        <StepperStatus />
-        <StepperNext />
-      </div>
-    </Stepper>
   );
 }
 export function TableExample() {

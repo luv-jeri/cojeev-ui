@@ -47,6 +47,14 @@ try {
         (await root.locator(".v-activity-feed__group").count()) >= 2,
         "Date groups help scan the history",
       );
+      for (const name of ["thread", "ledger", "bursts"])
+        assert.equal(
+          await page
+            .locator(`[data-example-role="gallery"][data-variant="${name}"]`)
+            .count(),
+          1,
+          `${name} is discoverable`,
+        );
     } else {
       for (const name of ["Journey", "Sequence", "Review"])
         assert.equal(
@@ -67,8 +75,22 @@ try {
         .click();
     }
     for (const name of id === "activity-feed"
-      ? ["default"]
+      ? ["thread", "ledger", "bursts"]
       : ["journey", "sequence", "review"]) {
+      if (id === "activity-feed") {
+        // Each look keeps the same history; the example's own switcher follows the approach.
+        await page.getByRole("combobox", { name: "Example approach" }).click();
+        await page
+          .getByRole("option", {
+            name: name[0].toUpperCase() + name.slice(1),
+            exact: true,
+          })
+          .click();
+        await root
+          .locator(`[data-slot="activity-feed"][data-variant="${name}"]`)
+          .waitFor();
+        assert.ok((await root.locator("[data-activity-entry]").count()) >= 2);
+      }
       if (id === "milestone-path") {
         await page.getByRole("combobox", { name: "Example approach" }).click();
         await page
@@ -79,7 +101,7 @@ try {
           .click();
         assert.equal(
           await root
-            .locator('[data-milestone-id][data-state="complete"]')
+            .locator('[data-root] > ol > [data-milestone-id][data-state="complete"]')
             .count(),
           2,
         );
@@ -117,7 +139,7 @@ try {
   }
   assert.deepEqual(errors, []);
   console.log(
-    "PASS activity and milestone docs: retained visible entries, group hierarchy, three progress arrangements, selection continuity and16 responsive/theme views",
+    "PASS activity and milestone docs: retained visible entries, group hierarchy, three activity looks, three progress arrangements, selection continuity and 24 responsive/theme views",
   );
 } finally {
   await browser.close();

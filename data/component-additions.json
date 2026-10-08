@@ -107,13 +107,6 @@
       "directory"
     ]
   },
-  "stepper": {
-    "variants": [
-      "rail",
-      "ledger",
-      "compact"
-    ]
-  },
   "carousel": {
     "variants": [
       "shelf",
@@ -1371,6 +1364,7 @@
     "states": [
       "complete",
       "current",
+      "needs",
       "upcoming",
       "disabled",
       "empty",
@@ -1380,7 +1374,9 @@
   "activity-feed": {
     "name": "Activity feed",
     "variants": [
-      "default"
+      "thread",
+      "ledger",
+      "bursts"
     ],
     "sizes": [
       "default"

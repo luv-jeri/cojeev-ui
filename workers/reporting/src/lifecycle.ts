@@ -3,11 +3,13 @@ import { boundedBody, HttpError, verifyWebhook } from "./security";
 import { now, type Env, type ReportRow, type AttachmentRow } from "./types";
 import { redact } from '../../../lib/reporting/contracts';
 
-export async function verifyLiveComponent(env:Env,value:unknown) {
+export async function verifyLiveComponent(env:Env,value:unknown,fetcher?:typeof fetch) {
   const url=componentURL(value,env);
-  if(env.LOCAL_MODE==="true") return url;
+  if(env.LOCAL_MODE==="true" && !env.WEBSITE && !fetcher) return url;
   try {
-    const response=await fetch(url,{method:"HEAD",redirect:"manual",signal:AbortSignal.timeout(10000)});
+    const verify=env.WEBSITE ? env.WEBSITE.fetch.bind(env.WEBSITE) : fetcher;
+    if(!verify) throw new Error("Website service binding missing");
+    const response=await verify(url,{method:"HEAD",redirect:"manual",signal:AbortSignal.timeout(10000)});
     if(response.status!==200 || !(response.headers.get("Content-Type")??"").includes("text/html")) throw new Error();
     return url;
   } catch { throw new HttpError(422,"That component page is not live yet. Publish it before notifying requesters."); }

@@ -28,7 +28,25 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       });
       const ids = await entries.evaluateAll(nodes => nodes.map(node => node.dataset.activityEntry));
       assert.equal(new Set(ids).size, 5);
-      return "Progressive reveal moves focus, local prepend preserves all five entries, and quiet content remains readable";
+      await reduced(page, async () => {
+        // Undo is caller content: the entry carries it, the example keeps the way back.
+        await feed.locator('[data-activity-entry="brief"] [data-brand]').waitFor();
+        await feed.locator('[data-activity-entry="brief"]').getByRole("button", { name: "Undo", exact: true }).click();
+        await eventually(async () => await entries.count() === 4, "Undo removes the entry");
+        await text(root.getByRole("status").filter({ hasText: "Undone" }), "Undone · Collected the starting notes");
+        await eventually(() => root.getByRole("button", { name: "Redo", exact: true }).evaluate(el => el === document.activeElement), "Focus moves to Redo");
+        await root.getByRole("button", { name: "Redo", exact: true }).click();
+        await eventually(async () => await entries.count() === 5, "Redo restores the entry");
+        await eventually(() => feed.locator('[data-activity-entry="brief"]').getByRole("button", { name: "Undo", exact: true }).evaluate(el => el === document.activeElement), "Focus returns to Undo");
+        // The example's switcher changes the look and keeps every entry.
+        for (const [label, look] of [["Ledger", "ledger"], ["Bursts", "bursts"], ["Thread", "thread"]]) {
+          await root.getByRole("radio", { name: label, exact: true }).click();
+          await attribute(feed, "data-variant", look);
+          assert.equal(await entries.count(), 5, `${label} keeps every entry`);
+          if (look === "bursts") await text(feed.locator("summary.v-activity-feed__card-head").first(), "2 updates");
+        }
+      });
+      return "Progressive reveal moves focus, local prepend preserves all five entries, quiet content remains readable, caller undo/redo keeps focus, and the three looks keep every entry";
     },
     appearance: async ({ page, root }) => {
       const reset = root.getByRole("button", { name: "Reset appearance", exact: true });
@@ -149,24 +167,35 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
     },
     "milestone-path": async ({ page, root }) => {
       const path = root.locator('[data-slot="milestone-path"]');
-      await attribute(path.locator('[aria-current="step"]'), "data-milestone-id", "milestone-1");
+      const steps = path.locator("[data-root] > ol > [data-milestone-id]");
+      const current = path.locator('[data-root] > ol > [aria-current="step"]');
+      await attribute(current, "data-milestone-id", "milestone-1");
       await root.getByRole("button", { name: "Complete this milestone", exact: true }).click();
       await text(root.getByRole("status"), "2 of 4 completed");
-      await attribute(path.locator('[aria-current="step"]'), "data-milestone-id", "milestone-2");
+      await attribute(current, "data-milestone-id", "milestone-2");
+      // The working mark travels on its own layer, then hands the marker back to static paint.
+      // The beat lasts about 1.7 s; slow CI renderers draw few frames, so allow 8 s for the hand-back.
+      await eventually(async () => await path.locator("[data-travel-owned]").count() === 0, "Travel settles back to static paint", 8000);
+      await root.getByRole("button", { name: "Fail this step", exact: true }).click();
+      await attribute(current, "data-state", "needs");
+      await text(current.locator(".v-milestone-path__status"), "Needs one action");
+      await key(path.getByRole("button", { name: "Try again", exact: true }), "Enter");
+      await attribute(current, "data-state", "current");
       await key(path.getByRole("button", { name: "Bring it into the day", exact: true }), "Enter");
       await text(root.getByRole("status"), "Selected: Bring it into the day");
-      assert.equal(await path.locator('[data-state="complete"][data-milestone-id]').count(), 2);
+      assert.equal(await steps.and(path.locator('[data-state="complete"]')).count(), 2);
       await reduced(page, async () => {
         await root.getByRole("button", { name: "Complete this milestone", exact: true }).click();
+        assert.equal(await path.locator("[data-travel-owned]").count(), 0, "Reduced motion changes instantly");
         await root.getByRole("button", { name: "Complete this milestone", exact: true }).click();
         await text(root.getByRole("status"), "4 of 4 completed");
-        assert.equal(await path.locator('[aria-current="step"]').count(), 0);
-        assert.equal(await path.locator('[data-state="complete"][data-milestone-id]').count(), 4);
+        assert.equal(await current.count(), 0);
+        assert.equal(await steps.and(path.locator('[data-state="complete"]')).count(), 4);
         await key(root.getByRole("button", { name: "Start again", exact: true }), "Enter");
-        await attribute(path.locator('[aria-current="step"]'), "data-milestone-id", "milestone-0");
+        await attribute(current, "data-milestone-id", "milestone-0");
         await text(root.getByRole("status"), "0 of 4 completed");
       });
-      return "Caller-owned progress completes and restarts without a false current step; keyboard title selection preserves progress";
+      return "Completing travels and settles; a failed step offers one action and resumes; reduced motion changes instantly; selection never changes progress";
     },
     "reading-trail": async ({ page, root }) => {
       const trail = root.getByRole("navigation", { name: "In this note", exact: true });

@@ -11,8 +11,8 @@ const config=JSON.parse(readFileSync(new URL('../wrangler.jsonc',import.meta.url
 
 test('static files skip the Worker so Cloudflare serves them free; pages, registry items and guarded paths still run it',()=>{
   for(const {assets} of [config,config.env.beta,config.env.production]) {
-    for(const path of ['/_next/static/chunks/app.js','/_next/static/media/font.woff2','/index.txt','/docs/shape/__next.docs.$d$component.__PAGE__.txt']) assert.equal(runsWorker(assets.run_worker_first,path),false,path);
-    for(const path of ['/','/docs/button/','/health','/release.json','/r/button.json','/media/private.png','/v1/admin/reports','/__cojeev_missing_release_probe__/']) assert.equal(runsWorker(assets.run_worker_first,path),true,path);
+    for(const path of ['/ui/_next/static/chunks/app.js','/ui/_next/static/media/font.woff2','/ui/index.txt','/ui/docs/shape/__next.docs.$d$component.__PAGE__.txt']) assert.equal(runsWorker(assets.run_worker_first,path),false,path);
+    for(const path of ['/','/ui/docs/button/','/health','/ui/health','/ui/release.json','/ui/r/button.json','/media/private.png','/v1/admin/reports','/__cojeev_missing_release_probe__/']) assert.equal(runsWorker(assets.run_worker_first,path),true,path);
   }
 });
 
@@ -21,7 +21,7 @@ const rules=text=>text.trim().split(/\n\s*\n/).map(block=>{const [pattern,...lin
 test('files that skip the Worker get exactly the headers the Worker would have added',async()=>{
   for(const environment of ['beta','production']) {
     const file=rules(siteHeaders(environment));
-    for(const [path,type] of [['/_next/static/chunks/app.js','text/javascript'],['/docs/__next._tree.txt','text/plain'],['/feedback-admin/__next._tree.txt','text/plain'],['/admin/index.txt','text/plain']]) {
+    for(const [path,type] of [['/ui/_next/static/chunks/app.js','text/javascript'],['/ui/docs/__next._tree.txt','text/plain'],['/ui/feedback-admin/__next._tree.txt','text/plain'],['/ui/admin/index.txt','text/plain']]) {
       const worker=await host.fetch(new Request(`https://example.com${path}`),{ENVIRONMENT:environment,RELEASE:'a'.repeat(40),ASSETS:{fetch:async()=>new Response('asset',{headers:{'content-type':type}})}});
       const applied=file.filter(([pattern])=>pattern.test(path)).flatMap(([,headers])=>headers).sort();
       const expected=[...worker.headers].filter(([name])=>name!=='content-type').sort();
