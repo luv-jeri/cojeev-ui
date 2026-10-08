@@ -55,9 +55,10 @@ export function MarketingHeader() {
         <SidebarMenuButton asChild className="story-link" isActive={pathname?.includes("about") || pathname?.includes("work-with-me")}><Link href="/about/" onClick={() => setOpen(false)}>About the maker</Link></SidebarMenuButton>
       </nav>
       <div className="story-header-tools">
+        <Button asChild variant="accent" shape="card" size="sm" className="story-work"><Link href="/work-with-me/"><span>Work with me</span><AnimatedIcon name="arrow-up-right" size="sm" /></Link></Button>
         <ShareButton className="story-link story-share" />
         <MarketingLink href={sourceUrl} className="story-github"><AnimatedIcon name="github" /><span>GitHub</span></MarketingLink>
-        <ThemeControl compact />
+        <ThemeControl compact navigation />
         <Button className="story-menu-trigger" variant="secondary" size="sm" ref={trigger} aria-controls={id} aria-expanded={open} onClick={event => { openedWithKeyboard.current = event.detail === 0; setOpen(!open); }} aria-label={open ? "Close navigation" : "Open navigation"}><AnimatedIcon name={open ? "x" : "menu"} /></Button>
       </div>
       <MotionPresence>{open && <MotionSurface asChild key="mobile-navigation" preset="rise">
@@ -65,6 +66,7 @@ export function MarketingHeader() {
           <MarketingLink href="/docs/">Components</MarketingLink>
           <MarketingLink href="/getting-started/">Get started</MarketingLink>
           <MarketingLink href="/about/">About the maker</MarketingLink>
+          <MarketingLink href="/work-with-me/">Work with me</MarketingLink>
           <MarketingLink href={sourceUrl}><AnimatedIcon name="github" />GitHub</MarketingLink>
         </nav>
       </MotionSurface>}</MotionPresence>

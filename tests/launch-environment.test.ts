@@ -83,10 +83,10 @@ test("a report's release identifier passes the same shape check as an analytics 
   }
 });
 
-test("the contact surface publishes only the public address, and GitHub either way", () => {
+test("the contact surface publishes only the owner's chosen address, and GitHub either way", () => {
   const enabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: true }));
   const disabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: false }));
-  assert.equal([...enabled.matchAll(/mailto:([^"]+)/g)].map(match => match[1]).join(), "hello@cojeev.com,hello@cojeev.com");
+  assert.equal([...enabled.matchAll(/mailto:([^"]+)/g)].map(match => match[1]).join(), ["hellosanjaygautam@gmail.com","hellosanjaygautam@gmail.com","hellosanjaygautam@gmail.com"].join());
   assert.match(enabled, /href="https:\/\/github\.com\/luv-jeri"/);
   assert.doesNotMatch(disabled, /mailto:/, "an unverified inbox is never published");
   assert.match(disabled, /href="https:\/\/github\.com\/luv-jeri"/);
