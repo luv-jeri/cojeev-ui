@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { createHash, randomUUID, createHmac } from 'node:crypto';
 import { build } from 'esbuild';
+import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 
 let mf, db, backend, media;
@@ -1202,7 +1203,7 @@ test('app_report_rejects_bad_category_and_oversize',async()=>{
   }
   assert.equal((await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json'},body:'x'.repeat(16385)})).status,413);
   assert.equal((await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json'},body:'{'})).status,400);
-  const boundary=appPayload({message:'x'.repeat(2000),diagnostics:'x'.repeat(1600),appVersion:'v'.repeat(64),platform:'windows'});
+  const boundary=appPayload({message:'x'.repeat(2000),diagnostics:'x'.repeat(1600),appVersion:'1.2.3-'+ 'v'.repeat(58),platform:'windows'});
   assert.equal((await submitApp(boundary)).status,201);
   assert.equal((await submitApp(appPayload({diagnostics:null}))).status,201);
   // Client redaction is still mandatory; the Worker uses its existing defense too.
@@ -1512,4 +1513,42 @@ test('app_report_concurrent_global_budget_allocates_only_the_winner',async()=>{
     }
     assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key('global')).first()).count,100);
   });
+});
+
+test('app_report_submitted_text_is_literal_markdown_and_title_is_fixed',async()=>{
+  const hostile='@owner #123 [Reset](//evil.example/login) ![track](//tracker.example/p.png) www.evil.example <img src=//tracker.example/i.png> &#64;owner &commat;owner &#35;123 &lt;!--hidden--&gt; &#91;link&#93;&#40;//evil.example&#41; <!-- hide the rest';
+  for(const run of [3,128]) {
+    const message=`${'`'.repeat(run)}\n## Forged heading\n${hostile}\n${'`'.repeat(run)}\n[end](//evil.example)`;
+    const diagnostics=`${hostile}\n${'`'.repeat(run+1)}\n![export](//tracker.example/export.png)`;
+    const p=appPayload({message,diagnostics,appVersion:'1.2.3-beta.4'}),gh=fakeAppGitHub();
+    assert.equal((await submitApp(p)).status,201);await backend.drain(appEnv(),p.id,gh.send);
+    const issue=gh.issues[0];assert.equal(issue.title,'[crash] Cojeev app report');
+    // Use the existing Markdown parser to prove fence-breaking payloads stay code.
+    const ast=fromMarkdown(issue.body),nodes=[];
+    const visit=node=>{nodes.push(node);for(const child of node.children??[]) visit(child);};visit(ast);
+    assert.equal(nodes.filter(n=>n.type==='link'||n.type==='image'||n.type==='definition').length,0);
+    assert.deepEqual(nodes.filter(n=>n.type==='html').map(n=>n.value),[issue.body.match(/<!-- cojeev-report:[^\n]+ -->$/)[0]],'only the server-owned signed marker is HTML');
+    const blocks=nodes.filter(n=>n.type==='code');assert.equal(blocks.length,3,'context, message and diagnostics are literal blocks');
+    assert.equal(blocks[1].value,backend.scrubPublic(message,2000));
+    assert.equal(blocks[2].value,backend.scrubPublic(diagnostics,1600));
+    assert.ok(blocks[0].value.includes(p.appVersion)&&blocks[0].value.includes(p.platform));
+    assert.ok(blocks[1].value.includes('@\u200Bowner')&&!blocks[1].value.includes('@owner'));
+    assert.ok(blocks[1].value.includes('&#64;owner')&&blocks[1].value.includes('&commat;owner'),'encoded forms remain visible literal strings, never decoded markup');
+    for(const text of nodes.filter(n=>n.type==='text')) assert.ok(!text.value.includes('evil.example')&&!text.value.includes('owner')&&!text.value.includes('#123'));
+  }
+  // Old stored context must also be inert, even if it predates version validation.
+  const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+  await db.prepare('UPDATE reports SET title=? WHERE id=?').bind(hostile,p.id).run();
+  await backend.drain(appEnv(),p.id,gh.send);
+  assert.equal(gh.issues[0].title,'[crash] Cojeev app report');
+  assert.equal(fromMarkdown(gh.issues[0].body).children.filter(n=>n.type==='code')[0].value,backend.scrubPublic(hostile,120));
+});
+
+test('app_report_version_is_strict_and_single_line',async()=>{
+  for(const appVersion of ['0.1.0 SECURITY: reset at evil.example','0.1.0\n## Forged','v0.1.0','1.2','1.2.3+build',' 1.2.3','1.2.3 ','1.2.3\n','1.2.3\r','1.2.3\u2028','1.2.3\u2029','1.2.3-','1.2.3-<img>']) {
+    const p=appPayload({appVersion});assert.equal((await submitApp(p)).status,422,JSON.stringify(appVersion));
+    assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+  }
+  for(const appVersion of ['0.1.0','1.2.3-beta.4']) assert.equal((await submitApp(appPayload({appVersion}))).status,201);
 });

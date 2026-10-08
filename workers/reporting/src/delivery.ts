@@ -40,6 +40,13 @@ export function emailMessage(row: ReportRow, kind: string, site: string) {
 }
 /** Neutralises @mentions on top of redact(), so a public issue can never notify a stranger. */
 export const scrubPublic=(text:string,max:number)=>redact(text,max).replace(/@(?=[A-Za-z0-9_])/g,"@\u200B");
+// Code fences keep every submitted field literal, including encoded HTML/mentions.
+// Choose a delimiter longer than every backtick run so content cannot close it.
+function appLiteral(text:string,max:number) {
+  const value=scrubPublic(text,max);
+  const fence="`".repeat(Math.max(3,...Array.from(value.matchAll(/`+/g),match=>match[0].length+1)));
+  return `${fence}\n${value}\n${fence}`;
+}
 export function publicIssue(row:Pick<ReportRow,"kind"|"triage_title"|"triage_body">,marker:string) {
   return {title:scrubPublic(row.triage_title??"",120),body:`${scrubPublic(row.triage_body??"",20000)}\n\n---\nReported by a visitor.\n\n${marker}`,labels:[row.kind==="request"?"enhancement":"bug"]};
 }
@@ -89,8 +96,8 @@ export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
     if(page===10) throw new DeliveryFailure("Issue reconciliation needs a maintainer: too many matching pages.",false,true);
   }
   const payload=row.source==="app"?{
-    title:scrubPublic(row.title,120),
-    body:`${scrubPublic(row.title,120)}\n\n${scrubPublic(row.description,2000)}${row.diagnostics_json?`\n\nDiagnostics:\n${scrubPublic(JSON.parse(row.diagnostics_json) as string,1600)}`:""}\n\n${marker}`,
+    title:`[${row.app_category}] Cojeev app report`,
+    body:`## Context\n${appLiteral(row.title,120)}\n\n## Message\n${appLiteral(row.description,2000)}${row.diagnostics_json?`\n\n## Diagnostics\n${appLiteral(JSON.parse(row.diagnostics_json) as string,1600)}`:""}\n\n${marker}`,
     labels:["user-report",row.app_category]
   }:publicIssue(row,marker);
   return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify(payload)},send) as unknown as GitHubIssue;

@@ -56,6 +56,8 @@ export async function acceptApp(request: Request, env: Env): Promise<{receipt:Ap
     if(typeof value!=="string"||(required&&!value.trim())) throw new HttpError(422,`Invalid ${key}.`);
     if(value.length>max) throw new HttpError(413,`The ${key} is too large.`);
   }
+  const appVersion=v.appVersion as string;
+  if(appVersion!==appVersion.trim()||!/^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$/.test(appVersion)) throw new HttpError(422,"Invalid appVersion.");
   const report={id:v.id.toLowerCase(),installId:v.installId.toLowerCase(),category:v.category,message:v.message,diagnostics:v.diagnostics,appVersion:v.appVersion,platform:v.platform} as AppReportPayload;
   const canonical=JSON.stringify(report);
   if(canonical.length>4000) throw new HttpError(413,"The app report is too large.");
