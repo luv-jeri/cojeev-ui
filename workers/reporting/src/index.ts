@@ -5,6 +5,7 @@ import { emailLimits, resendWebhook } from './resend';
 import { drain } from "./delivery";
 import { cleanup, updateFromAdmin, webhook } from "./lifecycle";
 import { adminList, applyVerdict, listUntriaged, markVerified } from "./triage";
+import { contact, retryContacts } from "./contact";
 type Context = {waitUntil(promise:Promise<unknown>):void};
 const json=(body:unknown,status=200)=>Response.json(body,{status});
 async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
@@ -20,6 +21,7 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
     assertBrowserOrigin(request,env);const result=await accept(request,env);
     ctx.waitUntil(drain(env,result.receipt.id));return json(result.receipt,result.fresh?201:200);
   }
+  if(path==="/v1/contact"&&request.method==="POST") { assertBrowserOrigin(request,env);const result=await contact(request,env);return json(result,'queued' in result&&result.queued?202:200); }
   const fileMatch=path.match(/^\/v1\/reports\/([^/]+)\/attachments\/([^/]+)$/);
   if(fileMatch&&request.method==="PUT") { assertBrowserOrigin(request,env);return json(await upload(request,env,fileMatch[1],fileMatch[2])); }
   const reportMatch=path.match(/^\/v1\/reports\/([^/]+)$/);
@@ -31,9 +33,10 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
     if(!healthOnly) await requireAdmin(request,env);
     if(path==='/v1/admin/health'&&request.method==='GET') {
       const queue=await env.DB.prepare("SELECT state,delivery_status,COUNT(*) AS count,MIN(created_at) AS oldestCreatedAt FROM outbox GROUP BY state,delivery_status").all();
+      const contacts=await env.DB.prepare("SELECT delivery_status,COUNT(*) AS count FROM contact_messages GROUP BY delivery_status").all();
       const time=now(),date=new Date(time);
       const usage=await env.DB.prepare('SELECT SUM(CASE WHEN attempted_at>=? THEN 1 ELSE 0 END) AS daily,COUNT(*) AS monthly FROM email_attempts WHERE attempted_at>=?').bind(Math.floor(time/86400000)*86400000,Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),1)).first();
-      return json({queue:queue.results.map(row=>({...row,oldestAgeMs:time-Number(row.oldestCreatedAt)})),usage,limits:emailLimits(env),providers:{email:emailEnabled(env),github:githubEnabled(env),resendWebhook:!!env.RESEND_WEBHOOK_SECRET,ownerNotification:!!ownerNotificationEmail(env)},
+      return json({contacts:contacts.results,queue:queue.results.map(row=>({...row,oldestAgeMs:time-Number(row.oldestCreatedAt)})),usage,limits:emailLimits(env),providers:{email:emailEnabled(env),github:githubEnabled(env),resendWebhook:!!env.RESEND_WEBHOOK_SECRET,ownerNotification:!!ownerNotificationEmail(env)},
         // Readiness is reported as booleans and a cutoff only: never an address or a secret.
         activationCutoff:activationCutoff(env),deploymentIntent:expectedActive(env)?'active':'staged'});
     }
@@ -82,5 +85,5 @@ export default {
     headers.set("Cache-Control","no-store");headers.set("X-Content-Type-Options","nosniff");headers.set("Referrer-Policy","no-referrer");
     return new Response(response.body,{status:response.status,headers});
   },
-  async scheduled(_controller:unknown,env:Env,ctx:Context) {ctx.waitUntil(Promise.all([drain(env),cleanup(env)]));}
+  async scheduled(_controller:unknown,env:Env,ctx:Context) {ctx.waitUntil(Promise.all([drain(env),cleanup(env),retryContacts(env)]));}
 };

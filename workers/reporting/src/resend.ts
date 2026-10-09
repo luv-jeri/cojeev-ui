@@ -21,16 +21,26 @@ export async function sendResend(env:Env,job:Delivery,payload:string,send=fetch)
   if(!saved||saved.payload_json!==payload) throw new DeliveryFailure('Email payload changed; provider reconciliation required.',false,true);
   if(saved.first_attempt_at!==null&&now()-saved.first_attempt_at>=DAY) throw new DeliveryFailure('Email idempotency window expired; provider reconciliation required.',false,true);
   if(saved.provider_id) return saved.provider_id;
+  const time=now();await reserveEmailAttempt(env,job.id);
+  await env.DB.prepare("UPDATE outbox SET first_attempt_at=COALESCE(first_attempt_at,?),delivery_status='sending' WHERE id=?").bind(time,job.id).run();
+  const id=await requestResend(env,job.id,saved.payload_json,send);
+  await env.DB.prepare("UPDATE outbox SET provider_id=?,delivery_status='accepted' WHERE id=?").bind(id,job.id).run();
+  await reconcileEmail(env,id);
+  return id;
+}
+
+async function reserveEmailAttempt(env:Env,jobId:string) {
   const time=now(),date=new Date(time),day=Math.floor(time/DAY)*DAY,month=Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),1),limits=emailLimits(env);
   // One atomic SQLite statement reserves both UTC ceilings, including concurrent drains.
   // Count attempts conservatively, including rejected or uncertain provider requests.
   const reservation=await env.DB.prepare(`INSERT INTO email_attempts(id,job_id,attempted_at) SELECT ?,?,? WHERE
     (SELECT COUNT(*) FROM email_attempts WHERE attempted_at>=?)<? AND
-    (SELECT COUNT(*) FROM email_attempts WHERE attempted_at>=?)<? RETURNING id`).bind(crypto.randomUUID(),job.id,time,day,limits.daily,month,limits.monthly).first();
+    (SELECT COUNT(*) FROM email_attempts WHERE attempted_at>=?)<? RETURNING id`).bind(crypto.randomUUID(),jobId,time,day,limits.daily,month,limits.monthly).first();
   if(!reservation) throw new DeliveryFailure('Email quota exhausted; job retained.',false,false,true);
-  await env.DB.prepare("UPDATE outbox SET first_attempt_at=COALESCE(first_attempt_at,?),delivery_status='sending' WHERE id=?").bind(time,job.id).run();
+}
+async function requestResend(env:Env,jobId:string,payload:string,send:typeof fetch) {
   let response:Response;
-  try {response=await send('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${env.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':`cojeev/${job.id}`},body:saved.payload_json,signal:AbortSignal.timeout(15000)});}
+  try {response=await send('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${env.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':`cojeev/${jobId}`},body:payload,signal:AbortSignal.timeout(15000)});}
   catch {throw new DeliveryFailure('Email response unavailable; check provider before retrying.',true);}
   if(response.status===429) throw new DeliveryFailure('Email provider quota exhausted; job retained.',false,false,true);
   if(response.status===409) throw new DeliveryFailure('Email idempotency conflict; provider reconciliation required.',false,true);
@@ -38,9 +48,11 @@ export async function sendResend(env:Env,job:Delivery,payload:string,send=fetch)
   let id:unknown;
   try {id=(JSON.parse(new TextDecoder().decode(await boundedBody(response,16384))) as {id?:unknown}).id;} catch {throw new DeliveryFailure('Email acceptance could not be confirmed.',true);}
   if(typeof id!=='string'||!id||id.length>200) throw new DeliveryFailure('Email acceptance could not be confirmed.',true);
-  await env.DB.prepare("UPDATE outbox SET provider_id=?,delivery_status='accepted' WHERE id=?").bind(id,job.id).run();
-  await reconcileEmail(env,id);
   return id;
+}
+export async function sendContactResend(env:Env,id:string,payload:string,send=fetch) {
+  await reserveEmailAttempt(env,`contact:${id}`);
+  return requestResend(env,`contact:${id}`,payload,send);
 }
 
 export async function reconcileEmail(env:Env,providerId:string) {
