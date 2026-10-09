@@ -69,7 +69,8 @@ async function deliverContact(env:Env,row:ContactMessage,send:typeof fetch) {
 export async function retryContacts(env:Env,send=fetch) {
   const time=now(),cutoff=time-RETRY_WINDOW;
   // Stop before Resend's 24-hour idempotency window can lapse.
-  await env.DB.prepare("UPDATE contact_messages SET delivery_status='expired',lease_until=NULL WHERE delivery_status IN ('limited','needs_review','sending') AND created_at<=?").bind(cutoff).run();
+  // A send that still holds its lease finishes first; it expires here only after the lease lapses.
+  await env.DB.prepare("UPDATE contact_messages SET delivery_status='expired',lease_until=NULL WHERE delivery_status IN ('limited','needs_review','sending') AND created_at<=? AND NOT (delivery_status='sending' AND lease_until IS NOT NULL AND lease_until>?)").bind(cutoff,time).run();
   if(!emailEnabled(env)||!env.CONTACT_NOTIFICATION_EMAIL||!ADDRESS.test(env.CONTACT_NOTIFICATION_EMAIL)) return;
   const pending=await env.DB.prepare("SELECT * FROM contact_messages WHERE created_at>? AND (delivery_status IN ('limited','needs_review') OR (delivery_status='sending' AND ((lease_until IS NOT NULL AND lease_until<=?) OR (lease_until IS NULL AND created_at<?)))) ORDER BY created_at").bind(cutoff,time,time-LEASE).all<ContactMessage>();
   for(const row of pending.results) {

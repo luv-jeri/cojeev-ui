@@ -1392,6 +1392,15 @@ test('contact retry rechecks live status and the 23-hour cutoff after claiming',
   }
 });
 
+test('contact expiry waits for a send that still holds its lease',async()=>{
+  const hour=3600000,row=await seedContact('sending',23*hour+1000);
+  await db.prepare('UPDATE contact_messages SET lease_until=? WHERE id=?').bind(Date.now()+60000,row.id).run();
+  await backend.retryContacts(contactEnv(),noContactSend);
+  assert.equal((await contactRow(row.id)).delivery_status,'sending','an in-flight send past the cutoff is left to its owner');
+  await db.prepare('UPDATE contact_messages SET lease_until=? WHERE id=?').bind(Date.now()-1000,row.id).run();
+  await backend.retryContacts(contactEnv(),noContactSend);
+  assert.equal((await contactRow(row.id)).delivery_status,'expired','an abandoned lease past the cutoff expires');
+});
 test('contact cron respects active leases and recovers expired leases',async()=>{
   const active=await seedContact('sending',16*60000),expired=await seedContact('sending',60000);
   await db.prepare('UPDATE contact_messages SET lease_until=? WHERE id=?').bind(Date.now()+60000,active.id).run();

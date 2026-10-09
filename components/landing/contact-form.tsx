@@ -41,7 +41,7 @@ export function ContactForm() {
     submission.current = frozen; sending.current = true; setBusy(true); setLocked(true); setError("");
     try {
       const result = await reportingFetch<{ ok: boolean; queued?: boolean }>("/v1/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...frozen, turnstileToken: token }) });
-      setSuccess(result.queued ? `Thanks, ${frozen.name}. Your message is saved, but email is slow right now. It will keep trying for the next day. If it's urgent, use Email me instead.` : `Thanks, ${frozen.name}. Your message is on its way. I'll reply to ${frozen.email}.`);
+      setSuccess(result.queued ? `Thanks, ${frozen.name}. Your message is saved, but email delivery isn't confirmed yet. I'll keep retrying for up to a day. If it's urgent, use Email me instead.` : `Thanks, ${frozen.name}. Your message is on its way. I'll reply to ${frozen.email}.`);
     } catch (cause) {
       if (!previouslyAttempted && cause instanceof ReportingError && cause.status >= 400 && cause.status < 500 && ![408, 409].includes(cause.status)) {
         submission.current = null; setLocked(false);
