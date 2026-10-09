@@ -101,7 +101,7 @@
 @media(max-width:1150px) {
  .story-page { padding-inline:var(--s-8); }.story-header { gap:var(--s-2); }.story-header-tools { gap:var(--s-1); }.story-nav { gap:0; }.story-page .story-link { padding-inline:var(--s-3); }.studio-motion { gap:var(--s-5); }.studio-motion-tabs [data-slot="toggle-group-item"] { padding-inline:var(--s-3); }.studio-install { gap:var(--s-8); }
 }
-@media(max-width:1000px) { .story-header-tools { margin-left:auto; }.story-nav { display:none; }.story-header .story-work { display:none; }.story-page .story-menu-trigger { display:inline-flex; }.story-mobile-nav { position:absolute; inset:76px 0 auto; display:flex; flex-direction:column; align-items:stretch; gap:var(--s-2); padding:var(--s-4); background:var(--v-canvas); border:1px solid var(--v-border); border-radius:var(--r-card); box-shadow:0 15px 35px color-mix(in srgb,var(--ink-fixed) 10%,transparent); } }
+@media(max-width:1000px) { .story-header-tools { margin-left:auto; }.story-nav { display:none; }.story-page .story-menu-trigger { display:inline-flex; }.story-mobile-nav { position:absolute; inset:76px 0 auto; display:flex; flex-direction:column; align-items:stretch; gap:var(--s-2); padding:var(--s-4); background:var(--v-canvas); border:1px solid var(--v-border); border-radius:var(--r-card); box-shadow:0 15px 35px color-mix(in srgb,var(--ink-fixed) 10%,transparent); } }
 /* Contact uses the same controls and surfaces as the library. */
 .contact-block { min-width:0; display:grid; gap:var(--s-5); padding-top:var(--s-6); border-top:1px solid var(--v-border); }
 .contact-block h3 { margin:0; font:var(--fw-medium) var(--fs-title)/1.3 var(--font-display); }
@@ -117,7 +117,7 @@
 /* Between the menu layout and wide screens the header tools fit only as icons; each keeps its accessible name. */
 @media(max-width:1280px) { .story-share .share-label,.story-github > span:last-child,.story-header :is(.v-theme-toggle__label,.v-appearance-trigger__label) { display:none; }.story-page .story-share,.story-page .story-github,.story-header .docs-theme .v-btn { padding:var(--s-3); }.story-share .share-feedback { display:inline-flex; }:root .story-header .docs-theme .v-btn[data-slot]:is(.v-theme-toggle,.v-appearance-trigger) { width:44px; min-width:44px; padding:0; } }
 @media(max-width:800px) {
- .story-page { padding-inline:var(--s-6); }.story-header { min-height:82px; }.story-header-tools { margin-left:auto; }.story-brand { font-size:var(--fs-section); }.story-nav { display:none; }.story-header .story-work { display:none; }.story-page .story-menu-trigger { display:inline-flex; }.story-page .story-github { padding:var(--s-3); }.story-github > span:last-child { display:none; }.story-page .story-github .v-animated-icon { display:inline-flex; }.story-mobile-nav { position:absolute; inset:76px 0 auto; display:flex; flex-direction:column; align-items:stretch; gap:var(--s-2); padding:var(--s-4); background:var(--v-canvas); border:1px solid var(--v-border); border-radius:var(--r-card); box-shadow:0 15px 35px color-mix(in srgb,var(--ink-fixed) 10%,transparent); }
+ .story-page { padding-inline:var(--s-6); }.story-header { min-height:82px; }.story-header-tools { margin-left:auto; }.story-brand { font-size:var(--fs-section); }.story-nav { display:none; }.story-page .story-menu-trigger { display:inline-flex; }.story-page .story-github { padding:var(--s-3); }.story-github > span:last-child { display:none; }.story-page .story-github .v-animated-icon { display:inline-flex; }.story-mobile-nav { position:absolute; inset:76px 0 auto; display:flex; flex-direction:column; align-items:stretch; gap:var(--s-2); padding:var(--s-4); background:var(--v-canvas); border:1px solid var(--v-border); border-radius:var(--r-card); box-shadow:0 15px 35px color-mix(in srgb,var(--ink-fixed) 10%,transparent); }
  .story-section { padding-block:70px; }.studio-section-heading { align-items:start; gap:var(--s-5); flex-direction:column; margin-bottom:var(--s-6); }.studio-section-heading > [data-slot="float-layer"] { max-width:100%; }.studio-section-heading [data-slot="typography-body"] { margin:0; max-width:40ch; }.story-page [data-slot="typography-hero"] { font-size:clamp(60px,10vw,82px); }
  .studio-ribbon { margin:0 -24px; }.studio-ribbon [data-slot="marquee-header"] { padding-inline:var(--s-6); }.studio-ribbon-word { font-size:var(--fs-section); gap:var(--s-6); }.studio-ribbon-word > [data-slot="shape"] { width:34px; height:34px; }
  .studio-motion { grid-template-columns:1fr; gap:var(--s-4); }.studio-motion-title { text-align:center; }.studio-motion-title [data-slot="typography-body"] { margin:auto; }.studio-motion-title [data-slot="typography-section"] br { display:none; }.studio-motion-title [data-slot="typography-section"] { font-size:52px; }.studio-motion-instrument { min-height:400px; max-width:550px; width:100%; margin:auto; }.studio-flow-choices { gap:var(--s-1); padding-top:0; }.studio-motion-title .story-link { margin-left:0; }
@@ -346,6 +346,13 @@
 @media(max-width:360px){.launch-more > .story-link {margin-left:0;}.launch-more__invitation {gap:var(--s-3);}.brand-sculpture {width:76px;height:90px;}.launch-more__invitation h2 {font-size:var(--fs-title);}}
 @media(max-width:620px){.story-header :is(.v-appearance-trigger__label,.v-theme-toggle__label) {display:none;}.story-header .v-appearance-trigger[data-slot],.story-header .v-theme-toggle[data-slot],.story-header .story-menu-trigger {width:44px;min-width:44px;height:44px;padding:0;flex:none;}}
 @media(max-width:360px){.story-header .story-brand-ui {display:none;}}
+/* Phones keep Work with me in the bar beside the menu; Share moves into the menu to make room. */
+.story-mobile-nav .story-mobile-share {display:none;}
+@media(max-width:620px){.story-header .story-share {display:none;}.story-mobile-nav .story-mobile-share {display:inline-flex;}.story-header .story-work {min-height:40px;padding:0 var(--s-3);font-size:var(--fs-small);}.story-header .story-work .v-animated-icon {display:none;}}
+@media(max-width:440px){.story-header .story-brand-ui {display:none;}}
+@media(max-width:374px){.story-header .story-work {padding:0 var(--s-2);}:root .story-header .docs-theme .v-btn[data-slot]:is(.v-theme-toggle,.v-appearance-trigger) {width:40px;min-width:40px;}}
+/* When a narrow bar (or the beta stamp) leaves too little room, the tools wrap to a row under the brand instead of clipping. */
+@media(max-width:1000px){.story-header {flex-wrap:wrap;align-content:center;row-gap:var(--s-2);padding-block:var(--s-2);}.story-mobile-nav {inset:calc(100% - 6px) 0 auto;}}
 
 /* The maker page reads like an editorial feature: a folio, a poster headline, a colour quote and a closing contact panel.
    Display sizes are multiples of the type tokens; every surface keeps its paired foreground. */
@@ -417,7 +424,6 @@
 @media(max-width:800px){.story-page.maker-page {--maker-gutter:var(--s-6);}}
 @media(max-width:700px){
  .maker-page main > section {column-gap:var(--s-4);}
- .maker-folio > :nth-child(2) {display:none;}
  .maker-hero-copy {padding-top:var(--s-10);}
  .maker-page .maker-hero h1 {font-size:clamp(var(--fs-hero),21vw,calc(var(--fs-hero) * 1.5));margin:var(--s-5) 0 var(--s-8);}
  .maker-hero h1 span {padding-left:.4em;}

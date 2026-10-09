@@ -8,12 +8,12 @@ import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
 import { useChoreography } from "@/registry/cojeev/motion/choreography";
 import dynamic from "next/dynamic";
 import { ContactForm } from "./contact-form";
-import { contactEmail, siteFlags } from "@/lib/site-config";
+import { contactEmail, contactMailto, siteFlags } from "@/lib/site-config";
 
 // The sculpture is a raster image and decorative, so it loads on the client and stays out of server rendering.
 const BrandSculpture = dynamic(() => import("@/components/brand/brand-sculpture").then(module => module.BrandSculpture), { ssr: false });
 
-// A mailto link does nothing when the visitor has no mail app, so the click also copies the address.
+// The mailto link opens a drafted message; it does nothing without a mail app, so the click also copies the address.
 function EmailMe() {
   const [copied, setCopied] = React.useState(false);
   React.useEffect(() => {
@@ -22,7 +22,7 @@ function EmailMe() {
     return () => window.clearTimeout(timer);
   }, [copied]);
   return <>
-    <SidebarMenuButton asChild className="story-link"><a href={`mailto:${contactEmail}`} onClick={() => { navigator.clipboard?.writeText(contactEmail).then(() => setCopied(true), () => {}); }}><AnimatedIcon name={copied ? "check" : "mail"} /> {copied ? "Email copied" : "Email me"}</a></SidebarMenuButton>
+    <SidebarMenuButton asChild className="story-link"><a href={contactMailto} onClick={() => { navigator.clipboard?.writeText(contactEmail).then(() => setCopied(true), () => {}); }}><AnimatedIcon name={copied ? "check" : "mail"} /> {copied ? "Email copied" : "Email me"}</a></SidebarMenuButton>
     <span className="sr-only" role="status">{copied ? `Copied ${contactEmail}.` : ""}</span>
   </>;
 }
@@ -32,12 +32,12 @@ export function CreatorPage({ contactEnabled = siteFlags.contactEnabled }: { con
   const { quiet } = useChoreography();
   return <div className="story-page maker-page" data-quiet={quiet}><MarketingHeader /><main id="story-main">
     <section className="creator-hero maker-hero" aria-labelledby="maker-title">
-      <div className="maker-folio" aria-hidden="true"><Caps>Work with me</Caps><Caps>000h by Cojeev</Caps><Caps>Madhya Pradesh, India</Caps></div>
+      <div className="maker-folio" aria-hidden="true"><Caps>Work with me</Caps><Caps>000h by Cojeev</Caps></div>
       <div className="maker-hero-copy">
         <Caps>Designer and developer</Caps>
         <Hero id="maker-title">Hi, I’m <span>Sanjay.</span></Hero>
         <p className="maker-deck">I design and build interfaces that feel warm, clear and a little <em>playful.</em></p>
-        <Body>I take on design and development projects, separately from 000h by Cojeev, my free and open-source React library. I work from Madhya Pradesh, India.</Body>
+        <Body>I take on design and development projects, separately from 000h by Cojeev, my free and open-source React library.</Body>
         <div className="story-actions">{contactEnabled && <><MarketingLink href="#contact" primary><AnimatedIcon name="mail" /> Send me a message</MarketingLink><EmailMe /></>}<MarketingLink href={creatorUrl} primary={!contactEnabled}><AnimatedIcon name="github" /> Find me on GitHub <AnimatedIcon name="arrow-up-right" /></MarketingLink></div>
       </div>
       <figure className="creator-art">

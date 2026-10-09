@@ -86,7 +86,13 @@ test("a report's release identifier passes the same shape check as an analytics 
 test("the contact surface publishes only the owner's chosen address, and GitHub either way", () => {
   const enabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: true }));
   const disabled = renderToStaticMarkup(React.createElement(CreatorPage, { contactEnabled: false }));
-  assert.equal([...enabled.matchAll(/mailto:([^"]+)/g)].map(match => match[1]).join(), ["hellosanjaygautam@gmail.com","hellosanjaygautam@gmail.com"].join());
+  const mailtos = [...enabled.matchAll(/href="(mailto:[^"]+)"/g)].map(match => new URL(match[1].replaceAll("&amp;", "&").replaceAll("&#x27;", "'")));
+  assert.equal(mailtos.map(url => url.pathname).join(), ["hellosanjaygautam@gmail.com","hellosanjaygautam@gmail.com"].join());
+  for (const url of mailtos) {
+    assert.equal(url.searchParams.get("subject"), "Let's work together", "the mail app opens with a subject");
+    assert.match(url.searchParams.get("body") ?? "", /^Hi Sanjay,\r\n\r\n[\s\S]*What I'm making:/, "and a drafted body with CRLF line breaks");
+    assert.doesNotMatch(url.search, /\+/, "spaces are percent-encoded, not `+`, which mail apps show literally");
+  }
   assert.match(enabled, /href="https:\/\/github\.com\/luv-jeri"/);
   assert.doesNotMatch(disabled, /mailto:/, "an unverified inbox is never published");
   assert.match(disabled, /href="https:\/\/github\.com\/luv-jeri"/);
