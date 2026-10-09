@@ -11,7 +11,7 @@ export interface Env {
   RESEND_API_KEY?: string; RESEND_WEBHOOK_SECRET?: string;
   ENVIRONMENT?: string; RELEASE?: string; DELIVERY_ACTIVATED_AT?: string;
   EMAIL_DAILY_LIMIT?: string; EMAIL_MONTHLY_LIMIT?: string; BETA_TESTER_EMAILS?: string;
-  REPORT_NOTIFICATION_EMAIL?: string; DEPLOYMENT_INTENT?: string;
+  REPORT_NOTIFICATION_EMAIL?: string; CONTACT_NOTIFICATION_EMAIL?: string; DEPLOYMENT_INTENT?: string;
 }
 export interface ReportRow {
   source: "website" | "app"; app_category: AppReportCategory | null; destination_repository: string | null;

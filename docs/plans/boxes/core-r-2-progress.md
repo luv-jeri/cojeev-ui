@@ -305,3 +305,7 @@ Result: the full Worker suite ran **once** after the final production/test edits
 | **Total check-running time** | **363.80 s** | Includes the failed checks above |
 
 Logs are `/Volumes/CojeevBuild/lanes/core/r2-fixes5-{red,extra-red,green,green2,website-red,full}.log`. Command wall times were measured inside the compile lock. Lock queue waiting, test writing, source editing/debugging, local diff review, documentation and commits are excluded; no packaging was performed. No root test/typecheck or browser/deployment runner was used. The existing Node module-type warning in the triage fixture remains advisory; its test passed. The branch remains local.
+
+## 2026-10-09 merge of main (owner: "r2- go")
+
+Main shipped the contact form with migrations `0005_contact.sql` and `0006_contact_retry.sql`, already applied in production. R-2 was never deployed, so its migrations were renumbered to `0007_app_reports.sql` and `0008_github_issue_budget.sql` (wrangler tracks applied migrations by file name; two files sharing a number would sort ambiguously). The tables do not overlap. Worker suite after the merge: 177/177.

@@ -11,7 +11,7 @@ export const site = {
   author: "Sanjay Kumar",
 } as const;
 
-export const contactEmail = "hello@cojeev.com";
+export const contactEmail = "hellosanjaygautam@gmail.com";
 
 export type DeploymentEnvironment = "beta" | "production";
 export type SiteFlags = { environment: DeploymentEnvironment | null; releaseSha: string | null; contactEnabled: boolean };

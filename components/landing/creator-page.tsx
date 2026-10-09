@@ -1,25 +1,72 @@
 "use client";
+import * as React from "react";
 import { MarketingHeader, MarketingFooter, MarketingLink, creatorUrl } from "./marketing-shell";
-import { Hero, SectionTitle, Caps, Body, Meta } from "@/registry/cojeev/ui/typography";
+import { SidebarMenuButton } from "@/registry/cojeev/ui/sidebar";
+import { Hero, Caps, Body, Meta } from "@/registry/cojeev/ui/typography";
 import { Shape } from "@/registry/cojeev/ui/shape";
-import { ShapeScene } from "@/registry/cojeev/ui/shape-scene";
-import { Card, CardContent } from "@/registry/cojeev/ui/card";
-import { Badge } from "@/registry/cojeev/ui/badge";
 import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
+import { useChoreography } from "@/registry/cojeev/motion/choreography";
+import dynamic from "next/dynamic";
+import { ContactForm } from "./contact-form";
 import { contactEmail, siteFlags } from "@/lib/site-config";
+
+// The sculpture is a raster image and decorative, so it loads on the client and stays out of server rendering.
+const BrandSculpture = dynamic(() => import("@/components/brand/brand-sculpture").then(module => module.BrandSculpture), { ssr: false });
+
+// A mailto link does nothing when the visitor has no mail app, so the click also copies the address.
+function EmailMe() {
+  const [copied, setCopied] = React.useState(false);
+  React.useEffect(() => {
+    if (!copied) return;
+    const timer = window.setTimeout(() => setCopied(false), 2400);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
+  return <>
+    <SidebarMenuButton asChild className="story-link"><a href={`mailto:${contactEmail}`} onClick={() => { navigator.clipboard?.writeText(contactEmail).then(() => setCopied(true), () => {}); }}><AnimatedIcon name={copied ? "check" : "mail"} /> {copied ? "Email copied" : "Email me"}</a></SidebarMenuButton>
+    <span className="sr-only" role="status">{copied ? `Copied ${contactEmail}.` : ""}</span>
+  </>;
+}
 
 // `contactEnabled` defaults to the build flag and exists so both contact states can be rendered in a test.
 export function CreatorPage({ contactEnabled = siteFlags.contactEnabled }: { contactEnabled?: boolean }) {
-  return <div className="story-page"><MarketingHeader /><main id="story-main">
-    <section className="creator-hero"><div><Caps>Designing it. Building it. Sharing it.</Caps><Hero>Hi, I’m Sanjay.<br />Let’s make<br />something <em>good.</em></Hero><Body>I’m building 000h by Cojeev to bring more thought, warmth and personality to the products we use. I design the details and build the React components, so what you see is something you can actually use.</Body><div className="story-actions"><MarketingLink href={creatorUrl} primary><AnimatedIcon name="github" /> Find me on GitHub <AnimatedIcon name="arrow-up-right" /></MarketingLink></div></div>
-      <div className="creator-art"><Shape name="scalloped-square" /><Card variant="pink" lift className="creator-note"><CardContent><Badge variant="yellow">A work in the open</Badge><h2>Good tools.<br />A human touch.<br />Room to play.</h2><Body>That’s the kind of software I want to make.</Body><Meta style={{ color: "var(--v-on-accent)" }}>Sanjay Kumar / 000h by Cojeev</Meta></CardContent></Card></div>
+  const { quiet } = useChoreography();
+  return <div className="story-page maker-page" data-quiet={quiet}><MarketingHeader /><main id="story-main">
+    <section className="creator-hero maker-hero" aria-labelledby="maker-title">
+      <div className="maker-folio" aria-hidden="true"><Caps>Work with me</Caps><Caps>000h by Cojeev</Caps><Caps>Madhya Pradesh, India</Caps></div>
+      <div className="maker-hero-copy">
+        <Caps>Designer and developer</Caps>
+        <Hero id="maker-title">Hi, I’m <span>Sanjay.</span></Hero>
+        <p className="maker-deck">I design and build interfaces that feel warm, clear and a little <em>playful.</em></p>
+        <Body>I take on design and development projects, separately from 000h by Cojeev, my free and open-source React library. I work from Madhya Pradesh, India.</Body>
+        <div className="story-actions">{contactEnabled && <><MarketingLink href="#contact" primary><AnimatedIcon name="mail" /> Send me a message</MarketingLink><EmailMe /></>}<MarketingLink href={creatorUrl} primary={!contactEnabled}><AnimatedIcon name="github" /> Find me on GitHub <AnimatedIcon name="arrow-up-right" /></MarketingLink></div>
+      </div>
+      <figure className="creator-art">
+        <div className="maker-hero-canvas" aria-hidden="true">
+          <Shape name="petal-7" className="maker-hero-bloom" />
+          <Shape name="pebble-soft" className="maker-hero-pebble" />
+          <Shape name="star-4" className="maker-hero-spark" />
+          <BrandSculpture />
+        </div>
+        <figcaption><Meta>Fig. 1</Meta> The 000h seed, cast in olive, resting on a petal contour.</figcaption>
+      </figure>
     </section>
-    <section className="creator-practice story-section"><div><Caps>Design + engineering</Caps><SectionTitle>From a feeling<br />to a working thing.</SectionTitle></div><div><Body>A distinctive interface comes from decisions that work together: how a surface feels, how a control responds, and how the whole experience helps someone do what they came to do.</Body><Body>My work on 000h by Cojeev brings those decisions into reusable React components, original shapes and purposeful motion. The source is open so the thinking can keep growing.</Body><Body>The library itself is free: MIT licensed, yours to download, read and change. I work from Madhya Pradesh, India, and I take on design and development projects separately from it.</Body><Body>If that approach feels right for something you’re building, {contactEnabled ? <>email me at <a href={`mailto:${contactEmail}`}>{contactEmail}</a> or visit my GitHub profile.</> : "visit my GitHub profile. It’s the best place to find me for now."}</Body><div className="story-actions">{contactEnabled && <MarketingLink href={`mailto:${contactEmail}`} primary><AnimatedIcon name="mail" /> Email me</MarketingLink>}<MarketingLink href={creatorUrl}>Let’s connect <AnimatedIcon name="arrow-up-right" /></MarketingLink></div></div></section>
-    <section className="maker-values story-section" aria-labelledby="maker-values-heading"><div><Caps>Why this exists</Caps><SectionTitle id="maker-values-heading">Useful can have<br />a personality.</SectionTitle></div><div className="maker-values-grid">
-      <article><Meta>01 / The feeling</Meta><h3>Warm, considered, alive.</h3><Body>Organic shapes and a little imperfection give an interface character. Motion earns its place by helping a detail make sense.</Body></article>
-      <article><Meta>02 / The making</Meta><h3>Design meets the browser.</h3><Body>A component is more than its first frame. Focus, smaller screens, dark surfaces and quieter motion all belong in the design.</Body></article>
-      <article><Meta>03 / The sharing</Meta><h3>Yours to work with.</h3><Body>Read the source, adapt the details, and bring your own point of view. The library grows through real use and specific feedback.</Body></article>
-    </div></section>
-    <section className="creator-project story-section"><ShapeScene density="sparse" /><div><Caps>Explore the work</Caps><SectionTitle>One library.<br />Many possibilities.</SectionTitle><Body>The best introduction is something you can use. Try the controls, explore the shapes, inspect the code, and see how the little parts come together.</Body><div className="story-actions"><MarketingLink href="/" primary>Explore 000h by Cojeev <AnimatedIcon name="arrow-right" /></MarketingLink><MarketingLink href="/docs/">Browse the components</MarketingLink></div></div></section>
+
+    <figure className="maker-quote">
+      <Shape name="clover-soft" className="maker-quote-art" aria-hidden="true" />
+      <Shape name="seed-wing" className="maker-quote-seed" aria-hidden="true" />
+      <blockquote><p>Good tools. A human touch. Room to&nbsp;play.</p></blockquote>
+      <figcaption><Meta>Sanjay Kumar</Meta> The kind of software I want to make.</figcaption>
+    </figure>
+
+    <section id="write" className="maker-write" data-contact={contactEnabled || undefined} aria-labelledby="maker-write-heading">
+      <Shape name="scalloped-square" className="maker-write-art" aria-hidden="true" />
+      <div className="maker-write-copy">
+        <Caps>{contactEnabled ? "Write to me" : "Find me"}</Caps>
+        <h2 id="maker-write-heading">Let’s make something <em>good.</em></h2>
+        <p>{contactEnabled ? "Tell me what you’re making and what it should feel like. I’ll reply by email." : "For now, GitHub is the best place to find me."}</p>
+        <div className="story-actions">{contactEnabled ? <><EmailMe /><MarketingLink href={creatorUrl}><AnimatedIcon name="github" /> Follow along on GitHub <AnimatedIcon name="arrow-up-right" /></MarketingLink></> : <MarketingLink href={creatorUrl} primary><AnimatedIcon name="github" /> Visit my GitHub <AnimatedIcon name="arrow-up-right" /></MarketingLink>}</div>
+      </div>
+      {contactEnabled && <div className="maker-write-sheet"><ContactForm /></div>}
+    </section>
   </main><MarketingFooter /></div>;
 }

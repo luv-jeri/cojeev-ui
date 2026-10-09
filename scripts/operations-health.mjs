@@ -1,7 +1,7 @@
 import {pathToFileURL} from 'node:url';
 import {environmentConfig} from './release-config.mjs';
 
-const codes=new Set(['http-health','release-mismatch','invalid-delivery-health','delivery-stalled','delivery-review','email-quota','provider-unconfigured','deployment-failed','recovery-failed']);
+const codes=new Set(['http-health','release-mismatch','invalid-delivery-health','delivery-stalled','delivery-review','email-quota','provider-unconfigured','deployment-failed','recovery-failed','registry-unavailable']);
 export function assessHealth(data) {
   if(!Array.isArray(data?.queue)||!data?.usage||!data?.limits||!data?.providers) return ['invalid-delivery-health'];
   const problems=new Set();
@@ -20,7 +20,7 @@ export function assessHealth(data) {
   if((data.deploymentIntent==='active'||data.activationCutoff)&&!ready) problems.add('provider-unconfigured');
   return [...problems].sort();
 }
-export async function checkHealth(environment,{token,commit,fetcher=fetch,layout='ui'}={}) {
+export async function checkHealth(environment,{token,commit,fetcher=fetch,layout='ui',registry=false}={}) {
   const target=environmentConfig(environment,layout),problems=[];
   const get=async(url,headers={})=>{
     const response=await fetcher(url,{headers,redirect:'error',signal:AbortSignal.timeout(15000)});
@@ -34,6 +34,35 @@ export async function checkHealth(environment,{token,commit,fetcher=fetch,layout
   } catch {problems.push('http-health');}
   if(!token) problems.push('invalid-delivery-health');
   else try {problems.push(...assessHealth(await get(`${target.api}/v1/admin/health`,{Authorization:`Bearer ${token}`})));} catch {problems.push('invalid-delivery-health');}
+  // Monitor-only: a release or rollback live check must not fail on the public
+  // registry, which a pre-/ui rollback artifact does not serve at the new site.
+  if(registry&&environment==='production') try {
+    const site=environmentConfig('production','ui').site;
+    const registryJSON=async url=>{
+      for(let redirects=0;redirects<=5;redirects++) {
+        const response=await fetcher(url,{headers:{'User-Agent':'cojeev-health-monitor'},redirect:'manual',signal:AbortSignal.timeout(15000)});
+        if([301,302,303,307,308].includes(response.status)) {
+          const location=response.headers.get('location');
+          await response.body?.cancel();
+          if(!location||redirects===5) throw new Error('Registry redirect check failed');
+          url=new URL(location,url).href;
+          continue;
+        }
+        if(response.status!==200||!response.headers.get('content-type')?.includes('application/json')) throw new Error('Registry HTTP check failed');
+        return response.json();
+      }
+    };
+    let index;
+    for(const url of ['https://000h.cojeev.com/r/registry.json',`${site}/r/registry.json`]) {
+      index=await registryJSON(url);
+      if(index?.name!=='000h-cojeev'||!Array.isArray(index.items)||index.items.length<500) throw new Error('Registry index check failed');
+    }
+    for(const entry of [index.items[0],index.items[Math.floor(index.items.length/2)],index.items.at(-1)]) {
+      if(typeof entry?.name!=='string'||!entry.name) throw new Error('Registry item name missing');
+      const item=await registryJSON(`${site}/r/${encodeURIComponent(entry.name)}.json`);
+      if(item?.name!==entry.name||!Array.isArray(item.files)||!item.files.length) throw new Error('Registry item check failed');
+    }
+  } catch {problems.push('registry-unavailable');}
   return {environment,problems:[...new Set(problems)].sort()};
 }
 export async function github(endpoint,options={}) {
@@ -73,7 +102,7 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
     const [environment,commit]=process.argv.slice(2);
     const result=process.env.OPERATIONS_FAILURE
       ? {environment,problems:[process.env.OPERATIONS_FAILURE]}
-      : await checkHealth(environment,{token:process.env.HEALTH_TOKEN,commit});
+      : await checkHealth(environment,{token:process.env.HEALTH_TOKEN,commit,registry:true});
     if(process.env.UPDATE_ALERT==='true') await updateAlert(environment,result.problems);
     console.log(JSON.stringify(result));
     if(result.problems.length) process.exitCode=1;

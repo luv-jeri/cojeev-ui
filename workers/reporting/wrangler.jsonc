@@ -38,6 +38,7 @@
     "EMAIL_MONTHLY_LIMIT": "2850",
     "BETA_TESTER_EMAILS": "",
     "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
+    "CONTACT_NOTIFICATION_EMAIL": "hellosanjaygautam@gmail.com",
     "DEPLOYMENT_INTENT": "active",
     "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
     "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
@@ -83,6 +84,7 @@
         "EMAIL_MONTHLY_LIMIT": "150",
         "BETA_TESTER_EMAILS": "unread.fyi@gmail.com",
         "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
+        "CONTACT_NOTIFICATION_EMAIL": "hellosanjaygautam@gmail.com",
         "DEPLOYMENT_INTENT": "active",
         "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui-beta-feedback"
@@ -135,6 +137,7 @@
         "EMAIL_MONTHLY_LIMIT": "2850",
         "BETA_TESTER_EMAILS": "",
         "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
+        "CONTACT_NOTIFICATION_EMAIL": "hellosanjaygautam@gmail.com",
         "DEPLOYMENT_INTENT": "active",
         "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
