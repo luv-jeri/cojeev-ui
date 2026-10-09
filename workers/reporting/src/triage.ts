@@ -13,6 +13,7 @@ export async function listUntriaged(env: Env): Promise<{ reports: TriageInput[] 
 export async function applyVerdict(env: Env, id: string, raw: unknown): Promise<{ ok: true; triage_state: TriageState; queued: string[] }> {
   let req; try { req = validateVerdictRequest(raw); } catch (error) { throw new HttpError(422, error instanceof Error ? error.message : "Invalid verdict."); }
   const row = await getReport(env, id);
+  if (row.source === "app") throw new HttpError(409, "App reports are delivered automatically; website triage does not apply.");
   if (row.private_purged) throw new HttpError(410, EXPIRED);
   const t = now(), db = env.DB, cur = row.triage_state;
   if (cur !== "pending") {
@@ -30,7 +31,7 @@ export async function applyVerdict(env: Env, id: string, raw: unknown): Promise<
   const revive: string[] = [];
   // An approved report holding an issue that another approved report also holds must only detach, never close it.
   const held = cur === "approved" && !!row.issue_number;
-  const shared = held ? !!await db.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved'").bind(row.issue_number, id).first() : false;
+  const shared = held ? !!await db.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved' AND source='website'").bind(row.issue_number, id).first() : false;
   if (req.decision === "rejected") {
     cancel.push("email_accepted");
     if (held) { if (!shared) jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"closed"}', alone: true }); }
@@ -40,7 +41,7 @@ export async function applyVerdict(env: Env, id: string, raw: unknown): Promise<
     if (cur === "rejected" && row.issue_number) { revive.push("email_accepted"); jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"open"}' }); }
     else { const kind = copy ? (row.status === "resolved" ? "email_resolved" : "email_accepted") : "github"; revive.push(kind); jobs.push({ id: `${id}:${kind}`, kind }); }
   }
-  const others = "EXISTS(SELECT 1 FROM reports o WHERE o.issue_number=? AND o.id<>? AND o.triage_state='approved')";
+  const others = "EXISTS(SELECT 1 FROM reports o WHERE o.issue_number=? AND o.id<>? AND o.triage_state='approved' AND o.source='website')";
   const detach = (col: string) => held && req.decision === "rejected" ? `CASE WHEN ${others} THEN NULL ELSE ${col} END` : `COALESCE(?,${col})`;
   const one = (v: unknown) => held && req.decision === "rejected" ? [row.issue_number, id] : [v ?? null];
   const issueArgs = [...one(copy ? topic.issue_number : null), ...one(copy ? topic.issue_node_id : null), ...one(copy ? topic.issue_url : null)];

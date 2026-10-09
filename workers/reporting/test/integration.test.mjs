@@ -1,8 +1,9 @@
-import { test, before, after } from 'node:test';
+import { test, before, beforeEach, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { createHash, randomUUID, createHmac } from 'node:crypto';
 import { build } from 'esbuild';
+import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 
 let mf, db, backend, media;
@@ -16,12 +17,20 @@ const queueGitHub = id => db.batch([db.prepare("UPDATE reports SET triage_state=
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
-  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ENVIRONMENT:'production',ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,HEALTH_TOKEN:healthToken,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
+  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ENVIRONMENT:'production',ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,HEALTH_TOKEN:healthToken,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { contact, retryContacts } from "./workers/reporting/src/contact.ts"; export { default as worker } from "./workers/reporting/src/index.ts"; export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { contact, retryContacts } from "./workers/reporting/src/contact.ts"; export { default as worker } from "./workers/reporting/src/index.ts"; export { cleanup, updateFromAdmin, verifyLiveComponent } from "./workers/reporting/src/lifecycle.ts"; export { accept, acceptApp, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
+});
+// GitHub drains now share a FIFO queue; retire previous tests' unfinished fixtures.
+// Reports/receipts remain available; each test owns its queue and pacing state.
+// Fake clocks can move backwards between fixtures, so future reservations cannot leak.
+beforeEach(async()=>{
+  await db.prepare("UPDATE outbox SET state='held' WHERE kind='github' AND state IN ('pending','processing')").run();
+  await db.prepare("UPDATE outbox SET delivery_status='queued' WHERE kind LIKE 'github%' AND delivery_status='throttled'").run();
+  await db.prepare('DELETE FROM github_issue_attempts').run();
 });
 after(async()=>{await mf?.dispose();});
 test('saves first, returns stable receipt, refuses changed retry and wrong token',async()=>{
@@ -170,6 +179,7 @@ test('GitHub reconciliation binds markers to the report actor and creation windo
   const p=payload({title:'Private bug title',description:'Private description',email:'private-address@example.com',references:['https://private.example.com/secret']});
   await submit(p);const row={...await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first(),triage_title:'Public verdict title',triage_body:'Verdict body'};
   const env=backendEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
+  await queueGitHub(p.id);
   let original;
   await backend.mirrorIssue(env,row,async(url,init)=>{
     if(url==='https://api.github.com/user') return Response.json(githubActor);
@@ -442,7 +452,7 @@ test('migration holds legacy pending/processing jobs without erasing receipts or
     const topic=await db.prepare('SELECT id,title,title_key,status,component_url,created_at,updated_at FROM topics WHERE id=?').bind(p.id).first();
     await old.prepare('INSERT INTO topics VALUES(?,?,?,?,?,?,?)').bind(...Object.values(topic)).run();
     const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
-    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at','status_key']) delete row[key];
+    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at','status_key','source','app_category','destination_repository']) delete row[key];
     await old.prepare(`INSERT INTO reports VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
     for(const [kind,state] of [['github','pending'],['email_received','processing'],['email_resolved','done']]) await old.prepare('INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,?,?,0,0)').bind(`${p.id}:${kind}`,p.id,kind,state).run();
     await old.exec((await readFile('workers/reporting/migrations/0002_safe_delivery.sql','utf8')).replace(/\n/g,' '));
@@ -463,7 +473,7 @@ test('migration 0003 adds triage columns with pending default and cancels histor
   try {
     const p=payload();await submit(p);
     const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
-    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at','status_key']) delete row[key];
+    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at','status_key','source','app_category','destination_repository']) delete row[key];
     await old.prepare(`INSERT INTO reports VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
     for(const [kind,state] of [['github','held'],['email_received','held'],['email_owner_received','pending'],['email_resolved','done']]) await old.prepare('INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,?,?,0,0)').bind(`${p.id}:${kind}`,p.id,kind,state).run();
     await old.exec((await readFile('workers/reporting/migrations/0003_triage.sql','utf8')).replace(/\n/g,' '));
@@ -817,7 +827,7 @@ const fakeGitHub = (log,extra=()=>undefined) => async (url,init={}) => {
   const method=init.method??'GET';log.push({url,method,body:init.body});
   const custom=extra(url,method,init);if(custom) return custom;
   if(url==='https://api.github.com/user') return Response.json(githubActor);
-  if(method==='POST'&&url.endsWith('/issues')) return Response.json({number:314,node_id:'I_314',html_url:'https://github.com/owner/library/issues/314',body:JSON.parse(init.body).body,user:githubActor,created_at:new Date().toISOString()},{status:201});
+  if(method==='POST'&&url.endsWith('/issues')) return Response.json({number:314,node_id:'I_314',html_url:'https://github.com/owner/library/issues/314',body:JSON.parse(init.body).body,user:githubActor,created_at:new Date(Date.now()).toISOString()},{status:201});
   if(method==='GET') return Response.json([]);
   return Response.json({});
 };
@@ -1111,6 +1121,273 @@ test('email_html_escapes_every_value',()=>{
   assert.ok(r.html.includes(`href="${esc(evil)}"`));
 });
 
+// These fixtures exercise real intake, D1, outbox and delivery; only GitHub HTTP is fake.
+const appPayload = (more={}) => ({id:randomUUID(),installId:randomUUID(),category:'crash',message:'The window closed unexpectedly.',diagnostics:'Redacted synthetic export',appVersion:'0.1.0',platform:'macos',...more});
+const fixtureIP = value => {const hex=hash(value);return `${hex.slice(0,4)}:${hex.slice(4,8)}:${hex.slice(8,12)}:${hex.slice(12,16)}::1`;};
+const submitApp = (p, ip=fixtureIP(p.installId)) => mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(p)});
+const appEnv = (more={}) => backendEnv({GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev',...more});
+const fakeAppGitHub = () => {
+  const issues=[]; let uncertain=false, posts=0;
+  return {issues,get posts(){return posts;},loseNextResponse(){uncertain=true;},send:async(url,init={})=>{
+    const u=new URL(url);
+    if(u.pathname==='/user') return Response.json(githubActor);
+    assert.equal(u.pathname,'/repos/luv-jeri/cojeev/issues','app delivery must never reach website repository');
+    if(init.method!=='POST') return Response.json(issues);
+    posts++;
+    const issue={...JSON.parse(init.body),number:issues.length+1,node_id:`APP_${issues.length+1}`,html_url:`https://github.com/luv-jeri/cojeev/issues/${issues.length+1}`,user:githubActor,created_at:new Date(Date.now()).toISOString()};
+    issues.push(issue);
+    if(uncertain){uncertain=false;throw new Error('Synthetic response lost after GitHub persisted issue');}
+    return Response.json(issue,{status:201});
+  }};
+};
+
+test('app_report_creates_labelled_issue',async()=>{
+  // Catches missing automatic queue, wrong destination and category-to-label mapping.
+  const gh=fakeAppGitHub();
+  for(const category of ['memory','handoff','sharing','updates','skills-beta','crash','ui']) {
+    const p=appPayload({category,platform:category==='ui'?'windows':'macos'});
+    const response=await submitApp(p);assert.equal(response.status,201,'native app report must be accepted without website Origin/Turnstile');
+    assert.deepEqual(await response.json(),{id:p.id,status:'accepted'});
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+    assert.equal(row.source,'app');assert.equal(row.triage_state,'approved');
+    const queued=await db.prepare('SELECT kind FROM outbox WHERE report_id=?').bind(p.id).all();
+    assert.deepEqual(queued.results,[{kind:'github'}]);
+    await backend.drain(appEnv({APP_GITHUB_REPOSITORY:'changed/destination'}),p.id,gh.send);
+    const issue=gh.issues.at(-1);
+    assert.deepEqual(issue.labels,['user-report',category]);
+    assert.ok(issue.body.includes(p.message)&&issue.body.includes(p.diagnostics)&&issue.body.includes(p.platform)&&issue.body.includes(p.appVersion));
+    assert.ok(!issue.body.includes(p.installId));
+    const saved=await db.prepare('SELECT issue_number,issue_url FROM reports WHERE id=?').bind(p.id).first();
+    assert.equal(saved.issue_number,issue.number);assert.equal(saved.issue_url,issue.html_url);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,1,'no app email/project jobs');
+  }
+  assert.equal(gh.issues.length,7);
+});
+
+test('app_report_retry_is_idempotent',async()=>{
+  // Catches duplicate issues after client retries, response loss, or an expired lease.
+  const p=appPayload(),gh=fakeAppGitHub();
+  const responses=await Promise.all([submitApp(p),submitApp(p)]);
+  assert.deepEqual(responses.map(r=>r.status).sort(),[200,201],'concurrent retries must share one durable report');
+  assert.equal((await submitApp({...p,message:'Changed payload'})).status,409);
+  assert.equal((await submitApp({...p,installId:randomUUID()})).status,409);
+  assert.equal((await submit(payload({id:p.id}))).status,409,'website cannot reuse an app report id');
+  gh.loseNextResponse();
+  await backend.drain(appEnv(),p.id,gh.send);
+  let job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+  assert.equal(job.state,'pending','uncertain app issue creation must automatically reconcile');
+  assert.equal(job.delivery_status,'uncertain');
+  assert.deepEqual(await (await submitApp(p)).json(),{id:p.id,status:'accepted'});
+  await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(p.id).run();
+  await backend.drain(appEnv(),p.id,gh.send);
+  job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+  assert.equal(job.state,'done');assert.equal(job.attempts,2);assert.equal(gh.posts,1);assert.equal(gh.issues.length,1);
+  // Simulate a crash after remote creation but before the local receipt was saved.
+  await db.prepare('UPDATE reports SET issue_number=NULL,issue_node_id=NULL,issue_url=NULL WHERE id=?').bind(p.id).run();
+  await db.prepare("UPDATE outbox SET state='processing',lease_until=0 WHERE report_id=?").bind(p.id).run();
+  await backend.drain(appEnv(),p.id,gh.send);
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+  assert.equal((await db.prepare('SELECT issue_url FROM reports WHERE id=?').bind(p.id).first()).issue_url,gh.issues[0].html_url);
+  assert.equal(gh.posts,1);
+  assert.equal((await db.prepare('SELECT count(*) AS n FROM reports WHERE id=?').bind(p.id).first()).n,1);
+  assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,1);
+});
+
+test('app_report_rejects_bad_category_and_oversize',async()=>{
+  // Catches unbounded/unvalidated intake; rejects without persisting any report or job.
+  const cases=[
+    [appPayload({category:'bug'}),422],[appPayload({category:['ui','crash']}),422],
+    [appPayload({id:'invalid'}),422],[appPayload({installId:'invalid'}),422],
+    [appPayload({platform:'linux'}),422],[appPayload({appVersion:''}),422],
+    [appPayload({message:''}),422],[appPayload({diagnostics:{private:'object'}}),422],
+    [appPayload({labels:['other']}),422],[appPayload({repository:'attacker/repo'}),422],
+    [appPayload({message:'x'.repeat(2001)}),413],[appPayload({diagnostics:'x'.repeat(1601)}),413],
+    [appPayload({appVersion:'x'.repeat(65)}),413],
+    [appPayload({message:'\n'.repeat(1999)+'x',diagnostics:'x'.repeat(1600)}),413],
+  ];
+  for(const [p,status] of cases) {
+    const response=await submitApp(p);assert.equal(response.status,status,`reject ${JSON.stringify(p).slice(0,140)}`);
+    assert.equal(typeof (await response.json()).error,'string');
+    assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+  }
+  assert.equal((await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json'},body:'x'.repeat(16385)})).status,413);
+  assert.equal((await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json'},body:'{'})).status,400);
+  const boundary=appPayload({message:'x'.repeat(2000),diagnostics:'x'.repeat(1600),appVersion:'1.2.3-'+ 'v'.repeat(58),platform:'windows'});
+  assert.equal((await submitApp(boundary)).status,201);
+  assert.equal((await submitApp(appPayload({diagnostics:null}))).status,201);
+  // Client redaction is still mandatory; the Worker uses its existing defense too.
+  const secret=appPayload({message:'Contact synthetic@example.com',diagnostics:'/Users/Synthetic/private-note'});
+  assert.equal((await submitApp(secret)).status,201);
+  const saved=await db.prepare('SELECT description,diagnostics_json FROM reports WHERE id=?').bind(secret.id).first();
+  assert.ok(!saved.description.includes('synthetic@example.com')&&!saved.diagnostics_json.includes('/Users/Synthetic'));
+});
+
+test('app_report_rate_limited_per_install',async()=>{
+  // Catches missing install/IP budgets, charging safe retries, and leaking raw keys.
+  const installId=randomUUID();let accepted;
+  for(let i=0;i<5;i++) {
+    accepted=appPayload({installId});assert.equal((await submitApp(accepted,`198.51.100.${i+1}`)).status,201);
+  }
+  const refused=appPayload({installId}),limited=await submitApp(refused,'198.51.100.99');
+  assert.equal(limited.status,429,'sixth new report from one install must be rate limited');
+  const body=await limited.json();assert.ok(body.retryAfter>0&&body.retryAfter<=600);assert.equal(limited.headers.get('Retry-After'),String(body.retryAfter));
+  assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(refused.id).first(),null);
+  assert.equal((await submitApp(accepted)).status,200,'saved report retries do not consume admission');
+  const ip='192.0.2.42';
+  for(let i=0;i<10;i++) assert.equal((await submitApp(appPayload(),ip)).status,201);
+  assert.equal((await submitApp(appPayload(),ip)).status,429,'rotating install ids must not bypass the IP budget');
+  const keys=await db.prepare('SELECT key FROM rate_limits').all();
+  assert.ok(!JSON.stringify(keys.results).includes(installId)&&!JSON.stringify(keys.results).includes(ip));
+});
+
+test('app_report_retry_bounds_and_retention',async()=>{
+  const p=appPayload();assert.equal((await submitApp(p)).status,201);
+  let calls=0;
+  const unavailable=async()=>{calls++;return Response.json({error:'synthetic outage'},{status:503});};
+  for(let attempt=0;attempt<8;attempt++) {
+    await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(p.id).run();
+    const before=Date.now();await backend.drain(appEnv(),p.id,unavailable);
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.attempts,attempt+1);assert.equal(job.state,attempt===7?'needs_review':'pending');
+    assert.ok(job.due_at>=before+60000*2**attempt&&job.due_at<=Date.now()+60000*2**attempt);
+  }
+  await backend.drain(appEnv(),p.id,unavailable);assert.equal(calls,8,'ninth automatic attempt must not occur');
+  const permanent=appPayload();await submitApp(permanent);
+  await backend.drain(appEnv(),permanent.id,async()=>Response.json({}, {status:401}));
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(permanent.id).first()).state,'needs_review');
+  const expired=appPayload();await submitApp(expired);
+  await db.prepare("UPDATE outbox SET state='processing',lease_until=0,attempts=8 WHERE report_id=?").bind(expired.id).run();
+  await backend.drain(appEnv(),expired.id,unavailable);assert.equal(calls,8,'expired final lease must not send again');
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(expired.id).first()).state,'needs_review');
+  await db.prepare('UPDATE reports SET created_at=? WHERE id=?').bind(Date.now()-31*86400000,p.id).run();
+  await backend.cleanup(backendEnv());
+  let saved=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+  assert.equal(saved.diagnostics_json,null);assert.equal(saved.description,p.message);
+  await db.prepare('UPDATE reports SET created_at=? WHERE id=?').bind(Date.now()-181*86400000,p.id).run();
+  await backend.cleanup(backendEnv());
+  saved=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+  assert.equal(saved.private_purged,1);assert.ok(!saved.description.includes(p.message));
+  assert.equal((await submitApp(p)).status,200,'idempotency survives local content expiry');
+});
+
+test('app_report_isolated_from_website_triage_and_webhooks',async()=>{
+  const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);await backend.drain(appEnv(),p.id,gh.send);
+  assert.equal((await request(`/v1/admin/reports/${p.id}/triage`,'PUT',{decision:'rejected',by:'owner',reason:'Synthetic'},admin)).status,409);
+  const body=JSON.stringify({action:'closed',repository:{full_name:'owner/library'},issue:{number:1,state:'closed',state_reason:'completed',updated_at:new Date().toISOString(),labels:[{name:'feedback:released'}]}});
+  const signature='sha256='+createHmac('sha256','webhook-test-secret').update(body).digest('hex');
+  assert.equal((await request('/v1/github/webhook','POST',body,null,{'X-Hub-Signature-256':signature,'X-GitHub-Event':'issues','X-GitHub-Delivery':randomUUID()})).status,202);
+  assert.equal((await db.prepare('SELECT status FROM reports WHERE id=?').bind(p.id).first()).status,'received','same issue number in website repo cannot resolve private app issue');
+  assert.equal((await request(`/v1/reports/${p.id}`,'GET',undefined,token)).status,404);
+});
+
+test('app_report_concurrent_retry_uses_one_admission',async()=>{
+  const installId=randomUUID(),ip='192.0.2.77';
+  for(let i=0;i<4;i++) assert.equal((await submitApp(appPayload({installId}),ip)).status,201);
+  const p=appPayload({installId});
+  // Force both real intake calls to observe the missing row before either writes.
+  let reads=0,arrived=0,release;const gate=new Promise(resolve=>{release=resolve;});
+  const racingDB=new Proxy(db,{get(target,key){
+    if(key==='prepare') return sql=>{
+      const statement=target.prepare(sql);
+      if(sql==='SELECT * FROM reports WHERE id=?') return {bind(...args){
+        const bound=statement.bind(...args);
+        if(args[0]===p.id&&reads++<2) return {first:async()=>{
+          const row=await bound.first();if(++arrived===2) release();await gate;return row;
+        }};
+        return bound;
+      }};
+      return statement;
+    };
+    const value=target[key];return typeof value==='function'?value.bind(target):value;
+  }});
+  const send=()=>backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(p)}),appEnv({DB:racingDB}));
+  const responses=await Promise.allSettled([send(),send()]);
+  assert.ok(responses.every(r=>r.status==='fulfilled'),'racing identical retry at install limit must not be rejected');
+  assert.deepEqual(responses.map(r=>r.value.fresh).sort(),[false,true]);
+  const slot=Math.floor(Date.now()/600000);
+  const key=createHmac('sha256',ipSecret).update(`app-rate:${slot}:install:${installId}`).digest('hex');
+  assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key).first()).count,5,'one persisted report charges once');
+});
+
+test('app_report_issue_numbers_do_not_change_website_triage',async()=>{
+  const app=appPayload(),gh=fakeAppGitHub();await submitApp(app);await backend.drain(appEnv(),app.id,gh.send);
+  const web=payload();await submit(web);
+  await db.prepare("UPDATE reports SET issue_number=1,issue_node_id='WEB_1',issue_url='https://github.com/owner/library/issues/1',triage_state='approved',triage_title='Web title',triage_body='Web body' WHERE id=?").bind(web.id).run();
+  // Existing shared website fixtures use #1; give this pair an otherwise unique number.
+  await db.prepare('UPDATE reports SET issue_number=700001 WHERE id IN (?,?)').bind(app.id,web.id).run();
+  assert.equal((await (await request(`/v1/admin/reports/${web.id}`,'GET',undefined,admin)).json()).shared,false,'separate repositories cannot share an issue');
+  assert.equal((await request(`/v1/admin/reports/${web.id}/triage`,'PUT',{decision:'rejected',by:'owner',reason:'Synthetic'},admin)).status,200);
+  assert.equal((await db.prepare('SELECT issue_number FROM reports WHERE id=?').bind(web.id).first()).issue_number,700001,'website receipt must survive for the close job');
+  assert.equal((await db.prepare("SELECT count(*) AS n FROM outbox WHERE report_id=? AND kind='github_state'").bind(web.id).first()).n,1,'website issue still closes despite same app issue number');
+});
+
+test('app_report_cron_not_starved_by_disabled_website_provider',async()=>{
+  const ids=[];
+  for(let i=0;i<20;i++) {
+    const p=payload();await submit(p);await queueGitHub(p.id);ids.push(p.id);
+  }
+  // Use a held activation environment to isolate the eligible outbox batch.
+  const app=appPayload();await submitApp(app);const gh=fakeAppGitHub();
+  await db.prepare("UPDATE outbox SET state='held' WHERE state='pending' AND report_id NOT IN ("+[...ids,app.id].map(()=>'?').join(',')+")").bind(...ids,app.id).run();
+  await db.prepare('UPDATE outbox SET created_at=0 WHERE report_id IN ('+ids.map(()=>'?').join(',')+") AND kind='github'").bind(...ids).run();
+  await backend.drain(appEnv({GITHUB_REPOSITORY:undefined}),undefined,gh.send);
+  assert.equal((await db.prepare('SELECT issue_number FROM reports WHERE id=?').bind(app.id).first()).issue_number,1,'cron must deliver eligible app retry past older disabled website jobs');
+  const web=await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='github'").bind(ids[0]).first();assert.equal(web.state,'pending');
+});
+
+test('app_report_runtime_accepts_and_delivers_without_admin',async()=>{
+  const gh=fakeAppGitHub();
+  // Miniflare injects an edge IP. This test-only adapter can remove it before
+  // entering the real router, so the missing-protection control is meaningful.
+  const edgeProbe=await build({stdin:{contents:'import worker from "./workers/reporting/src/index.ts"; export default {fetch(request,env,ctx){if(request.headers.get("X-Synthetic-Missing-IP")==="true"){const headers=new Headers(request.headers);headers.delete("CF-Connecting-IP");request=new Request(request,{headers});}return worker.fetch(request,env,ctx);}}',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
+  const live=new Miniflare(convertV4MiniflareOptions({compatibilityDate:'2026-09-01',workers:[{
+    name:'reporting',modules:true,script:edgeProbe.outputFiles[0].text,d1Databases:['DB'],r2Buckets:['MEDIA'],
+    bindings:{LOCAL_MODE:'false',ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com',ENVIRONMENT:'beta',RELEASE:'synthetic-r2',IP_HASH_SECRET:ipSecret,GITHUB_TOKEN:'synthetic-github-token',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z'},
+    // Every outbound request is intercepted: this running Worker cannot write to GitHub.
+    outboundService:async(req)=>gh.send(req.url,{method:req.method,...(req.method==='POST'?{body:await req.text()}:{})})
+  }]}));
+  try {
+    const liveDB=await live.getD1Database('DB','reporting');
+    for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await liveDB.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
+    const p=appPayload({platform:'windows',category:'updates'});
+    const call=(ip='192.0.2.99')=>live.dispatchFetch('https://feedback-beta.example.test/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json',...(ip?{'CF-Connecting-IP':ip}:{'X-Synthetic-Missing-IP':'true'})},body:JSON.stringify(p)});
+    assert.equal((await call(null)).status,503,'production admission requires the trusted edge IP');
+    const response=await call();assert.equal(response.status,201);assert.deepEqual(await response.json(),{id:p.id,status:'accepted'});
+    let saved;
+    for(let i=0;i<100;i++) {
+      saved=await liveDB.prepare('SELECT issue_number,issue_url FROM reports WHERE id=?').bind(p.id).first();
+      if(saved?.issue_number) break;await new Promise(resolve=>setTimeout(resolve,10));
+    }
+    assert.equal(saved.issue_number,1,'route waitUntil must deliver automatically with no admin drain/triage');
+    assert.equal(saved.issue_url,'https://github.com/luv-jeri/cojeev/issues/1');assert.deepEqual(gh.issues[0].labels,['user-report','updates']);
+    assert.equal((await call()).status,200);assert.equal(gh.posts,1);
+    const health=await (await live.dispatchFetch('https://feedback-beta.example.test/health')).json();assert.equal(health.release,'synthetic-r2');
+  } finally {await live.dispose();}
+});
+
+test('app_report_admission_window_and_atomic_failure',async()=>{
+  const installId=randomUUID(),p=appPayload({installId}),env=appEnv();
+  const call=(payload,configuration=env)=>backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':'198.18.78.1'},body:JSON.stringify(payload)}),configuration);
+  for(let i=0;i<5;i++) assert.equal((await call(appPayload({installId}))).fresh,true);
+  await assert.rejects(call(p),error=>error.status===429);
+  const original=Date.now;
+  try {
+    const future=original()+600000;Date.now=()=>future;
+    assert.equal((await call(p)).fresh,true,'install/IP budget resets in the next ten-minute slot');
+  } finally {Date.now=original;}
+  const broken=appPayload();
+  const failedDB=new Proxy(db,{get(target,key){
+    if(key==='batch') return statements=>target.batch([...statements,target.prepare('INSERT INTO missing_table VALUES (1)')]);
+    const value=target[key];return typeof value==='function'?value.bind(target):value;
+  }});
+  await assert.rejects(call(broken,appEnv({DB:failedDB})),/missing_table/);
+  assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(broken.id).first(),null,'failed transaction cannot claim acceptance');
+  assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(broken.id).first()).n,0);
+  assert.equal((await call(broken)).fresh,true,'storage failure preserves retry');
+  const misconfigured=appPayload();await assert.rejects(call(misconfigured,appEnv({APP_GITHUB_REPOSITORY:undefined})),error=>error.status===503);
+  assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(misconfigured.id).first(),null);
+  await assert.rejects(call(appPayload(),appEnv({LOCAL_MODE:'false',IP_HASH_SECRET:'short'})),error=>error.status===503);
+});
 test('production component resolution accepts the canonical ui path and rejects other origins or root docs',()=>{
   const env=backendEnv({SITE_URL:'https://cojeev.com/ui',LOCAL_MODE:'false'});
   assert.equal(backend.componentURL('https://cojeev.com/ui/docs/x/',env),'https://cojeev.com/ui/docs/x/');
@@ -1143,6 +1420,882 @@ test('local component verification preserves offline mode and permits an explici
   let calls=0;
   assert.equal(await backend.verifyLiveComponent(env,url,async()=>{calls++;return new Response(null,{headers:{'Content-Type':'text/html'}});}),url);
   assert.equal(calls,1);
+});
+
+
+test('app_report_requires_exact_json_and_absent_origin_before_writes',async()=>{
+  for(const headers of [
+    {Origin:'https://evil.example','Content-Type':'text/plain;charset=UTF-8','Sec-Fetch-Site':'cross-site','Sec-Fetch-Mode':'no-cors'},
+    {Origin:origin,'Content-Type':'application/json'},
+    {Origin:'null','Content-Type':'application/json'},
+    {'Content-Type':'text/plain'}, {},
+    {'Content-Type':'application/json; charset=utf-8'}, {'Content-Type':'Application/JSON'},
+  ]) {
+    const p=appPayload(),before=(await db.prepare('SELECT count(*) AS n FROM rate_limits').first()).n;
+    const response=await mf.dispatchFetch('http://localhost/v1/app-reports',{method:'POST',headers,body:JSON.stringify(p)});
+    assert.equal(response.status,Object.hasOwn(headers,'Origin')?403:415,JSON.stringify(headers));
+    assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM rate_limits').first()).n,before);
+  }
+  // Miniflare drops empty Origin headers at its edge adapter; probe intake directly.
+  await assert.rejects(backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{Origin:'','Content-Type':'application/json'},body:JSON.stringify(appPayload())}),appEnv()),error=>error.status===403);
+  assert.equal((await submitApp(appPayload())).status,201);
+  // Website admission remains origin-based.
+  assert.equal((await submit(payload())).status,201);
+  assert.equal((await request('/v1/reports','POST',{report:payload(),token},null,{Origin:'https://evil.example'})).status,403);
+});
+
+const directApp = (p,ip,env=appEnv()) => backend.acceptApp(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(p)}),env);
+const inAppWindow = async (offset,run) => {
+  const original=Date.now, time=(Math.floor(original()/600000)+offset)*600000+1000;
+  Date.now=()=>time;
+  try {await run(time);} finally {Date.now=original;}
+};
+test('app_report_ipv6_prefix_and_address_aliases_share_budgets',async()=>{
+  await inAppWindow(10,async()=>{
+    const addresses=['2001:0DB8:0001:0002:0000:0000:0000:0001','2001:db8:1:2::1',
+      ...Array.from({length:8},(_,i)=>`2001:db8:1:2::${i+2}`)];
+    for(const ip of addresses) assert.equal((await directApp(appPayload(),ip)).fresh,true);
+    await assert.rejects(directApp(appPayload(),'2001:db8:1:2:ffff:ffff:ffff:ffff'),error=>error.status===429,'one IPv6 /64 has ten admissions');
+    assert.equal((await directApp(appPayload(),'2001:db8:1:3::1')).fresh,true,'a distinct /64 has its own budget');
+    for(let i=0;i<10;i++) assert.equal((await directApp(appPayload(),i%2?'::ffff:192.0.2.201':'192.0.2.201')).fresh,true);
+    await assert.rejects(directApp(appPayload(),'::FFFF:c000:2c9'),error=>error.status===429,'mapped IPv4 and IPv4 share a budget');
+    await assert.rejects(directApp(appPayload(),'not-an-ip'),error=>error.status===503);
+  });
+});
+test('app_report_global_window_bounds_rotating_ips_and_installs',async()=>{
+  await inAppWindow(20,async time=>{
+    const globalKey=createHmac('sha256',ipSecret).update(`app-rate:${Math.floor(time/600000)}:global`).digest('hex');
+    // The storage backstop is independent of website counters and issue delivery.
+    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,1999,?)').bind(globalKey,time+600000).run();
+    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,999,?)').bind('synthetic-website-global-control',time+600000).run();
+    assert.equal((await directApp(appPayload(),'2001:db8:abcd:1::1')).fresh,true);
+    const refused=appPayload();
+    await assert.rejects(directApp(refused,'198.51.100.200'),error=>error.status===429&&error.retryAfter>0);
+    assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(refused.id).first(),null);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(refused.id).first()).n,0);
+    Date.now=()=>time+600000;
+    assert.equal((await directApp(refused,'198.51.100.200')).fresh,true,'global ceiling resets next window');
+  });
+});
+
+test('app_report_rejection_does_not_allocate_or_increment_counters',async()=>{
+  await inAppWindow(30,async time=>{
+    const snapshot=async()=>(await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results;
+    const ip='192.0.2.210';
+    for(let i=0;i<10;i++) assert.equal((await directApp(appPayload(),ip)).fresh,true);
+    const before=await snapshot();
+    for(let i=0;i<40;i++) {
+      const p=appPayload();await assert.rejects(directApp(p,ip),error=>error.status===429);
+      assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+      assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+    }
+    assert.deepEqual(await snapshot(),before,'IP refusals cannot allocate install rows or increment any budget');
+    const installId=randomUUID();
+    for(let i=0;i<5;i++) assert.equal((await directApp(appPayload({installId}),`198.51.100.${i+10}`)).fresh,true);
+    const installBefore=await snapshot();
+    await assert.rejects(directApp(appPayload({installId}),'198.51.100.19'),error=>error.status===429);
+    assert.deepEqual(await snapshot(),installBefore,'install refusal cannot allocate a fresh IP row');
+    const globalKey=createHmac('sha256',ipSecret).update(`app-rate:${Math.floor(time/600000)}:global`).digest('hex');
+    await db.prepare('UPDATE rate_limits SET count=2000 WHERE key=?').bind(globalKey).run();
+    const globalBefore=await snapshot();
+    for(let i=0;i<10;i++) await assert.rejects(directApp(appPayload(),`2001:db8:${i+300}:1::1`),error=>error.status===429);
+    assert.deepEqual(await snapshot(),globalBefore,'global refusals cannot allocate install/IP rows or increment any budget');
+  });
+});
+
+test('app_report_concurrent_global_budget_allocates_only_the_winner',async()=>{
+  await inAppWindow(40,async time=>{
+    const slot=Math.floor(time/600000),key=value=>createHmac('sha256',ipSecret).update(`app-rate:${slot}:${value}`).digest('hex');
+    await db.prepare('INSERT INTO rate_limits(key,count,expires_at) VALUES(?,1999,?)').bind(key('global'),time+600000).run();
+    const a=appPayload(),b=appPayload();
+    const results=await Promise.allSettled([directApp(a,'192.0.2.211'),directApp(b,'192.0.2.212')]);
+    assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
+    assert.equal(results.filter(r=>r.status==='rejected'&&r.reason.status===429).length,1);
+    for(const [index,p] of [a,b].entries()) {
+      const counter=await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key(`install:${p.installId}`)).first();
+      assert.deepEqual(counter,results[index].status==='fulfilled'?{count:1}:null);
+    }
+    assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key('global')).first()).count,2000);
+  });
+});
+
+test('app_report_submitted_text_is_literal_markdown_and_title_is_fixed',async()=>{
+  const hostile='@owner #123 [Reset](//evil.example/login) ![track](//tracker.example/p.png) www.evil.example <img src=//tracker.example/i.png> &#64;owner &commat;owner &#35;123 &lt;!--hidden--&gt; &#91;link&#93;&#40;//evil.example&#41; <!-- hide the rest';
+  for(const run of [3,128]) {
+    const message=`${'`'.repeat(run)}\n## Forged heading\n${hostile}\n${'`'.repeat(run)}\n[end](//evil.example)`;
+    const diagnostics=`${hostile}\n${'`'.repeat(run+1)}\n![export](//tracker.example/export.png)`;
+    const p=appPayload({message,diagnostics,appVersion:'1.2.3-beta.4'}),gh=fakeAppGitHub();
+    assert.equal((await submitApp(p)).status,201);await backend.drain(appEnv(),p.id,gh.send);
+    const issue=gh.issues[0];assert.equal(issue.title,'[crash] Cojeev app report');
+    // Use the existing Markdown parser to prove fence-breaking payloads stay code.
+    const ast=fromMarkdown(issue.body),nodes=[];
+    const visit=node=>{nodes.push(node);for(const child of node.children??[]) visit(child);};visit(ast);
+    assert.equal(nodes.filter(n=>n.type==='link'||n.type==='image'||n.type==='definition').length,0);
+    assert.deepEqual(nodes.filter(n=>n.type==='html').map(n=>n.value),[issue.body.match(/<!-- cojeev-report:[^\n]+ -->$/)[0]],'only the server-owned signed marker is HTML');
+    const blocks=nodes.filter(n=>n.type==='code');assert.equal(blocks.length,3,'context, message and diagnostics are literal blocks');
+    assert.equal(blocks[1].value,backend.scrubPublic(message,2000));
+    assert.equal(blocks[2].value,backend.scrubPublic(diagnostics,1600));
+    assert.ok(blocks[0].value.includes(p.appVersion)&&blocks[0].value.includes(p.platform));
+    assert.ok(blocks[1].value.includes('@\u200Bowner')&&!blocks[1].value.includes('@owner'));
+    assert.ok(blocks[1].value.includes('&#64;owner')&&blocks[1].value.includes('&commat;owner'),'encoded forms remain visible literal strings, never decoded markup');
+    for(const text of nodes.filter(n=>n.type==='text')) assert.ok(!text.value.includes('evil.example')&&!text.value.includes('owner')&&!text.value.includes('#123'));
+  }
+  // Old stored context must also be inert, even if it predates version validation.
+  const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+  await db.prepare('UPDATE reports SET title=? WHERE id=?').bind(hostile,p.id).run();
+  await backend.drain(appEnv(),p.id,gh.send);
+  assert.equal(gh.issues[0].title,'[crash] Cojeev app report');
+  assert.equal(fromMarkdown(gh.issues[0].body).children.filter(n=>n.type==='code')[0].value,backend.scrubPublic(hostile,120));
+});
+
+test('app_report_version_is_strict_and_single_line',async()=>{
+  for(const appVersion of ['0.1.0 SECURITY: reset at evil.example','0.1.0\n## Forged','v0.1.0','1.2','1.2.3+build',' 1.2.3','1.2.3 ','1.2.3\n','1.2.3\r','1.2.3\u2028','1.2.3\u2029','1.2.3-','1.2.3-<img>']) {
+    const p=appPayload({appVersion});assert.equal((await submitApp(p)).status,422,JSON.stringify(appVersion));
+    assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+  }
+  for(const appVersion of ['0.1.0','1.2.3-beta.4']) assert.equal((await submitApp(appPayload({appVersion}))).status,201);
+});
+
+test('app_report_missing_github_labels_requires_review_for_new_and_reconciled_issues',async()=>{
+  for(const reconcile of [false,true]) {
+    const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+    const send=async(url,init)=>{
+      const response=await gh.send(url,init),body=await response.json();
+      if(init?.method==='POST') {gh.issues[0].labels=[];return Response.json({...body,labels:[]},{status:201});}
+      return Response.json(body);
+    };
+    if(reconcile) {
+      gh.loseNextResponse();await backend.drain(appEnv(),p.id,send);
+      gh.issues[0].labels=[];
+      await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(p.id).run();
+    }
+    await backend.drain(appEnv(),p.id,send);
+    const job=await db.prepare('SELECT state,last_error FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'needs_review','missing required labels cannot count as delivery');
+    assert.equal(job.last_error,'GitHub issue labels require maintainer review.');
+    assert.equal(gh.posts,1,'label failure never creates a duplicate issue');
+  }
+  // Real GitHub returns label objects rather than request-style strings.
+  const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+  await backend.drain(appEnv(),p.id,async(url,init)=>{
+    const response=await gh.send(url,init),body=await response.json();
+    return Response.json(init?.method==='POST'?{...body,labels:body.labels.map(name=>({name}))}:body);
+  });
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+});
+
+test('app_report_lease_expiry_uses_one_cutoff_for_both_updates',async()=>{
+  const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+  const original=Date.now,start=original();let clock=start;
+  await db.prepare("UPDATE outbox SET state='processing',lease_until=?,attempts=1 WHERE report_id=?").bind(start+1,p.id).run();
+  const tickingDB=new Proxy(db,{get(target,key){
+    if(key==='prepare') return sql=>{
+      const statement=target.prepare(sql);
+      if(sql.startsWith("UPDATE outbox SET state='pending',due_at=?")) return {bind(...args){
+        const bound=statement.bind(...args);return {run:async()=>{const result=await bound.run();clock=start+2;return result;}};
+      }};
+      return statement;
+    };
+    const value=target[key];return typeof value==='function'?value.bind(target):value;
+  }});
+  Date.now=()=>clock;
+  try {
+    await backend.drain(appEnv({DB:tickingDB}),p.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'processing','lease expiring between updates is not incorrectly held for review');
+    assert.equal(gh.posts,0);
+    await backend.drain(appEnv(),p.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+    assert.equal(gh.posts,1);
+  } finally {Date.now=original;}
+});
+
+
+for(const [name,offset,addresses,other] of [
+  ['ipv4_24',50,Array.from({length:100},(_,i)=>`203.0.113.${Math.floor(i/10)+1}`),'198.51.100.1'],
+  ['ipv6_48',60,Array.from({length:100},(_,i)=>`2001:db8:1234:${i.toString(16)}::1`),'2001:db8:5678:1::1'],
+]) test(`app_report_${name}_flood_preserves_global_capacity_and_counters`,async()=>{
+  await inAppWindow(offset,async time=>{
+    const snapshot=async()=>(await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results;
+    let admitted=0;
+    for(const [index,value] of addresses.entries()) {
+      const ip=name==='ipv4_24'&&index%2?`::ffff:${value}`:value;
+      const p=appPayload(),before=await snapshot();
+      try {assert.equal((await directApp(p,ip)).fresh,true);admitted++;}
+      catch(error) {
+        assert.equal(error.status,429);
+        assert.deepEqual(await snapshot(),before,'coarse-network rejection changes no counter');
+        assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+        assert.equal((await db.prepare('SELECT count(*) AS n FROM outbox WHERE report_id=?').bind(p.id).first()).n,0);
+      }
+    }
+    assert.equal(admitted,20,'one /24 or /48 gets twenty admissions, regardless of address/install rotation');
+    const key=createHmac('sha256',ipSecret).update(`app-rate:${Math.floor(time/600000)}:global`).digest('hex');
+    assert.equal((await db.prepare('SELECT count FROM rate_limits WHERE key=?').bind(key).first()).count,20);
+    assert.equal((await directApp(appPayload(),other)).fresh,true,'another network remains admitted after the flood');
+    Date.now=()=>time+600000;
+    assert.equal((await directApp(appPayload(),addresses[0])).fresh,true,'coarse-network budget resets');
+  });
+});
+
+test('app_report_asn_budget_is_atomic_and_optional',async()=>{
+  await inAppWindow(70,async()=>{
+    const call=(ip,asn)=>{
+      const request=new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip},body:JSON.stringify(appPayload())});
+      Object.defineProperty(request,'cf',{value:{asn}});
+      return backend.acceptApp(request,appEnv());
+    };
+    for(let i=0;i<100;i++) assert.equal((await call(`2001:db8:${i.toString(16)}:1::1`,64500)).fresh,true);
+    const before=(await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results;
+    await assert.rejects(call('2001:db8:ffff:1::1',64500),error=>error.status===429);
+    assert.deepEqual((await db.prepare('SELECT key,count,expires_at FROM rate_limits ORDER BY key').all()).results,before);
+    assert.equal((await call('2001:db8:ffff:1::1',64501)).fresh,true);
+    assert.equal((await directApp(appPayload(),'198.51.100.1')).fresh,true,'absent ASN does not prevent admission');
+  });
+});
+
+test('app_report_issue_creation_budget_is_shared_atomic_and_queues_without_failure',async()=>{
+  await inAppWindow(80,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'2'}),gh=fakeAppGitHub(),websiteLog=[];
+    const send=(url,init)=>url.includes('/repos/luv-jeri/cojeev/')?gh.send(url,init):fakeGitHub(websiteLog)(url,init);
+    const website=payload();await acceptLocal(env,website);await queueGitHub(website.id);
+    await backend.drain(env,website.id,send);
+    const a=appPayload(),b=appPayload();await directApp(a,'192.0.2.1',env);await directApp(b,'192.0.2.2',env);
+    // Competing leases for different reports must share the one remaining issue slot.
+    await Promise.all([backend.drain(env,a.id,send),backend.drain(env,b.id,send)]);
+    const posts=()=>gh.posts+websiteLog.filter(c=>c.method==='POST'&&c.url.endsWith('/issues')).length;
+    assert.equal(posts(),2,'app and website share one creation ceiling even under concurrent drains');
+    const pending=(await db.prepare("SELECT report_id,state,attempts,delivery_status,due_at,first_attempt_at,last_error FROM outbox WHERE report_id IN (?,?) ORDER BY report_id").bind(a.id,b.id).all()).results;
+    assert.equal(pending.filter(j=>j.state==='done').length,1);
+    let queued=pending.find(j=>j.state==='pending');assert.ok(queued);
+    // A competing lease may first yield to FIFO before the winning reservation
+    // commits. Advance to that persisted deadline to observe the full budget.
+    if(queued.due_at<time+3600000) {
+      Date.now=()=>queued.due_at;await backend.drain(env,queued.report_id,send);
+      queued=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(queued.report_id).first();
+    }
+    assert.equal(queued.attempts,0,'waiting for capacity consumes no delivery retry');assert.equal(queued.delivery_status,'queued');
+    assert.equal(queued.due_at,time+3600000,'hour capacity wait retries at the oldest reservation expiry');
+    assert.equal(queued.first_attempt_at,null);assert.equal(queued.last_error,null);
+    assert.equal((await directApp(queued.report_id===a.id?a:b,'192.0.2.1',env)).receipt.status,'accepted');
+    const c=appPayload();await directApp(c,'198.51.100.1',env);await backend.drain(env,c.id,send);
+    assert.equal(posts(),2,'fresh intake remains saved after delivery capacity is exhausted');
+    const waiting=await db.prepare('SELECT due_at FROM outbox WHERE report_id=?').bind(c.id).first();
+    assert.equal(waiting.due_at,time+3600000);
+    Date.now=()=>time+3599999;
+    await backend.drain(env,c.id,send);assert.equal(posts(),2,'rolling hour has not elapsed');
+    Date.now=()=>time+3600000;
+    await backend.drain(env,queued.report_id,send);
+    await backend.drain(env,c.id,send);assert.equal(posts(),4,'stored reports deliver once capacity returns');
+    for(const id of [queued.report_id,c.id]) assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(id).first()).state,'done');
+  });
+});
+
+test('app_report_labels_match_github_case_insensitively',async()=>{
+  for(const reconcile of [false,true]) {
+    const p=appPayload(),gh=fakeAppGitHub();await submitApp(p);
+    const send=async(url,init)=>{
+      const response=await gh.send(url,init),body=await response.json();
+      const recase=issue=>({...issue,labels:['USER-REPORT',{name:'Crash'}]});
+      return Response.json(Array.isArray(body)?body.map(recase):body.number?recase(body):body,{status:response.status});
+    };
+    if(reconcile) {gh.loseNextResponse();await backend.drain(appEnv(),p.id,send);await db.prepare('UPDATE outbox SET due_at=0 WHERE report_id=?').bind(p.id).run();}
+    await backend.drain(appEnv(),p.id,send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+    assert.equal(gh.posts,1);assert.equal((await db.prepare('SELECT issue_number FROM reports WHERE id=?').bind(p.id).first()).issue_number,1);
+  }
+});
+
+test('markdown_parser_is_a_direct_dev_dependency_of_the_test_package',async()=>{
+  const manifest=JSON.parse(await readFile('package.json','utf8')),lock=JSON.parse(await readFile('package-lock.json','utf8'));
+  assert.ok(manifest.devDependencies['mdast-util-from-markdown'],'the Markdown regression parser must not rely on transitive dependencies');
+  assert.equal(lock.packages[''].devDependencies['mdast-util-from-markdown'],manifest.devDependencies['mdast-util-from-markdown']);
+});
+
+
+test('app_report_default_issue_ceiling_bounds_every_rolling_hour_and_reconciles_at_capacity',async()=>{
+  await inAppWindow(100,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'999'}),posted=[];
+    const send=async(url,init={})=>{
+      if(url.endsWith('/user')) return Response.json(githubActor);
+      if(init.method!=='POST') return Response.json([]);
+      posted.push(JSON.parse(init.body));
+      return Response.json({number:posted.length,node_id:`I_${posted.length}`,html_url:`https://github.com/luv-jeri/cojeev/issues/${posted.length}`});
+    };
+    const row=()=>({id:randomUUID(),source:'app',destination_repository:'luv-jeri/cojeev',created_at:time,title:'0.1.0 (macos)',description:'Synthetic message',app_category:'crash'});
+    try {
+      // Unsafe configuration cannot raise the shared ceiling above 200.
+      for(let i=0;i<200;i++) {
+        Date.now=()=>time+Math.floor(i/60)*60000;
+        await backend.mirrorIssue(env,row(),send);
+      }
+      const next=row();await assert.rejects(backend.mirrorIssue(env,next,send));assert.equal(posted.length,200);
+      // No reset at a UTC hour boundary: only an elapsed rolling hour releases capacity.
+      Date.now=()=>time+3599999;
+      await assert.rejects(backend.mirrorIssue({...env,GITHUB_ISSUE_HOURLY_LIMIT:undefined},next,send));assert.equal(posted.length,200);
+      const recovered=row();
+      await directApp(appPayload({id:recovered.id}), '198.51.100.1', env);
+      await db.prepare('UPDATE outbox SET first_attempt_at=? WHERE report_id=?').bind(time,recovered.id).run();
+      // Reconciliation of an existing signed issue must not reserve a creation slot.
+      const saved={...recovered,body:`<!-- cojeev-report:${recovered.id}:${createHmac('sha256',ipSecret).update(`github-report:${recovered.id}`).digest('hex')} -->`,number:501,node_id:'I_501',html_url:'https://github.com/luv-jeri/cojeev/issues/501',user:githubActor,created_at:new Date(time).toISOString()};
+      const issue=await backend.mirrorIssue(env,recovered,async(url)=>url.endsWith('/user')?Response.json(githubActor):Response.json([saved]));
+      assert.equal(issue.number,501);assert.equal(posted.length,200);
+      Date.now=()=>time+3600000;
+      await backend.mirrorIssue({...env,GITHUB_ISSUE_HOURLY_LIMIT:undefined},next,send);assert.equal(posted.length,201);
+      await backend.cleanup(env);
+      assert.equal((await db.prepare('SELECT count(*) AS n FROM github_issue_attempts WHERE attempted_at<=?').bind(time).first()).n,0,'cron removes expired reservations');
+      assert.equal((await db.prepare('SELECT count(*) AS n FROM github_issue_attempts WHERE attempted_at=?').bind(time+3600000).first()).n,1,'cron preserves active reservations');
+    } finally {
+      await db.prepare('DELETE FROM github_issue_attempts WHERE attempted_at IN (?,?)').bind(time,time+3600000).run();
+    }
+  });
+});
+
+
+test('app_report_fifo_serves_older_due_queue_before_fresh_intake_P2',async()=>{
+  await inAppWindow(120,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'1'}),gh=fakeAppGitHub();
+    await db.prepare('INSERT INTO github_issue_attempts VALUES(?,?)').bind(randomUUID(),time).run();
+    const old=appPayload();await directApp(old,'192.0.2.1',env);
+    await backend.drain(env,old.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(old.id).first()).state,'pending');
+    Date.now=()=>time+3600000;
+    const fresh=appPayload();await directApp(fresh,'198.51.100.1',env);
+    await backend.drain(env,fresh.id,gh.send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(old.id).first()).state,'done','next intake drain must serve the oldest due report');
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(fresh.id).first()).state,'pending');
+    assert.equal(gh.posts,1);assert.ok(gh.issues[0].body.includes(old.id));
+  });
+});
+
+test('app_report_never_posted_old_queue_skips_reconciliation_P1',async()=>{
+  for(const [offset,crashed] of [[130,false],[135,true]]) await inAppWindow(offset,async time=>{
+    const env=appEnv(),old=appPayload(),gh=fakeAppGitHub();
+    await directApp(old,'192.0.2.1',env);
+    if(crashed) await db.prepare("UPDATE outbox SET state='processing',lease_until=?,attempts=1 WHERE report_id=?").bind(time-1,old.id).run();
+    Date.now=()=>time+6*3600000;
+    let reads=0;
+    const send=async(url,init={})=>{
+      if(init.method!=='POST') {
+        reads++;
+        if(url.endsWith('/user')) return Response.json(githubActor);
+        return Response.json(Array.from({length:100},(_,i)=>({number:i+1,body:'Unrelated issue or PR'})));
+      }
+      return gh.send(url,init);
+    };
+    await backend.drain(env,old.id,send);
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(old.id).first();
+    assert.equal(job.state,'done','queue age and a busy repo cannot fail a never-posted report');
+    assert.notEqual(job.delivery_status,'failed');assert.equal(gh.posts,1);assert.equal(reads,0);
+    assert.equal(job.first_attempt_at,time+6*3600000);
+  });
+});
+
+test('app_report_reconciliation_window_starts_at_first_post_not_intake',async()=>{
+  await inAppWindow(140,async time=>{
+    const env=appEnv(),p=appPayload(),gh=fakeAppGitHub();await directApp(p,'192.0.2.1',env);
+    Date.now=()=>time+6*3600000;gh.loseNextResponse();await backend.drain(env,p.id,gh.send);
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    Date.now=()=>job.due_at;
+    const send=async(url,init={})=>{
+      if(url.includes('since=')) assert.equal(new URL(url).searchParams.get('since'),new Date(time+6*3600000-60000).toISOString());
+      return gh.send(url,init);
+    };
+    await backend.drain(env,p.id,send);
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done');
+    assert.equal(gh.posts,1,'lost response is adopted without another POST');
+    await backend.cleanup(env);
+    assert.equal((await db.prepare('SELECT first_attempt_at FROM outbox WHERE report_id=?').bind(p.id).first()).first_attempt_at,time+6*3600000,'reservation cleanup does not erase POST history');
+  });
+});
+
+test('app_report_two_network_flood_six_hours_eventually_delivers_oldest_once',async()=>{
+  await inAppWindow(150,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub();
+    await db.prepare("WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM n WHERE x<200) INSERT INTO github_issue_attempts SELECT 'flood-seed-'||x,?-3600000+x*18000 FROM n").bind(time).run();
+    const creationTimes=Array.from({length:200},(_,i)=>time-3600000+(i+1)*18000);
+    const old=appPayload();await directApp(old,'203.0.113.1',env);
+    const send=async(url,init={})=>{
+      // A repo this busy exceeds the old creation-time scan after five hours.
+      const since=new URL(url).searchParams.get('since');
+      if(since&&Date.now()-Date.parse(since)>5*3600000) return Response.json(Array.from({length:100},(_,i)=>({number:10000+i,body:'Flood issue or PR'})));
+      const response=await gh.send(url,init);
+      if(init.method==='POST') creationTimes.push(Date.now());
+      return response;
+    };
+    await backend.drain(env,old.id,send);
+    let admitted=0;
+    for(let window=1;window<=36;window++) {
+      Date.now=()=>time+window*600000;
+      let newest;
+      for(let network=0;network<2;network++) for(let i=0;i<20;i++) {
+        newest=appPayload();assert.equal((await directApp(newest,`192.0.${network+2}.${i<10?1:2}`,env)).fresh,true);admitted++;
+        // Exercise every available slot through fresh intake. Once full,
+        // another intake cannot create an issue; cron pins that queued wait.
+        if(creationTimes.filter(at=>at>Date.now()-3600000).length<200) await backend.drain(env,newest.id,send);
+      }
+      // Fresh-intake and five-minute-cron paths compete for the same budget.
+      await backend.drain(env,undefined,send);
+      const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(old.id).first();
+      assert.ok(['pending','done'].includes(job.state));assert.notEqual(job.delivery_status,'failed');
+      if(job.state==='pending') assert.equal(job.attempts,0);
+    }
+    assert.equal(admitted,1440,'two /24s each admit 120 per hour for six simulated hours');
+    assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(old.id).first()).state,'done');
+    assert.equal(gh.issues.filter(issue=>issue.body.includes(old.id)).length,1,'old report eventually posts exactly once');
+  });
+});
+
+
+test('app_report_fifo_reservation_cannot_jump_an_older_due_lease',async()=>{
+  await inAppWindow(220,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub(),old=appPayload({id:'ffffffff-ffff-4fff-8fff-ffffffffffff'}),fresh=appPayload({id:'00000000-0000-4000-8000-000000000001'});
+    await directApp(old,'192.0.2.1',env);await directApp(fresh,'198.51.100.1',env);
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(fresh.id).first();
+    for(const state of ['pending','processing']) {
+      await db.prepare('UPDATE outbox SET state=? WHERE report_id=?').bind(state,old.id).run();
+      await assert.rejects(backend.mirrorIssue(env,row,gh.send),'an older due job owns creation priority even during another drain');
+      assert.equal(gh.posts,0);
+      assert.equal((await db.prepare('SELECT first_attempt_at FROM outbox WHERE report_id=?').bind(fresh.id).first()).first_attempt_at,null);
+    }
+    await db.prepare("UPDATE outbox SET state='held' WHERE report_id=?").bind(old.id).run();
+    await backend.drain(env,fresh.id,gh.send);assert.equal(gh.posts,1,'held jobs do not starve the active queue');
+  });
+});
+
+
+test('app_report_minute_ceiling_queues_until_rolling_minute_returns',async()=>{
+  for(const [offset,setting] of [[230,undefined],[240,'999']]) await inAppWindow(offset,async time=>{
+    const env=appEnv({GITHUB_ISSUE_MINUTE_LIMIT:setting}),gh=fakeAppGitHub();
+    const row=()=>({id:randomUUID(),source:'app',destination_repository:'luv-jeri/cojeev',created_at:time,title:'0.1.0 (macos)',description:'Synthetic message',app_category:'crash'});
+    for(let i=0;i<60;i++) await backend.mirrorIssue(env,row(),gh.send);
+    const p=appPayload();await directApp(p,'192.0.2.1',env);await backend.drain(env,p.id,gh.send);
+    let job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(gh.posts,60,'default and unsafe configuration permit at most 60 POSTs per minute');
+    assert.equal(job.state,'pending');assert.equal(job.attempts,0);assert.equal(job.first_attempt_at,null);
+    assert.equal(job.delivery_status,'queued');assert.equal(job.due_at,time+60000);
+    Date.now=()=>time+59999;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,60);
+    Date.now=()=>time+60000;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,61);
+    job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();assert.equal(job.state,'done');
+  });
+});
+
+test('app_report_minute_ceiling_is_configurable_and_atomic',async()=>{
+  await inAppWindow(250,async time=>{
+    const env=appEnv({GITHUB_ISSUE_MINUTE_LIMIT:'1'}),gh=fakeAppGitHub(),a=appPayload(),b=appPayload();
+    await directApp(a,'192.0.2.1',env);Date.now=()=>time+1;await directApp(b,'198.51.100.1',env);
+    await Promise.all([backend.drain(env,a.id,gh.send),backend.drain(env,b.id,gh.send)]);
+    assert.equal(gh.posts,1,'competing drains share the configured minute budget');
+    Date.now=()=>time+1001;await backend.drain(env,undefined,gh.send);
+    assert.equal(gh.posts,1,'a FIFO contention retry cannot bypass the minute ceiling');
+    const jobs=(await db.prepare('SELECT state,attempts FROM outbox WHERE report_id IN (?,?)').bind(a.id,b.id).all()).results;
+    assert.equal(jobs.filter(job=>job.state==='done').length,1);assert.equal(jobs.find(job=>job.state==='pending').attempts,0);
+  });
+});
+
+test('app_report_github_secondary_limits_requeue_without_failure_and_honor_provider_time',async()=>{
+  const cases=[
+    {status:403,headers:{'Retry-After':'120'},message:'Resource not accessible by integration',delay:120000},
+    {status:429,dateDelay:180000,delay:180000},
+    {status:429,resetDelay:240000,delay:240000},
+    {status:403,headers:{},delay:60000},
+    {status:429,headers:{'Retry-After':'120'},resetDelay:240000,delay:240000},
+    {status:403,headers:{'x-ratelimit-remaining':'0'},message:'API rate limit exceeded',resetDelay:240000,delay:240000}
+  ];
+  for(const [i,c] of cases.entries()) await inAppWindow(260+i*10,async time=>{
+    const env=appEnv(),p=appPayload(),gh=fakeAppGitHub();await directApp(p,'192.0.2.1',env);
+    let posts=0;
+    const headers={...c.headers,...(c.dateDelay?{'Retry-After':new Date(time+c.dateDelay).toUTCString()}:{}),...(c.resetDelay?{'x-ratelimit-reset':String((time+c.resetDelay)/1000)}:{})};
+    const send=async(url,init={})=>{
+      if(init.method==='POST'&&++posts===1) return Response.json({message:c.message??'You have exceeded a secondary rate limit.'},{status:c.status,headers});
+      return gh.send(url,init);
+    };
+    await backend.drain(env,p.id,send);
+    let job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'pending');assert.equal(job.attempts,0,'a provider throttle consumes no failure retry');
+    assert.equal(job.delivery_status,'throttled');assert.match(job.last_error,/GitHub throttled delivery/);assert.equal(job.due_at,time+c.delay);
+    Date.now=()=>job.due_at-1;await backend.drain(env,p.id,send);assert.equal(posts,1,'no retry before the provider deadline');
+    Date.now=()=>job.due_at;await backend.drain(env,p.id,send);
+    job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'done');assert.equal(job.attempts,1);assert.equal(posts,2);assert.equal(gh.posts,1);
+    assert.equal(job.delivery_status,'accepted');assert.equal(JSON.parse(job.payload_json).githubThrottles,undefined,'successful delivery resets consecutive throttle history');
+  });
+});
+
+test('app_report_repeated_secondary_limits_do_not_exhaust_delivery_retries',async()=>{
+  await inAppWindow(320,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);let posts=0;
+    const send=async(url,init={})=>{
+      if(url.endsWith('/user')) return Response.json(githubActor);
+      if(init.method!=='POST') return Response.json([]);
+      posts++;return Response.json({message:'secondary rate limit'},{status:403,headers:{'Retry-After':'60'}});
+    };
+    for(let i=0;i<8;i++) {
+      await backend.drain(env,p.id,send);
+      const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+      assert.equal(job.state,i===7?'needs_review':'pending');assert.equal(job.delivery_status,'throttled');assert.equal(job.attempts,0);
+      Date.now=()=>job.due_at;
+    }
+    assert.equal(posts,8,'throttles use a separate eight-throttle review bound without spending failure retries');
+  });
+});
+
+
+test('app_report_github_secondary_limit_deadline_survives_a_stale_drain_snapshot',async()=>{
+  await inAppWindow(340,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    let release,selected,posts=0;
+    const ready=new Promise(resolve=>selected=resolve),resume=new Promise(resolve=>release=resolve);
+    const staleDB=new Proxy(db,{get(target,key){
+      if(key==='prepare') return sql=>{
+        const statement=target.prepare(sql);
+        if(sql.startsWith('SELECT * FROM outbox WHERE state=')||sql.startsWith('WITH available AS (')) return {bind(...args){
+          const bound=statement.bind(...args);return {all:async()=>{const result=await bound.all();selected();await resume;return result;}};
+        }};
+        return statement;
+      };
+      const value=target[key];return typeof value==='function'?value.bind(target):value;
+    }});
+    const send=async(url,init={})=>{
+      if(url.endsWith('/user')) return Response.json(githubActor);
+      if(init.method!=='POST') return Response.json([]);
+      posts++;return Response.json({message:'secondary rate limit'},{status:429,headers:{'Retry-After':'120'}});
+    };
+    const competing=backend.drain({...env,DB:staleDB},p.id,send);
+    await ready;
+    try {await backend.drain(env,p.id,send);} finally {release();}
+    await competing;
+    assert.equal(posts,1,'a stale queue snapshot must not send again before Retry-After');
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'pending');assert.equal(job.attempts,0);assert.equal(job.due_at,time+120000);
+  });
+});
+
+test('fixes4_migration_0006_retries_legacy_github_job_without_duplicate_POST',async()=>{
+  const legacy=new Miniflare(convertV4MiniflareOptions({modules:true,script:'export default {fetch(){return new Response("ok")}}',compatibilityDate:'2026-09-01',d1Databases:['DB']}));
+  try {
+    const old=await legacy.getD1Database('DB');
+    for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')&&n<'0008').sort()) await old.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
+    const p=payload();await submit(p);await queueGitHub(p.id);
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+    await old.prepare(`INSERT INTO reports(${Object.keys(row).join(',')}) VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
+    for(const [kind,attempts,first] of [['github',1,null],['github_state',1,null],['email_received',1,null],['github_project',0,null]]) {
+      await old.prepare("INSERT INTO outbox(id,report_id,kind,state,attempts,due_at,created_at,first_attempt_at,delivery_status,last_error) VALUES(?,?,?,'needs_review',?,0,?,?,'uncertain','GitHub response unavailable; reconcile before retrying.')").bind(`${p.id}:${kind}`,p.id,kind,attempts,row.created_at,first).run();
+    }
+    const untouched=payload();await submit(untouched);
+    const fresh=await db.prepare('SELECT * FROM reports WHERE id=?').bind(untouched.id).first();
+    await old.prepare(`INSERT INTO reports(${Object.keys(fresh).join(',')}) VALUES(${Object.keys(fresh).map(()=>'?').join(',')})`).bind(...Object.values(fresh)).run();
+    await old.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github',0,?)").bind(`${untouched.id}:github`,untouched.id,fresh.created_at).run();
+    await old.exec((await readFile('workers/reporting/migrations/0008_github_issue_budget.sql','utf8')).replace(/\n/g,' '));
+    // Same update as the authenticated admin retry, against the migrated database.
+    await old.prepare("UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state IN ('pending','needs_review','held')").bind(Date.now(),Date.now(),`${p.id}:github`).run();
+    const marker=`<!-- cojeev-report:${p.id}:${createHmac('sha256',ipSecret).update(`github-report:${p.id}`).digest('hex')} -->`;
+    const issue={number:77,node_id:'LEGACY_77',html_url:'https://github.com/owner/library/issues/77',body:marker,user:githubActor,created_at:new Date(row.created_at).toISOString()};
+    let reads=0,posts=0;
+    await backend.drain(backendEnv({DB:old,GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library'}),p.id,async(url,init={})=>{
+      if(init.method==='POST') {posts++;return Response.json({...issue,number:78});}
+      reads++;if(url.endsWith('/user')) return Response.json(githubActor);
+      assert.equal(new URL(url).searchParams.get('since'),new Date(row.created_at-60000).toISOString());
+      return Response.json([issue]);
+    });
+    assert.equal(posts,0,'legacy attempted job must adopt the existing issue');assert.equal(reads,2);
+    assert.equal((await old.prepare('SELECT issue_number FROM reports WHERE id=?').bind(p.id).first()).issue_number,77);
+    assert.equal((await old.prepare('SELECT first_attempt_at FROM outbox WHERE id=?').bind(`${p.id}:github`).first()).first_attempt_at,row.created_at);
+    for(const id of [`${p.id}:github_state`,`${p.id}:email_received`,`${p.id}:github_project`,`${untouched.id}:github`]) assert.equal((await old.prepare('SELECT first_attempt_at FROM outbox WHERE id=?').bind(id).first()).first_attempt_at,null);
+  } finally {await legacy.dispose();}
+});
+
+test('fixes4_permission_denied_403_requires_named_review_PL6',async()=>{
+  await inAppWindow(350,async()=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    await backend.drain(env,p.id,async()=>Response.json({message:'Resource not accessible by integration'},{status:403}));
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'needs_review','permission denial requires review on the first response');
+    assert.equal(job.delivery_status,'failed');assert.match(job.last_error,/GitHub.*permission.*HTTP 403/i);assert.equal(job.attempts,1);
+    const detail=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).json();
+    assert.equal(detail.deliveries[0].last_error,job.last_error);
+  });
+});
+
+test('fixes4_both_full_budgets_wait_for_later_release_PL10',async()=>{
+  await inAppWindow(360,async time=>{
+    const env=appEnv({GITHUB_ISSUE_HOURLY_LIMIT:'1',GITHUB_ISSUE_MINUTE_LIMIT:'1'}),gh=fakeAppGitHub(),p=appPayload();
+    await db.prepare("INSERT INTO github_issue_attempts VALUES('both-full',?)").bind(time-10000).run();
+    await directApp(p,'192.0.2.1',env);await backend.drain(env,p.id,gh.send);
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.due_at,time-10000+3600000,'both full budgets require the later hour release');
+    assert.equal(job.attempts,0);assert.equal(gh.posts,0);
+    Date.now=()=>time-10000+60000;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,0);
+    Date.now=()=>job.due_at;await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,1);
+  });
+});
+
+test('fixes4_throttle_pauses_entire_drain_and_new_intake',async()=>{
+  await inAppWindow(370,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub();let posts=0,reads=0;
+    const send=async(url,init={})=>{
+      if(init.method==='POST'&&++posts===1) return Response.json({message:'Too many requests'},{status:429,headers:{'Retry-After':'120'}});
+      if(init.method!=='POST') reads++;
+      return gh.send(url,init);
+    };
+    const reports=[];
+    for(let i=0;i<3;i++) {const p=appPayload();reports.push(p);await directApp(p,`192.0.${i+2}.1`,env);}
+    await backend.drain(env,undefined,send);assert.equal(posts,1,'first throttle stops the current drain');
+    const paused=await db.prepare('SELECT due_at,last_error FROM outbox WHERE report_id=?').bind(reports[0].id).first();
+    // Run the route on the same fake clock as the direct drain. Miniflare's
+    // separate isolate uses the real clock and would call this deadline stale.
+    const retryTasks=[];
+    assert.equal((await backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${reports[0].id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),{...env,GITHUB_TOKEN:undefined,ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin},{waitUntil:promise=>retryTasks.push(promise)})).status,200);
+    await Promise.all(retryTasks);
+    const retried=await db.prepare('SELECT due_at,last_error FROM outbox WHERE report_id=?').bind(reports[0].id).first();
+    assert.deepEqual(retried,paused,'manual retry must preserve the provider pause and its visible reason');
+    Date.now=()=>time+1000;const fresh=appPayload();await directApp(fresh,'198.51.100.1',env);
+    await backend.drain(env,fresh.id,send);assert.equal(posts,1,'new intake respects the shared pause');assert.equal(reads,0);
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(fresh.id).first();
+    await assert.rejects(backend.mirrorIssue(env,row,send),'direct reservation cannot bypass the provider pause');assert.equal(posts,1);
+    assert.equal((await db.prepare('SELECT first_attempt_at FROM outbox WHERE report_id=?').bind(fresh.id).first()).first_attempt_at,null,'a paused reservation records no POST history');
+    assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM github_issue_attempts').first()).n,1,'paused work allocates no creation reservation');
+    Date.now=()=>time+119999;await backend.drain(env,undefined,send);assert.equal(posts,1);
+    Date.now=()=>time+120000;await backend.drain(env,undefined,send);
+    assert.equal(posts,5,'all four reports deliver after the pause');assert.equal(gh.posts,4);
+  });
+});
+
+test('fixes4_throttles_back_off_with_provider_floor_and_end_in_visible_review',async()=>{
+  for(const [offset,retryAfter] of [[380,null],[500,'180']]) await inAppWindow(offset,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);let calls=0,posts=0;
+    const send=async(url,init={})=>{
+      calls++;
+      if(init.method==='POST') posts++;
+      return Response.json({message:'secondary rate limit'},{status:403,headers:retryAfter?{'Retry-After':retryAfter}:{}});
+    };
+    const delays=[];
+    for(let i=0;i<8;i++) {
+      const attemptTime=Date.now();await backend.drain(env,p.id,send);
+      const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+      assert.equal(job.attempts,0,'throttles retain a separate retry budget');assert.equal(job.delivery_status,'throttled');
+      assert.match(job.last_error,/GitHub.*throttl/i);assert.equal(JSON.parse(job.payload_json).githubThrottles,i+1);
+      delays.push(job.due_at-attemptTime);
+      assert.equal(job.due_at-attemptTime,Math.max(Math.min(3600000,60000*2**i),Number(retryAfter??0)*1000));
+      assert.equal(job.state,i===7?'needs_review':'pending');
+      const before=calls;Date.now=()=>job.due_at-1;await backend.drain(env,p.id,send);assert.equal(calls,before);
+      Date.now=()=>job.due_at;
+    }
+    assert.equal(posts,1,'subsequent throttles on reconciliation also count toward the bound');assert.equal(calls,8);
+    assert.equal(delays[7],3600000,'exponential delay caps at one hour');
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.match(job.last_error,/8 consecutive throttles.*review/i);
+    await backend.drain(env,p.id,send);assert.equal(calls,8,'exhausted throttle retries stop automatically');
+    const detail=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).json();
+    assert.equal(detail.deliveries[0].state,'needs_review');assert.equal(detail.deliveries[0].delivery_status,'throttled');assert.equal(detail.deliveries[0].last_error,job.last_error);
+  });
+});
+
+// Fifth-recheck regressions: all traffic is local and every provider is synthetic.
+for(const [i,headers] of [
+  {'Retry-After':'315360000'},
+  {'Retry-After':'1e14'},
+  {'Retry-After':'1e400'},
+  {'Retry-After':'Thu, 01 Jan 2099 00:00:00 GMT'},
+  {'Retry-After':'not-a-deadline'},
+  {'x-ratelimit-reset':'1e14'},
+  {'x-ratelimit-reset':'1e400'},
+  {'x-ratelimit-reset':'not-a-timestamp'},
+  {'Retry-After':'-1'},
+  {'Retry-After':''},
+  {'Retry-After':'1.5'},
+  {'x-ratelimit-reset':'-1'}
+].entries()) test(`fixes5_N1_provider_hint_${i}_is_bounded_and_visible`,async()=>{
+  await inAppWindow(600+i*10,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    await backend.drain(env,p.id,async()=>Response.json({message:'Too many requests'},{status:429,headers}));
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.due_at,time+3600000,'implausible provider hints have at most a one-hour cooldown');
+    assert.equal(job.state,'needs_review','invalid hints require named review without a stranded lease');
+    assert.equal(job.attempts,0);assert.equal(job.delivery_status,'throttled');assert.equal(job.lease_token,null);
+    assert.match(job.last_error,/invalid or excessive.*cooldown.*review/i);
+    const detail=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).json();
+    assert.equal(detail.deliveries[0].last_error,job.last_error);
+    Date.now=()=>time+3600000;
+    const fresh=appPayload(),gh=fakeAppGitHub();await directApp(fresh,'198.51.100.1',env);
+    await backend.drain(env,fresh.id,gh.send);assert.equal(gh.posts,1,'the shared cooldown ends even while the offending job awaits review');
+    if(i===0) {
+      const pending=[],originalFetch=globalThis.fetch;globalThis.fetch=gh.send;
+      try {
+        const response=await backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${p.id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),{...env,ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin},{waitUntil:promise=>pending.push(promise)});
+        assert.equal(response.status,200);await Promise.all(pending);
+      } finally {globalThis.fetch=originalFetch;}
+      assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(p.id).first()).state,'done','the new review condition also has a working manual recovery path after cooldown');
+      assert.equal(gh.posts,2);
+    }
+  });
+});
+
+test('fixes6_N4_admin_retry_preserves_one_hour_pause_written_after_binding',async()=>{
+  await inAppWindow(685,async time=>{
+    const env=appEnv({ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin}),p=appPayload();
+    await directApp(p,'192.0.2.1',env);
+    let boundRetry,release;
+    const ready=new Promise(resolve=>boundRetry=resolve),resume=new Promise(resolve=>release=resolve);
+    const delayedDB=new Proxy(db,{get(target,key){
+      if(key==='prepare') return sql=>{
+        const statement=target.prepare(sql);
+        if(sql.startsWith("UPDATE outbox SET state='pending',due_at=CASE")) return {bind(...args){
+          const bound=statement.bind(...args);
+          return {first:async()=>{boundRetry();await resume;return bound.first();}};
+        }};
+        return statement;
+      };
+      const value=target[key];return typeof value==='function'?value.bind(target):value;
+    }});
+    const pending=[],originalFetch=globalThis.fetch,gh=fakeAppGitHub();let calls=0,throttleCalls=0;
+    globalThis.fetch=async(...args)=>{calls++;return gh.send(...args);};
+    try {
+      const retry=backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${p.id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),{...env,DB:delayedDB},{waitUntil:promise=>pending.push(promise)});
+      await ready;
+      let paused;
+      try {
+        Date.now=()=>time+1;
+        await backend.drain(env,p.id,async()=>{throttleCalls++;return Response.json({message:'Too many requests'},{status:429,headers:{'Retry-After':'3600'}});});
+        paused=await db.prepare('SELECT due_at,delivery_status,last_error FROM outbox WHERE report_id=?').bind(p.id).first();
+        assert.equal(throttleCalls,1);assert.equal(paused.due_at,time+1+3600000);assert.equal(paused.delivery_status,'throttled');
+      } finally {release();}
+      assert.equal((await retry).status,200);await Promise.all(pending);
+      const retried=await db.prepare('SELECT due_at,delivery_status,last_error FROM outbox WHERE report_id=?').bind(p.id).first();
+      assert.deepEqual(retried,paused,'retry must preserve the current row pause even when its clock was captured earlier');
+      await backend.drain(env,p.id,globalThis.fetch);
+      assert.equal(calls,0,'retry background drain and later drain must make zero provider calls during the live pause');
+    } finally {release();await Promise.all(pending);globalThis.fetch=originalFetch;}
+  });
+});
+
+test('fixes5_N1_admin_retry_clears_stale_shared_pause_and_reconciles',async()=>{
+  await inAppWindow(690,async time=>{
+    const env=appEnv({ADMIN_TOKEN:admin,ALLOWED_ORIGINS:origin}),p=appPayload(),gh=fakeAppGitHub();
+    await directApp(p,'192.0.2.1',env);
+    // An old version may already have persisted a poisoned deadline after a POST.
+    gh.loseNextResponse();await backend.drain(env,p.id,gh.send);
+    await db.prepare("UPDATE outbox SET state='needs_review',delivery_status='throttled',due_at=?,last_error='Old excessive pause',payload_json=? WHERE report_id=?").bind(time+315360000000,JSON.stringify({keep:'unchanged',githubThrottles:1}),p.id).run();
+    const pending=[],originalFetch=globalThis.fetch;
+    globalThis.fetch=gh.send;
+    try {
+      const response=await backend.worker.fetch(new Request(`http://localhost/v1/admin/deliveries/${encodeURIComponent(`${p.id}:github`)}/retry`,{method:'POST',headers:{Origin:origin,Authorization:`Bearer ${admin}`}}),env,{waitUntil:promise=>pending.push(promise)});
+      assert.equal(response.status,200);await Promise.all(pending);
+    } finally {globalThis.fetch=originalFetch;}
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'done','manual retry clears the poisoned pause and adopts the original issue');
+    assert.equal(gh.posts,1,'recovery must reconcile rather than create a duplicate');
+    assert.equal(job.last_error,null);assert.equal(JSON.parse(job.payload_json).keep,'unchanged');
+    assert.equal(JSON.parse(job.payload_json).githubThrottles,undefined);
+  });
+});
+
+test('fixes5_N1_retention_cleanup_cannot_leave_a_shared_pause',async()=>{
+  await inAppWindow(700,async time=>{
+    const env=appEnv(),old=appPayload();await directApp(old,'192.0.2.1',env);
+    await db.prepare('UPDATE reports SET created_at=? WHERE id=?').bind(time-181*86400000,old.id).run();
+    await db.prepare("UPDATE outbox SET delivery_status='throttled',due_at=? WHERE report_id=?").bind(time+315360000000,old.id).run();
+    await backend.cleanup(env);
+    const expired=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(old.id).first();
+    assert.equal(expired.state,'needs_review');assert.equal(expired.payload_json,null);
+    const p=appPayload(),gh=fakeAppGitHub();await directApp(p,'198.51.100.1',env);
+    await backend.drain(env,p.id,gh.send);assert.equal(gh.posts,1,'an expired report cannot pause the active GitHub queue');
+    // Even a previously valid deadline is ineligible after retention cleanup.
+    await db.prepare('UPDATE outbox SET due_at=? WHERE report_id=?').bind(time+120000,old.id).run();
+    const other=appPayload();await directApp(other,'203.0.113.1',env);
+    await backend.drain(env,other.id,gh.send);assert.equal(gh.posts,2);
+  });
+});
+
+test('fixes5_N2_github_pause_delivers_email_in_current_and_backlogged_drains',async()=>{
+  await inAppWindow(710,async time=>{
+    await db.prepare("UPDATE outbox SET state='held' WHERE state='pending'").run();
+    const env=resendEnv({GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev'});
+    const first=appPayload();await directApp(first,'192.0.2.1',env);
+    const email=payload();await acceptLocal(env,email);
+    let posts=0,emails=0;
+    const send=async(url,init)=>{
+      if(url.startsWith('https://api.github.com/')) {posts++;return Response.json({message:'secondary rate limit'},{status:429,headers:{'Retry-After':'3600'}});}
+      assert.equal(url,'https://api.resend.com/emails');emails++;return Response.json({id:`synthetic-email-${emails}`});
+    };
+    await backend.drain(env,undefined,send);
+    assert.equal(posts,1);assert.equal(emails,1,'a new GitHub pause must not stop email already in the batch');
+    for(let i=0;i<21;i++) await directApp(appPayload(),`192.0.${i+3}.1`,env);
+    const later=payload();await acceptLocal(env,later);
+    Date.now=()=>time+1000;await backend.drain(env,later.id,send);
+    assert.equal(emails,2,'paused GitHub backlog must not occupy an intake email batch');
+    const scheduled=payload();await acceptLocal(env,scheduled);
+    Date.now=()=>time+2000;await backend.drain(env,undefined,send);
+    assert.equal(emails,3,'paused GitHub backlog must not occupy a scheduled email batch');assert.equal(posts,1);
+    assert.equal((await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='email_received'").bind(scheduled.id).first()).state,'done');
+  });
+});
+
+for(const [i,message] of [
+  'You have triggered an abuse detection mechanism. Please wait a few minutes before you try again.',
+  'API rate limit exceeded',
+  'You have exceeded a secondary rate limit.'
+].entries()) test(`fixes5_N3_throttle_wording_${i}_remains_retryable`,async()=>{
+  await inAppWindow(720+i*10,async time=>{
+    const env=appEnv(),p=appPayload();await directApp(p,'192.0.2.1',env);
+    await backend.drain(env,p.id,async()=>Response.json({message},{status:403}));
+    const job=await db.prepare('SELECT * FROM outbox WHERE report_id=?').bind(p.id).first();
+    assert.equal(job.state,'pending','recognized throttle wording must not become a permission failure');
+    assert.equal(job.delivery_status,'throttled');assert.equal(job.attempts,0);assert.equal(job.due_at,time+60000);
+    assert.match(job.last_error,/GitHub throttled delivery/);
+    const fresh=appPayload();await directApp(fresh,'198.51.100.1',env);let calls=0;
+    await backend.drain(env,fresh.id,async()=>{calls++;throw new Error('paused provider must not be called');});
+    assert.equal(calls,0);
+  });
+});
+
+test('fixes5_m8_intake_waitUntil_bounds_work_and_scheduled_drain_owns_backlog',async()=>{
+  await inAppWindow(760,async time=>{
+    const env=appEnv(),gh=fakeAppGitHub(),reports=[];
+    for(let i=0;i<25;i++) {const p=appPayload();reports.push(p);await directApp(p,`192.0.${i+2}.1`,env);}
+    const fresh=appPayload(),pending=[],originalFetch=globalThis.fetch;
+    globalThis.fetch=gh.send;
+    try {
+      const response=await backend.worker.fetch(new Request('http://localhost/v1/app-reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':'198.51.100.1'},body:JSON.stringify(fresh)}),env,{waitUntil:promise=>pending.push(promise)});
+      assert.equal(response.status,201);assert.deepEqual(await response.json(),{id:fresh.id,status:'accepted'});
+      assert.equal(pending.length,1,'delivery is attached to waitUntil');
+      const [result]=await Promise.all(pending);
+      assert.ok(result.processed<=3,`intake claims at most its own job plus two others; got ${result.processed}`);
+      assert.equal(gh.posts,2,'only two older FIFO jobs may POST inside intake waitUntil');
+      assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(fresh.id).first()).state,'pending','fresh job cannot jump the older queue');
+      const cron=[];Date.now=()=>time+1000;
+      await backend.worker.scheduled({},env,{waitUntil:promise=>cron.push(promise)});await Promise.all(cron);
+      assert.equal(gh.posts,22,'the scheduled drain retains its twenty-job batch');
+      Date.now=()=>time+2000;await backend.drain(env,undefined,gh.send);
+      assert.equal(gh.posts,26);assert.equal((await db.prepare('SELECT state FROM outbox WHERE report_id=?').bind(fresh.id).first()).state,'done');
+      assert.equal(gh.issues[0].body.includes(reports[0].id),true,'bounded intake still serves FIFO');
+    } finally {globalThis.fetch=originalFetch;}
+  });
+});
+
+test('fixes5_m8_website_waitUntil_reserves_own_email_and_two_backlog_jobs',async()=>{
+  await inAppWindow(770,async time=>{
+    await db.prepare("UPDATE outbox SET state='held' WHERE state='pending'").run();
+    const env=ownerEnv({GITHUB_TOKEN:'synthetic-github-token',GITHUB_REPOSITORY:'owner/library',APP_GITHUB_REPOSITORY:'luv-jeri/cojeev',ALLOWED_ORIGINS:origin}),gh=fakeAppGitHub();
+    for(let i=0;i<25;i++) await directApp(appPayload(),`192.0.${i+2}.1`,env);
+    const p=payload(),pending=[],emails=[],originalFetch=globalThis.fetch;
+    globalThis.fetch=async(url,init)=>{
+      if(url.startsWith('https://api.github.com/')) return gh.send(url,init);
+      assert.equal(url,'https://api.resend.com/emails');emails.push(JSON.parse(init.body));return Response.json({id:`synthetic-website-${emails.length}`});
+    };
+    try {
+      const response=await backend.worker.fetch(new Request('http://localhost/v1/reports',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json','CF-Connecting-IP':p.id},body:JSON.stringify({report:p,token})}),env,{waitUntil:promise=>pending.push(promise)});
+      assert.equal(response.status,201);const [result]=await Promise.all(pending);
+      assert.equal(result.processed,3,'website intake selects one own email plus only two backlog jobs');
+      assert.equal(gh.posts,2);assert.equal(emails.length,1);assert.deepEqual(emails[0].to,[p.email]);
+      assert.equal((await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='email_owner_received'").bind(p.id).first()).state,'pending','additional own jobs also stay within the intake bound');
+      Date.now=()=>time+1000;await backend.drain(env,undefined,globalThis.fetch);
+      Date.now=()=>time+2000;await backend.drain(env,undefined,globalThis.fetch);
+      assert.equal(gh.posts,25);assert.equal(emails.length,2);assert.deepEqual(emails[1].to,['owner@example.com']);
+    } finally {globalThis.fetch=originalFetch;}
+  });
 });
 
 const contactPayload=(more={})=>({id:randomUUID(),name:' Visitor ',email:'visitor@example.com',message:'I would like to build a useful interface.',page:'/cojeev-ui/work-with-me/',company:'',turnstileToken:'',...more});

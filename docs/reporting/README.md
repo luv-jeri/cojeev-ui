@@ -2,6 +2,8 @@
 
 The floating **Make it better** button opens component requests and bug reports. `/requests/` is the public demand board. `/feedback-admin/` is a private maintainer view protected by the Worker, not by the static page. All three use the library's existing design primitives.
 
+Desktop Cojeev reports use `POST /v1/app-reports` in this same Worker. They persist in the existing D1/outbox and automatically queue a private issue with `user-report` plus one category label, without website triage. `APP_GITHUB_REPOSITORY` is separate from the website's `GITHUB_REPOSITORY`; each app report retains its destination for retries. Both use the existing Worker token. Native clients send no shared app credential; a random install UUID is only a rate-limit key. See the [R-3 request/response contract and limits](../plans/boxes/core-r-2-progress.md#r-3-contract). Beta token access and deployment require the recorded A2 and release gates.
+
 ## Run locally
 
 ```sh

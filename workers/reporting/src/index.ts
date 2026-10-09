@@ -1,8 +1,8 @@
-import { accept, authorizeReceipt, authorizeStatus, publicStatus, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
+import { accept, acceptApp, authorizeReceipt, authorizeStatus, publicStatus, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
 import { assertBrowserOrigin, equalSecret, HttpError, origins, readJSON, requireAdmin } from "./security";
 import { activationCutoff, emailEnabled, expectedActive, githubEnabled, now, ownerNotificationEmail, type Env, type Delivery } from "./types";
 import { emailLimits, resendWebhook } from './resend';
-import { drain } from "./delivery";
+import { drain, MAX_GITHUB_COOLDOWN } from "./delivery";
 import { cleanup, updateFromAdmin, webhook } from "./lifecycle";
 import { adminList, applyVerdict, listUntriaged, markVerified } from "./triage";
 import { contact, retryContacts } from "./contact";
@@ -17,9 +17,13 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
   if(path==="/v1/github/webhook"&&request.method==="POST") { const result=await webhook(request,env);ctx.waitUntil(drain(env));return json(result,202); }
   if(path==="/v1/config"&&request.method==="GET") return json({emailEnabled:emailEnabled(env),turnstileSiteKey:env.TURNSTILE_SITE_KEY??"",local:env.LOCAL_MODE==="true"});
   if(path==="/v1/requests"&&request.method==="GET") return json(await listRequests(env,url));
+  if(path==="/v1/app-reports"&&request.method==="POST") {
+    const result=await acceptApp(request,env);
+    ctx.waitUntil(drain(env,result.receipt.id,fetch,true));return json(result.receipt,result.fresh?201:200);
+  }
   if(path==="/v1/reports"&&request.method==="POST") {
     assertBrowserOrigin(request,env);const result=await accept(request,env);
-    ctx.waitUntil(drain(env,result.receipt.id));return json(result.receipt,result.fresh?201:200);
+    ctx.waitUntil(drain(env,result.receipt.id,fetch,true));return json(result.receipt,result.fresh?201:200);
   }
   if(path==="/v1/contact"&&request.method==="POST") { assertBrowserOrigin(request,env);const result=await contact(request,env);return json(result,'queued' in result&&result.queued?202:200); }
   const fileMatch=path.match(/^\/v1\/reports\/([^/]+)\/attachments\/([^/]+)$/);
@@ -60,7 +64,9 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
       const id=decodeURIComponent(retry[1]);
       const job=await env.DB.prepare('SELECT * FROM outbox WHERE id=?').bind(id).first<Delivery>();
       if(job?.kind.startsWith('email')&&job.first_attempt_at!==null&&now()-job.first_attempt_at>=86400000) throw new HttpError(409,'Provider reconciliation required; the email retry window expired.');
-      const result=await env.DB.prepare("UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state IN ('pending','needs_review','held') RETURNING report_id").bind(now(),now(),id).first<{report_id:string}>();
+      const time=now();
+      // Read the current row's throttle-set time in the write; legacy rows fall back to the retry time.
+      const result=await env.DB.prepare("UPDATE outbox SET state='pending',due_at=CASE WHEN kind LIKE 'github%' AND delivery_status='throttled' AND due_at<=COALESCE(json_extract(payload_json,'$.githubThrottleSetAt'),?)+? THEN MAX(due_at,?) ELSE ? END,reviewed_at=?,last_error=CASE WHEN delivery_status='throttled' AND (kind NOT LIKE 'github%' OR due_at<=COALESCE(json_extract(payload_json,'$.githubThrottleSetAt'),?)+?) THEN last_error ELSE NULL END,delivery_status=CASE WHEN kind LIKE 'github%' AND delivery_status='throttled' AND due_at>COALESCE(json_extract(payload_json,'$.githubThrottleSetAt'),?)+? THEN 'queued' ELSE delivery_status END WHERE id=? AND state IN ('pending','needs_review','held') RETURNING report_id").bind(time,MAX_GITHUB_COOLDOWN,time,time,time,time,MAX_GITHUB_COOLDOWN,time,MAX_GITHUB_COOLDOWN,id).first<{report_id:string}>();
       if(!result) throw new HttpError(409,"This delivery is finished or is already running.");
       await getReport(env,result.report_id);ctx.waitUntil(drain(env,result.report_id));return json({ok:true});
     }

@@ -26,7 +26,7 @@ export async function webhook(request:Request,env:Env) {
   if(!issue?.number || !["closed","labeled","edited"].includes(body.action??"") || issue.state!=="closed" || issue.state_reason!=="completed" || !issue.labels?.some(l=>l.name==="feedback:released")) return {ok:true,ignored:true};
   // Joined reports share one issue, so a release resolves every report holding it.
   const updated=Date.parse(issue.updated_at??"");
-  const rows=(await env.DB.prepare("SELECT * FROM reports WHERE issue_number=? AND triage_state='approved'").bind(issue.number).all<ReportRow>()).results
+  const rows=(await env.DB.prepare("SELECT * FROM reports WHERE issue_number=? AND triage_state='approved' AND source='website'").bind(issue.number).all<ReportRow>()).results
     .filter(row=>Number.isFinite(updated)&&updated>=row.updated_at-1000);
   if(!rows.length) return {ok:true,ignored:true};
   let url: string|null=null;
@@ -54,6 +54,7 @@ export async function cleanup(env:Env) {
     env.DB.prepare("UPDATE topics SET title='[Expired request]',title_key='retired:'||id WHERE created_at<?").bind(now()-180*86400000),
     env.DB.prepare("UPDATE reports SET email='',title='[Expired report]',description='[Expired after 180 days]',references_json='[]',private_purged=1 WHERE private_purged=0 AND created_at<?").bind(now()-180*86400000),
     env.DB.prepare("DELETE FROM rate_limits WHERE expires_at<?").bind(now()),
+    env.DB.prepare("DELETE FROM github_issue_attempts WHERE attempted_at<=?").bind(now()-3600000),
     env.DB.prepare("DELETE FROM webhook_events WHERE created_at<?").bind(now()-30*86400000)
   ]);
   return {purged:old.results.length};

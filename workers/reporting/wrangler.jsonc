@@ -40,6 +40,7 @@
     "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
     "CONTACT_NOTIFICATION_EMAIL": "hellosanjaygautam@gmail.com",
     "DEPLOYMENT_INTENT": "active",
+    "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
     "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
   },
   "d1_databases": [
@@ -85,6 +86,7 @@
         "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
         "CONTACT_NOTIFICATION_EMAIL": "hellosanjaygautam@gmail.com",
         "DEPLOYMENT_INTENT": "active",
+        "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui-beta-feedback"
       },
       "d1_databases": [
@@ -137,6 +139,7 @@
         "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
         "CONTACT_NOTIFICATION_EMAIL": "hellosanjaygautam@gmail.com",
         "DEPLOYMENT_INTENT": "active",
+        "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
       },
       "d1_databases": [

@@ -1,6 +1,6 @@
 import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus, type RequestTopic } from "../../../lib/reporting/contracts";
-import { boundedBody, checkAbuse, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
-import { emailEnabled, githubEnabled, now, ownerNotificationEmail, type Env, type ReportRow, type AttachmentRow, type Delivery } from "./types";
+import { boundedBody, checkAbuse, appAdmission, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
+import { emailEnabled, githubEnabled, now, ownerNotificationEmail, type Env, type ReportRow, type AttachmentRow, type Delivery, type AppReportPayload, type AppReportReceipt } from "./types";
 import { testerAllowed } from './resend';
 import type { PublicStage, PublicStatus } from "../../../lib/reporting/public-status";
 
@@ -42,6 +42,53 @@ export async function receipt(env: Env, row: ReportRow, token: string): Promise<
 }
 export async function topicIssue(env: Env, topicId: string) {
   return env.DB.prepare("SELECT issue_number,issue_node_id,issue_url FROM reports WHERE topic_id=? AND triage_state='approved' AND issue_number IS NOT NULL ORDER BY created_at LIMIT 1").bind(topicId).first<{issue_number:number;issue_node_id:string;issue_url:string}>();
+}
+export async function acceptApp(request: Request, env: Env): Promise<{receipt:AppReportReceipt;fresh:boolean}> {
+  if(request.headers.has("Origin")) throw new HttpError(403,"Native app reports must not carry an Origin header.");
+  if(request.headers.get("Content-Type")!=="application/json") throw new HttpError(415,"Send app reports as application/json.");
+  const raw=await readJSON(request,16384);
+  if(!raw||typeof raw!=="object"||Array.isArray(raw)) throw new HttpError(422,"Invalid app report.");
+  const v=raw as Record<string,unknown>;
+  if(Object.keys(v).some(key=>!["id","installId","category","message","diagnostics","appVersion","platform"].includes(key))||!isUUID(v.id)||!isUUID(v.installId)) throw new HttpError(422,"Invalid app report fields or UUID.");
+  if(typeof v.category!=="string"||!["memory","handoff","sharing","updates","skills-beta","crash","ui"].includes(v.category)||typeof v.platform!=="string"||!["macos","windows"].includes(v.platform)) throw new HttpError(422,"Choose a valid app category and platform.");
+  for(const [key,max,required] of [["message",2000,true],["diagnostics",1600,false],["appVersion",64,true]] as const) {
+    const value=v[key];if(key==="diagnostics"&&value===null) continue;
+    if(typeof value!=="string"||(required&&!value.trim())) throw new HttpError(422,`Invalid ${key}.`);
+    if(value.length>max) throw new HttpError(413,`The ${key} is too large.`);
+  }
+  const appVersion=v.appVersion as string;
+  if(appVersion!==appVersion.trim()||!/^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$/.test(appVersion)) throw new HttpError(422,"Invalid appVersion.");
+  const report={id:v.id.toLowerCase(),installId:v.installId.toLowerCase(),category:v.category,message:v.message,diagnostics:v.diagnostics,appVersion:v.appVersion,platform:v.platform} as AppReportPayload;
+  const canonical=JSON.stringify(report);
+  if(canonical.length>4000) throw new HttpError(413,"The app report is too large.");
+  const payloadHash=await digest(canonical),receipt:AppReportReceipt={id:report.id,status:"accepted"};
+  const retry=(saved:ReportRow) => {
+    if(saved.source!=="app"||saved.payload_hash!==payloadHash) throw new HttpError(409,"This report ID is already saved with different details. Start a new report.");
+    return {receipt,fresh:false};
+  };
+  const existing=await env.DB.prepare("SELECT * FROM reports WHERE id=?").bind(report.id).first<ReportRow>();
+  if(existing) return retry(existing);
+  const destination=env.APP_GITHUB_REPOSITORY;
+  if(!destination||!/^[\w.-]+\/[\w.-]+$/.test(destination)) throw new HttpError(503,"App reporting destination is not configured yet.");
+  // No client credential: legacy receipt endpoints cannot authorize an app report.
+  const tokenHash=await digest(crypto.randomUUID());
+  const admission=await appAdmission(request,env,report.installId,report.id,tokenHash);
+  const timestamp=now(),installHash=await keyedDigest(env.IP_HASH_SECRET??"local-only",`app-install:${report.installId}`);
+  const title=`[${report.category}] Cojeev ${redact(report.appVersion,64)} (${report.platform})`;
+  try {
+    const results=await env.DB.batch([
+      env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,created_at,updated_at,triage_state,source,app_category,destination_repository) SELECT ?,?,?,'bug',?,?,'',?,'[]',?,'[]',?,?,'approved','app',?,? WHERE ${admission.keys.map(()=>"COALESCE((SELECT count FROM rate_limits WHERE key=?),0)<?").join(" AND ")}`)
+        .bind(report.id,tokenHash,payloadHash,title,redact(report.message,2000),installHash,report.diagnostics===null?null:JSON.stringify(redact(report.diagnostics,1600)),timestamp,timestamp,report.category,destination,...admission.keys.flatMap((key,index)=>[key,admission.limits[index]])),
+      ...admission.statements,
+      env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) SELECT ?,?,'github',?,?,? FROM reports WHERE id=? AND payload_hash=?").bind(`${report.id}:github`,report.id,timestamp,timestamp,timestamp,report.id,payloadHash)
+    ]);
+    if(!results[0].meta.changes) throw new HttpError(429,"Too many reports right now. Please try again later.",admission.retryAfter);
+  } catch(error) {
+    const saved=await env.DB.prepare("SELECT * FROM reports WHERE id=?").bind(report.id).first<ReportRow>();
+    if(saved) return retry(saved);
+    throw error;
+  }
+  return {receipt,fresh:true};
 }
 export async function accept(request: Request, env: Env): Promise<{receipt:Receipt;fresh:boolean}> {
   const raw=await readJSON(request) as {report?:unknown;token?:unknown;turnstileToken?:unknown};
@@ -145,7 +192,7 @@ export async function privateDetail(env: Env,id:string) {
   const row=await getReport(env,id);
   const {token_hash: _token, payload_hash:_payload, contact_hash:_contact, status_key:_key, ...report}=row; void _token; void _payload; void _contact; void _key;
   const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,name,type,size,state FROM attachments WHERE report_id=?").bind(id).all(),env.DB.prepare("SELECT id,kind,state,attempts,last_error,provider_id,delivery_status,first_attempt_at,reviewed_at FROM outbox WHERE report_id=? ORDER BY created_at").bind(id).all()]);
-  const shared=!!row.issue_number&&!!await env.DB.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved'").bind(row.issue_number,id).first();
+  const shared=!!row.issue_number&&!!await env.DB.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved' AND source=? AND destination_repository IS ?").bind(row.issue_number,id,row.source,row.destination_repository).first();
   return {report,attachments:files.results,deliveries:jobs.results,shared};
 }
 export async function privateAttachment(env: Env,id:string,fileId:string) {
