@@ -35,11 +35,21 @@ try {
       const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
       await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin });
       await context.addInitScript(() => Object.defineProperty(navigator, "share", { value: undefined, configurable: true }));
+      // An analytics build asks its first-visit question in a bar over the docs rail's Share; answer it first.
+      await context.addInitScript(() => localStorage.setItem("000h.analytics-consent.v1", "declined"));
       const page = await context.newPage();
       await page.goto(`${url}?private=drop#section`, { waitUntil: "networkidle" });
+      // On phones the marketing header gives its room to Work with me, so Share lives in the navigation menu there.
+      const menu = mobile && (path === "/" || path === "/about/");
+      if (menu) {
+        const tools = page.locator(".story-header-tools");
+        await assertFits(tools.getByRole("link", { name: "Work with me", exact: true }), width);
+        assert.equal(await tools.getByRole("button", { name: "Share this page", exact: true }).isVisible(), false, "Share leaves the phone header");
+        await page.getByRole("button", { name: "Open navigation", exact: true }).click();
+      }
       const chrome = path.startsWith("/docs")
         ? page.locator(mobile ? ".docs-mobile-actions" : ".docs-sidebar .docs-persistent-links")
-        : page.locator(path === "/requests/" ? ".requests-nav" : ".story-header-tools");
+        : page.locator(path === "/requests/" ? ".requests-nav" : menu ? ".story-mobile-nav" : ".story-header-tools");
       const share = chrome.getByRole("button", { name: "Share this page", exact: true });
       await assertFits(share, width);
       await assertNoOverflow(page, path, width);
@@ -48,7 +58,9 @@ try {
           await assertFits(chrome.getByRole("link", { name, exact: true }), width);
         }
       }
-      assert.equal(await share.locator(".share-label").isVisible(), !mobile, "label follows the viewport width");
+      // The marketing header is icon-only up to 1280px (#147); the phone menu item keeps its label.
+      const labelled = menu || (!mobile && path !== "/" && path !== "/about/");
+      assert.equal(await share.locator(".share-label").isVisible(), labelled, "label follows the viewport width");
       const idleWidth = (await share.boundingBox()).width;
       await page.evaluate(() => {
         const write = navigator.clipboard.writeText.bind(navigator.clipboard);
@@ -66,7 +78,7 @@ try {
       assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected, `${path} at ${width}px`);
       await assertFits(share, width);
       await assertNoOverflow(page, path, width);
-      if (mobile) assert.equal((await share.boundingBox()).width, idleWidth, "copy feedback preserves the icon-only button size");
+      if (mobile) assert.equal((await share.boundingBox()).width, idleWidth, "copy feedback preserves the button size");
 
       // Prove the real selection-copy fallback restores selection, focus and scroll.
       await page.evaluate(() => {
@@ -130,7 +142,7 @@ try {
     assert.equal(await page.getByRole("button", { name: "Share this page", exact: true }).count(), 0, `${path} has no Share control`);
   }
   await context.close();
-  console.log("PASS: clean share links, real clipboard fallback, copy feedback, desktop/collapsed chrome, 320px/390px headers without overflow and private-page exclusions.");
+  console.log("PASS: clean share links, real clipboard fallback, copy feedback, desktop/collapsed chrome, 320px/390px headers without overflow, Share in the phone menu beside a visible Work with me, and private-page exclusions.");
 } finally {
   await browser.close();
   await server?.close();

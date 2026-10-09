@@ -13,6 +13,11 @@ export const site = {
 
 export const contactEmail = "hellosanjaygautam@gmail.com";
 
+// Mail apps ignore `+` for spaces, so each part is percent-encoded; RFC 6068 asks for CRLF line breaks in the body.
+const contactSubject = "Let's work together";
+const contactBody = ["Hi Sanjay,", "", "I'd like to work with you on a project.", "", "What I'm making:", "", "What it should feel like:", "", "Timeline and budget:", "", "Thanks,", ""].join("\r\n");
+export const contactMailto = `mailto:${contactEmail}?subject=${encodeURIComponent(contactSubject)}&body=${encodeURIComponent(contactBody)}`;
+
 export type DeploymentEnvironment = "beta" | "production";
 export type SiteFlags = { environment: DeploymentEnvironment | null; releaseSha: string | null; contactEnabled: boolean };
 export type FlagEnvironment = Partial<Record<"NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT" | "NEXT_PUBLIC_RELEASE_SHA" | "NEXT_PUBLIC_CONTACT_ENABLED", string>>;

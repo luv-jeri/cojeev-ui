@@ -16,7 +16,8 @@ export function ContactForm() {
   const [error, setError] = React.useState(""), [success, setSuccess] = React.useState("");
   const [busy, setBusy] = React.useState(false), [locked, setLocked] = React.useState(false);
   const [token, setToken] = React.useState(""), [attempt, setAttempt] = React.useState(0), [configAttempt, setConfigAttempt] = React.useState(0);
-  const [verificationFailed, setVerificationFailed] = React.useState(false);
+  // "retry" when a fresh check can pass; "setup" when the widget rejects this site and only Email me is left.
+  const [verificationIssue, setVerificationIssue] = React.useState<"" | "retry" | "setup">("");
   const submission = React.useRef<Submission | null>(null), sending = React.useRef(false);
   React.useEffect(() => {
     if (!REPORTING_API) return;
@@ -47,7 +48,7 @@ export function ContactForm() {
         submission.current = null; setLocked(false);
       }
       setError(cause instanceof ReportingError && cause.status ? cause.message : "The connection was interrupted. Your draft is still here. Retry sends the same message.");
-      setVerificationFailed(cause instanceof ReportingError && cause.status === 403 && /security check/i.test(cause.message));
+      setVerificationIssue(cause instanceof ReportingError && cause.status === 403 && /security check/i.test(cause.message) ? "retry" : "");
       setToken(""); setAttempt(current => current + 1);
     } finally { sending.current = false; setBusy(false); }
   }
@@ -63,7 +64,7 @@ export function ContactForm() {
       {!REPORTING_API && <p>Contact is not connected yet. You can use Email me instead.</p>}
       {configError && <div><p role="alert">{configError}</p><Button type="button" variant="outline" size="sm" onClick={() => setConfigAttempt(current => current + 1)}>Retry connection</Button></div>}
       {config && !config.emailEnabled && <p>Email is temporarily unavailable. You can use Email me instead.</p>}
-      {config && !config.local && (siteKey ? <div className="contact-verification"><Turnstile key={attempt} siteKey={siteKey} onToken={value => { setToken(value); if (value) setVerificationFailed(false); }} onError={() => setVerificationFailed(true)} onExpire={() => setVerificationFailed(true)} attempt={attempt} />{verificationFailed && <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => { setVerificationFailed(false); setToken(""); setAttempt(current => current + 1); }}>Retry verification</Button>}</div> : <p role="alert">The security check is unavailable. You can use Email me instead.</p>)}
+      {config && !config.local && (siteKey ? <div className="contact-verification"><Turnstile key={attempt} siteKey={siteKey} onToken={value => { setToken(value); if (value) setVerificationIssue(""); }} onError={setup => setVerificationIssue(setup ? "setup" : "retry")} onExpire={() => setVerificationIssue("retry")} attempt={attempt} />{verificationIssue === "setup" ? <p>You can use Email me instead.</p> : verificationIssue === "retry" && <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => { setVerificationIssue(""); setToken(""); setAttempt(current => current + 1); }}>Retry verification</Button>}</div> : <p role="alert">The security check is unavailable. You can use Email me instead.</p>)}
       {error && <p role="alert">{error}</p>}
       {locked && <p>Your draft is kept as sent. Retry checks the same message so it cannot send twice.</p>}
       <Button type="submit" loading={busy} disabled={busy || !config?.emailEnabled || (!config.local && !token)}>Send message</Button>

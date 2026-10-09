@@ -6,6 +6,7 @@ import { build } from 'esbuild';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { chromium } from 'playwright';
 
+const draftedMail=href=>{const url=new URL(href);return url.protocol==='mailto:'&&url.pathname==='hellosanjaygautam@gmail.com'&&url.searchParams.get('subject')==="Let's work together"&&/^Hi Sanjay,\r\n/.test(url.searchParams.get('body')??'');};
 const site=process.env.CONTACT_BROWSER_URL??'http://127.0.0.1:3100/cojeev-ui';
 assert.ok(['localhost','127.0.0.1'].includes(new URL(site).hostname),'Only check a local app.');
 const origin=new URL(site).origin,output='output/playwright/contact-form';
@@ -61,6 +62,14 @@ try {
     await page.waitForFunction(()=>!document.querySelector('.contact-form button[type="submit"]').disabled);
     assert.equal(await verificationRetry.count(),0);
   }
+  // A hostname missing from the widget's settings cannot be retried away, so the visitor is pointed to Email me.
+  await page.evaluate(()=>window.contactChallenge['error-callback']('110200'));
+  await form.getByRole('alert').filter({hasText:'not enabled for this web address'}).waitFor();
+  await form.getByText('You can use Email me instead.',{exact:true}).waitFor();
+  assert.equal(await verificationRetry.count(),0,'A setup error offers no retry.');
+  await page.evaluate(()=>window.contactChallenge.callback('fixture-only-recovered-verification'));
+  await page.waitForFunction(()=>!document.querySelector('.contact-form button[type="submit"]').disabled);
+  assert.equal(await form.getByText('You can use Email me instead.',{exact:true}).count(),0);
   await email.fill('invalid');assert.equal(await email.evaluate(element=>element.validity.typeMismatch),true);await email.fill('visitor@example.com');
   await form.scrollIntoViewIfNeeded();
   assert.ok(await form.evaluate(element=>element.getBoundingClientRect().left>=0&&element.getBoundingClientRect().right<=innerWidth),'Form fits 360px.');
@@ -80,7 +89,7 @@ try {
   assert.equal(submissions.length,4);assert.notEqual(submissions[0].id,submissions[1].id);assert.notEqual(submissions[1].id,submissions[2].id);assert.equal(submissions[2].id,submissions[3].id);
   assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM contact_messages').first()).n,1);assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_attempts').first()).n,1);
   assert.equal(await page.getByRole('link',{name:'Email me',exact:true}).count(),2);
-  for(const link of await page.getByRole('link',{name:'Email me',exact:true}).all()) assert.equal(await link.getAttribute('href'),'mailto:hellosanjaygautam@gmail.com');
+  for(const link of await page.getByRole('link',{name:'Email me',exact:true}).all()) assert.ok(draftedMail(await link.getAttribute('href')),'Email me opens a drafted message.');
   await page.setViewportSize({width:1440,height:1000});await page.emulateMedia({colorScheme:'light'});
   await page.goto(`${site}/about/`,{waitUntil:'networkidle'});
   const heroContact=page.locator('.creator-hero').getByRole('link',{name:'Send me a message',exact:true});
@@ -98,6 +107,6 @@ try {
   assert.equal((await db.prepare('SELECT delivery_status FROM contact_messages WHERE email=?').bind('about@example.com').first()).delivery_status,'needs_review');
   const queuedFallback=page.locator('.maker-write').getByRole('link',{name:'Email me',exact:true});
   await queuedFallback.waitFor({state:'visible'});
-  assert.equal(await queuedFallback.getAttribute('href'),'mailto:hellosanjaygautam@gmail.com');
-  assert.deepEqual(errors,[]);console.log('PASS: both maker routes, config retry, native validation, accessible empty status, error/expiry/403-only security retry, queued acknowledgement, hero anchor, rate limit, retained draft, lost-response UUID retry, one email attempt, secondary email links, 360px dark and desktop light.');
+  assert.ok(draftedMail(await queuedFallback.getAttribute('href')));
+  assert.deepEqual(errors,[]);console.log('PASS: both maker routes, config retry, native validation, accessible empty status, error/expiry/403-only security retry, no retry for a setup error, queued acknowledgement, hero anchor, rate limit, retained draft, lost-response UUID retry, one email attempt, secondary email links, 360px dark and desktop light.');
 } finally {await browser?.close();await mf.dispose();}

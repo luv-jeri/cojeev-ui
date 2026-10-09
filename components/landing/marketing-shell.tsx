@@ -68,6 +68,7 @@ export function MarketingHeader() {
           <MarketingLink href="/about/">About the maker</MarketingLink>
           <MarketingLink href="/work-with-me/">Work with me</MarketingLink>
           <MarketingLink href={sourceUrl}><AnimatedIcon name="github" />GitHub</MarketingLink>
+          <ShareButton className="story-link story-mobile-share" />
         </nav>
       </MotionSurface>}</MotionPresence>
     </header>

@@ -28,7 +28,7 @@ async function provision(){
   const secrets=await loadSecrets();
   cfg=JSON.parse(await readFile(resolve(root,config),'utf8'));
   if(!cfg.vars.TURNSTILE_SITE_KEY){
-    const widget=JSON.parse(await run(['npx','wrangler','turnstile','widget','create','Cojeev UI reporting','--domain','luv-jeri.github.io','--mode','managed','--json'],{capture:true}));
+    const widget=JSON.parse(await run(['npx','wrangler','turnstile','widget','create','Cojeev UI reporting','--domain','cojeev.com','--domain','luv-jeri.github.io','--mode','managed','--json'],{capture:true}));
     const result=widget.result??widget;
     if(!result.sitekey||!result.secret) throw new Error('Turnstile created without expected credentials. Inspect its dashboard before retrying provisioning.');
     cfg.vars.TURNSTILE_SITE_KEY=result.sitekey;secrets.TURNSTILE_SECRET=result.secret;
