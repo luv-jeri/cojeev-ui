@@ -35,6 +35,8 @@ try {
       const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
       await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin });
       await context.addInitScript(() => Object.defineProperty(navigator, "share", { value: undefined, configurable: true }));
+      // An analytics build asks its first-visit question in a bar over the docs rail's Share; answer it first.
+      await context.addInitScript(() => localStorage.setItem("000h.analytics-consent.v1", "declined"));
       const page = await context.newPage();
       await page.goto(`${url}?private=drop#section`, { waitUntil: "networkidle" });
       // On phones the marketing header gives its room to Work with me, so Share lives in the navigation menu there.
