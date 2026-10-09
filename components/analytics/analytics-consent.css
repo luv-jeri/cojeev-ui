@@ -9,10 +9,44 @@
   max-width: calc(100vw - 48px);
 }
 
+.analytics-consent-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
+  color: var(--v-text);
+  background: var(--v-canvas);
+  border: 1px solid var(--v-border);
+  border-radius: var(--r-card);
+  box-shadow: 4px 5px 0 color-mix(in srgb, var(--v-pink) 12%, transparent);
+}
+
+/* With the details open, only the trigger stays, so focus has somewhere to return. */
+.analytics-consent-bar[data-expanded] {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.analytics-consent-bar__question {
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+}
+
 .analytics-consent__trigger {
   min-height: 40px;
+  color: var(--v-text-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.analytics-consent-bar[data-expanded] .analytics-consent__trigger {
+  color: var(--v-text);
+  text-decoration: none;
   background: var(--v-canvas);
-  box-shadow: 4px 5px 0 color-mix(in srgb, var(--v-pink) 12%, transparent);
+  border: 1px solid var(--v-border);
 }
 
 .analytics-consent {
@@ -50,6 +84,11 @@
     padding: var(--s-4);
   }
   .analytics-consent__actions > * { flex: 1 1 0; min-height: 44px; }
+  /* Two rows on a phone: the question with its details link, then both answers at full, equal width. */
+  .analytics-consent-bar:not([data-expanded]) { width: calc(100vw - 24px); row-gap: 0; }
+  .analytics-consent-bar__question { flex: 1 1 auto; }
+  .analytics-consent-bar:not([data-expanded]) .analytics-consent__trigger { order: 1; }
+  .analytics-consent-bar:not([data-expanded]) > :not(.analytics-consent-bar__question, .analytics-consent__trigger) { order: 2; flex: 1 1 0; min-height: 44px; }
 }
 
 /* The reporting drawer is modal at z-index 30; the consent card (44) would paint over its form. */

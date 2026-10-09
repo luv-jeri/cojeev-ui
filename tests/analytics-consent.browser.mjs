@@ -33,9 +33,15 @@ try {
   const trigger = page.getByRole("button", { name: "Analytics choices", exact: true });
   await trigger.waitFor();
   assert.equal(await trigger.getAttribute("aria-expanded"), "false");
+  // First visit asks one short question with both answers visible; the long explanation stays behind the trigger.
+  await page.getByText("Help improve 000h?", { exact: true }).waitFor();
+  assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 1);
+  assert.equal(await page.getByRole("button", { name: "No thanks", exact: true }).count(), 1);
   assert.equal(await page.getByText("Optional PostHog analytics measures page views", { exact: false }).count(), 0);
-  assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 0);
   assert.equal(await page.getByRole("link", { name: "Privacy", exact: true }).count(), 0);
+  assert.equal(await trigger.evaluate(node => node === document.activeElement), false, "the bar must not take focus on load");
+  const bar = await page.locator(".analytics-consent-shell").boundingBox();
+  assert.ok(bar && bar.height <= 120, `the first-visit bar stays compact on a phone (was ${bar?.height}px)`);
   assert.equal(attempts.length, 0);
 
   await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
@@ -52,6 +58,7 @@ try {
   await page.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
   await page.getByRole("button", { name: "No thanks", exact: true }).waitFor();
   await page.getByRole("link", { name: "Privacy", exact: true }).waitFor();
+  assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 1, "open details replace the bar answers");
 
   await page.keyboard.press("Escape");
   assert.equal(await trigger.getAttribute("aria-expanded"), "false");
@@ -93,7 +100,16 @@ try {
   assert.equal(attempts.length, 0);
 
   await context.close();
-  console.log("PASS: compact analytics disclosure remains accessible and fail-closed.");
+
+  const oneTap = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  await oneTap.route("https://eu.i.posthog.com/**", route => route.abort());
+  const quick = await oneTap.newPage();
+  await quick.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+  await quick.getByRole("button", { name: "Allow analytics", exact: true }).click();
+  assert.equal(await quick.evaluate(key => localStorage.getItem(key), consentKey), "allowed");
+  assert.equal(await quick.getByRole("button", { name: "Analytics choices", exact: true }).count(), 0);
+  await oneTap.close();
+  console.log("PASS: first-visit analytics question is visible, one tap, accessible and fail-closed.");
 } finally {
   await browser.close();
   await server?.close();
