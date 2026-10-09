@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useDocsSearch } from "fumadocs-core/search/client";
 import { staticClient } from "fumadocs-core/search/client/orama-static";
+import { exactNameFirst } from "@/lib/docs-search-rank";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/registry/cojeev/ui/dialog";
 import { Command, CommandInput, CommandList, CommandGroup, CommandItem } from "@/registry/cojeev/ui/command";
 import { Button } from "@/registry/cojeev/ui/button";
@@ -36,7 +37,7 @@ export function DocsSearch({ open, onOpenChange, searchUrl, onNavigate, onCloseA
   const { search, setSearch, query } = useDocsSearch({ client, delayMs: 120 }, [from]);
   const paint = useMorph<HTMLDivElement>("buttons");
   const input = React.useRef<HTMLInputElement>(null);
-  const results = Array.isArray(query.data) ? query.data : [];
+  const results = exactNameFirst(Array.isArray(query.data) ? query.data : [], search);
   const navigate = (url: string) => {
     if (!url.startsWith("/docs/")) return;
     onNavigate();
