@@ -38,3 +38,9 @@ jobs:
           HEALTH_TOKEN: ${{ secrets.PRODUCTION_HEALTH_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           UPDATE_ALERT: 'true'
+      - name: Check shadcn directory standing and update its alert
+        if: always()
+        run: node scripts/directory-standing.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_ALERT: 'true'
