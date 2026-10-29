@@ -9,8 +9,12 @@ const host = {
     const health = pathname === '/health' || pathname === '/ui/health';
     // Keep the legacy root health endpoint available to CI and monitoring.
     const legacy = url.hostname === '000h.cojeev.com' && env.ENVIRONMENT !== 'beta';
+    // The shadcn directory still lists the legacy host, so its registry JSON is served in place: a redirect doubles every install and health check.
+    const legacyRegistry = legacy && /^\/r\/[a-z0-9][a-z0-9-]{0,79}\.json$/.test(localPath) ? `/ui${localPath}` : null;
     const response = pathname === '/health' || health && !legacy
       ? Response.json({status:'ok',environment:env.ENVIRONMENT ?? 'unconfigured',release:env.RELEASE ?? 'unconfigured'})
+      : legacyRegistry
+        ? await env.ASSETS.fetch(new Request(new URL(`${legacyRegistry}${url.search}`, url.origin), request))
       : legacy
         ? Response.redirect(`${environmentConfig('production').site}${localPath}${url.search}`,301)
       : pathname === '/ui' || pathname === '/' && env.ENVIRONMENT === 'beta'
@@ -23,8 +27,8 @@ const host = {
     if(env.ENVIRONMENT === 'beta' || /^\/(?:admin|feedback-admin)(?:\/|$)/.test(localPath)) secured.headers.set('x-robots-tag','noindex, nofollow, noarchive');
     if(health || localPath === '/release.json') secured.headers.set('cache-control','no-store');
     else if((response.headers.get('content-type') ?? '').includes('text/html')) secured.headers.set('cache-control','public, max-age=0, must-revalidate');
-    const match = pathname.match(/^\/ui\/r\/([a-z0-9][a-z0-9-]{0,79})\.json$/);
-    if(legacy) return secured;
+    const match = (legacyRegistry ?? pathname).match(/^\/ui\/r\/([a-z0-9][a-z0-9-]{0,79})\.json$/);
+    if(legacy && !legacyRegistry) return secured;
     if (request.method !== "GET" || !match || !env.REGISTRY_METRICS) return secured;
 
     const name = match[1];

@@ -50,13 +50,26 @@ test("an HTML fallback is an error and telemetry failure never breaks installati
   assert.equal(await response.text(), '{"name":"button"}');
 });
 
-test("legacy registry redirect records no demand until the canonical JSON is fetched",async()=>{
-  const {events,env}=fixture();env.ENVIRONMENT='production';
-  const redirect=await host.fetch(new Request('https://000h.cojeev.com/r/button.json?source=install'),env);
-  assert.equal(redirect.status,301);
-  assert.equal(events.length,0);
-  const response=await host.fetch(new Request(redirect.headers.get('location')),env);
-  assert.equal(response.status,200);
-  assert.equal(events.length,1);
-  assert.deepEqual(events[0].blobs,['button','item','unclassified','success']);
+test("legacy registry JSON is served in place from the canonical asset and records demand once",async()=>{
+  for(const path of ['/r/registry.json','/ui/r/registry.json','/r/button.json?source=install']) {
+    const {events,env}=fixture();env.ENVIRONMENT='production';
+    const requested=[];const assets=env.ASSETS.fetch;env.ASSETS.fetch=async request=>{requested.push(new URL(request.url));return assets(request);};
+    const response=await host.fetch(new Request(`https://000h.cojeev.com${path}`),env);
+    assert.equal(response.status,200,path);
+    assert.equal(response.headers.get('location'),null,path);
+    assert.equal(response.headers.get('x-content-type-options'),'nosniff',path);
+    assert.equal(await response.text(),'{"name":"button"}',path);
+    assert.equal(requested.length,1,path);
+    assert.equal(requested[0].pathname,path.includes('button')?'/ui/r/button.json':'/ui/r/registry.json',path);
+    assert.equal(requested[0].search,path.includes('?')?'?source=install':'',path);
+    assert.equal(events.length,1,path);
+    assert.equal(events[0].blobs[1],path.includes('button')?'item':'index',path);
+  }
+});
+
+test("beta keeps its own host: the legacy registry rule never applies there",async()=>{
+  const {env}=fixture();env.ENVIRONMENT='beta';
+  const requested=[];const assets=env.ASSETS.fetch;env.ASSETS.fetch=async request=>{requested.push(new URL(request.url).pathname);return assets(request);};
+  await host.fetch(new Request('https://000h.cojeev.com/r/button.json'),env);
+  assert.deepEqual(requested,['/r/button.json']);
 });
