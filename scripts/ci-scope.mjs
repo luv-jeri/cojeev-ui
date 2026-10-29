@@ -344,9 +344,11 @@ const CATALOGUE_EXEMPT = new Set([
   "scripts/release-rollback-run.mjs",
   "scripts/operations.mjs",
   "scripts/operations-health.mjs",
+  "scripts/directory-standing.mjs",
   "scripts/deployment-diagnostics.mjs",
   "tests/release-live.test.mjs",
   "tests/operations.test.mjs",
+  "tests/directory-standing.test.mjs",
   // Unit test of release.mjs's deployment-secret handling; renders nothing.
   "tests/reporting-webhook-secret.test.mjs",
 ]);
